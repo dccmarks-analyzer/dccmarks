@@ -21,7 +21,7 @@
             padding-top: 30vh; flex-direction: column; align-items: center; justify-content: flex-start;
         }
         .spinner {
-            border: 6px solid #f3f3f3; border-top: 6px solid #6a1b9a; border-radius: 50%;
+            border: 6px solid #f3f3f3; border-top: 6px solid #ff4b2b; border-radius: 50%;
             width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 15px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -96,6 +96,7 @@
         .search-table th, .search-table td { border: 1px solid #ccc; padding: 6px; font-size: 13px; text-align: center;}
         .print-only-header { display: none; }
 
+        /* Desktop View - Full Width Cards */
         @media (min-width: 768px) {
             #mainApp { padding: 20px; }
             .dashboard { grid-template-columns: 1fr; } 
@@ -134,7 +135,7 @@
     <!-- Loading Indicator -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
-        <div style="font-weight: bold; color: #6a1b9a; font-size: 18px;">දත්ත යාවත්කාලීන වෙමින් පවතී...<br><span style="font-size: 14px; color: #555;">(Please Wait)</span></div>
+        <div style="font-weight: bold; color: #ff4b2b; font-size: 18px;">Firebase දත්ත යාවත්කාලීන වෙමින් පවතී...<br><span style="font-size: 14px; color: #555;">(Please Wait)</span></div>
     </div>
 
     <!-- Login -->
@@ -327,25 +328,30 @@
 
     <script>
         // ========================================================
-        // ඔබේ Google Apps Script Web App URL එක මෙතැනට ඇතුළත් කරන්න
+        // ඔබේ Firebase URL එක මෙතැනට ඇතුළත් කරන්න 
+        // (අගට /students.json තිබීම අනිවාර්යයි!)
         // ========================================================
-        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGNxlo6QbJfGwlCLiffCj-pT5qAToRk8p7GHb8kTx3mGwcXb3CGbwaa1y-mvyHTFYN/exec"; 
+        const FIREBASE_DB_URL = "https://ඔබගේ-නම.firebaseio.com/students.json"; 
         
-        const isOnline = GOOGLE_APP_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwGNxlo6QbJfGwlCLiffCj-pT5qAToRk8p7GHb8kTx3mGwcXb3CGbwaa1y-mvyHTFYN/exec" && GOOGLE_APP_SCRIPT_URL !== "";
+        const isOnline = FIREBASE_DB_URL !== "https://ඔබගේ-නම.firebaseio.com/students.json" && FIREBASE_DB_URL !== "";
 
         let studentsData = []; 
         let myChart = null; 
 
+        // Initial Data Load (Firebase)
         window.onload = async function() {
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
-                    let response = await fetch(GOOGLE_APP_SCRIPT_URL);
+                    let response = await fetch(FIREBASE_DB_URL);
                     let result = await response.json();
-                    if(result) { studentsData = result; }
+                    
+                    if(result) { 
+                        // Firebase returns an object or array, converting to array if needed
+                        studentsData = Array.isArray(result) ? result : Object.values(result);
+                    }
                 } catch (e) {
-                    console.error("Error fetching data:", e);
-                    // Online error එකක් ආවත් LocalStorage එකෙන් ගන්නවා
+                    console.error("Firebase Error:", e);
                     let savedData = localStorage.getItem("dccMarksData");
                     if (savedData) { studentsData = JSON.parse(savedData); }
                 }
@@ -363,17 +369,23 @@
         };
 
         function clearAllData() {
-            if (confirm("ඔබට විශ්වාසද සියලුම ශිෂ්‍ය දත්ත පද්ධතියෙන් මකා දැමිය යුතු බව?")) {
+            if (confirm("ඔබට විශ්වාසද සියලුම ශිෂ්‍ය දත්ත පද්ධතියෙන් මකා දැමිය යුතු බව? මෙම ක්‍රියාව ආපසු හැරවිය නොහැක!")) {
+                studentsData = [];
+                localStorage.removeItem("dccMarksData");
+                
+                // Clear in Firebase
                 if(isOnline) {
-                    alert("Online පද්ධතියේ දත්ත මැකීමට, කරුණාකර ඔබගේ Google Sheet එකට ගොස් පේළි මකා දමන්න. (ආරක්ෂාව සඳහා මෙතැනින් මැකීම අවහිර කර ඇත).");
-                } else {
-                    localStorage.removeItem("dccMarksData");
-                    studentsData = [];
-                    updateTable();
-                    updateChart();
-                    document.getElementById("searchResults").innerHTML = "";
-                    alert("සියලු දත්ත සාර්ථකව මකා දමන ලදී.");
+                    fetch(FIREBASE_DB_URL, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify([])
+                    });
                 }
+                
+                updateTable();
+                updateChart();
+                document.getElementById("searchResults").innerHTML = "";
+                alert("සියලු දත්ත සාර්ථකව මකා දමන ලදී.");
             }
         }
 
@@ -477,6 +489,7 @@
             alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="number" class="mark-input" data-subject="GIT" placeholder="ලකුණු" min="0" max="100"></div>`;
         }
 
+        // Save Data (Firebase + Local Storage)
         document.getElementById("marksForm").addEventListener("submit", async function(event) {
             event.preventDefault();
 
@@ -540,7 +553,6 @@
                 marks: studentMarks, total: total, average: average, stream: streamName
             };
 
-            // අනිවාර්යයෙන්ම LocalStorage හි සුරකියි (Backup)
             let existingIndex = studentsData.findIndex(s => s.id === id && s.term === term);
             if(existingIndex !== -1) {
                 studentRecord.serialNo = studentsData[existingIndex].serialNo;
@@ -549,26 +561,22 @@
                 studentRecord.serialNo = studentsData.length + 1;
                 studentsData.push(studentRecord); 
             }
+            
+            // Backup locally always
             localStorage.setItem("dccMarksData", JSON.stringify(studentsData));
 
-            // අන්තර්ජාලයට යැවීම (CORS Safe Method)
+            // Save to Firebase using PUT (replaces entire array safely)
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
-                    await fetch(GOOGLE_APP_SCRIPT_URL, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded" // CORS බාධාව මඟ හරියි
-                        },
-                        body: "data=" + encodeURIComponent(JSON.stringify(studentRecord))
+                    await fetch(FIREBASE_DB_URL, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(studentsData)
                     });
-                    
-                    let response = await fetch(GOOGLE_APP_SCRIPT_URL);
-                    studentsData = await response.json();
-
                 } catch (e) {
-                    console.error(e);
-                    alert("අන්තර්ජාලයට දත්ත යැවීම අසාර්ථකයි! (කරුණාකර URL එක නිවැරදිදැයි පරීක්ෂා කරන්න). නමුත් ඔබගේ පරිගණකයේ දත්ත සුරක්ෂිතව ඇත.");
+                    console.error("Firebase save error:", e);
+                    alert("අන්තර්ජාලයට දත්ත යැවීම අසාර්ථකයි! පරිගණකයේ පමණක් දත්ත සේව් විය.");
                 }
                 document.getElementById("loadingOverlay").style.display = "none";
             }
