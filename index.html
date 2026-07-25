@@ -138,29 +138,27 @@
         /* Desktop View - Full Width Cards */
         @media (min-width: 768px) {
             #mainApp { padding: 20px; }
-            .dashboard { grid-template-columns: 1fr; } /* Ensures all cards take full width */
+            .dashboard { grid-template-columns: 1fr; } 
             .flex-row { flex-direction: row; }
         }
 
         /* --- Updated Print Styles --- */
         @media print {
-            /* General Print settings: Landscape by default for wide tables */
             @page { size: A4 landscape; margin: 1cm; }
             
             body { background: white; margin: 0; padding: 0; overflow: visible; }
             .school-header, #formCard, #chartCard, .action-buttons, .table-filters { display: none !important; }
             
-            /* By default (Rank Board Print), hide the Search Card */
             body:not(.print-search-mode) #searchCard { display: none !important; }
             body:not(.print-search-mode) #printHeader { display: block; }
             body:not(.print-search-mode) .table-responsive { overflow-x: visible !important; border: none; display: table; width: 100%;}
             
-            /* When printing a Search Result, hide the Rank Board Card and set orientation to Portrait */
+            body.print-search-mode @page { size: A4 portrait; margin: 1cm; }
             body.print-search-mode #reportCard { display: none !important; }
             body.print-search-mode #searchCard { display: block !important; box-shadow: none; border: none; padding: 0; margin: 0;}
-            body.print-search-mode .flex-row { display: none !important; } /* Hide search input area */
+            body.print-search-mode .flex-row { display: none !important; } 
             body.print-search-mode .search-result-box { border: 1px solid #000; box-shadow: none; page-break-inside: avoid; margin-top: 0;}
-            body.print-search-mode .btn-print-search { display: none !important; } /* Hide the print button itself */
+            body.print-search-mode .btn-print-search { display: none !important; } 
             body.print-search-mode .print-only-header { display: block !important; text-align: center; margin-bottom: 20px; }
 
             .dashboard { display: block; }
@@ -169,6 +167,7 @@
             th { background-color: #eee !important; color: #000 !important; font-size: 10px; padding: 4px;}
             td { font-size: 10px; padding: 4px; border: 1px solid #aaa;}
             th, td { border: 1px solid #000; }
+            .search-table th, .search-table td { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 12px; }
             .rank-col, .term-badge { background-color: transparent !important; color: #000 !important; border: 1px solid #000;}
             .dev-footer { position: fixed; bottom: 0; width: 100%; border-top: 1px dashed #ccc; padding-top: 5px;}
         }
@@ -231,7 +230,6 @@
                                 <option value="" disabled selected>තෝරන්න</option>
                                 <option value="A">A</option><option value="B">B</option><option value="C">C</option>
                                 <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
-                                <!-- නව පන්ති එකතු කරන ලදී -->
                                 <option value="A1">A1</option><option value="A2">A2</option>
                                 <option value="C1">C1</option><option value="C2">C2</option>
                                 <option value="T1">T1</option><option value="T2">T2</option>
@@ -269,16 +267,19 @@
                             <option value="තෙවන වාරය">තෙවන වාරය</option>
                         </select>
                         <select id="tableGradeSelect" onchange="updateTable()">
-                            <option value="all">සියලු ශ්‍රේණි</option>
-                            <option value="6">6 ශ්‍රේණිය</option><option value="7">7 ශ්‍රේණිය</option><option value="8">8 ශ්‍රේණිය</option>
-                            <option value="9">9 ශ්‍රේණිය</option><option value="10">10 ශ්‍රේණිය</option><option value="11">11 ශ්‍රේණිය</option>
-                            <option value="12">12 ශ්‍රේණිය</option><option value="13">13 ශ්‍රේණිය</option>
+                            <option value="6">6 ශ්‍රේණිය</option>
+                            <option value="7">7 ශ්‍රේණිය</option>
+                            <option value="8">8 ශ්‍රේණිය</option>
+                            <option value="9">9 ශ්‍රේණිය</option>
+                            <option value="10">10 ශ්‍රේණිය</option>
+                            <option value="11" selected>11 ශ්‍රේණිය</option>
+                            <option value="12">12 ශ්‍රේණිය</option>
+                            <option value="13">13 ශ්‍රේණිය</option>
                         </select>
                         <select id="tableClassSelect" onchange="updateTable()">
                             <option value="all">සියලු පන්ති</option>
                             <option value="A">A</option><option value="B">B</option><option value="C">C</option>
                             <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
-                            <!-- නව පන්ති එකතු කරන ලදී -->
                             <option value="A1">A1</option><option value="A2">A2</option>
                             <option value="C1">C1</option><option value="C2">C2</option>
                             <option value="T1">T1</option><option value="T2">T2</option>
@@ -293,11 +294,13 @@
                             <option value="all">සියලුම විෂයයන් (All Subjects)</option>
                         </select>
                         <select id="filterCondition" onchange="applySubjectFilter()">
+                            <!-- නව පෙරීමේ පරාසයන් -->
                             <option value="all">ඕනෑම ලකුණු මට්ටමක් (All Marks)</option>
-                            <option value="gt75">75 ට වැඩි (>= 75)</option>
-                            <option value="gt65">65 ට වැඩි (>= 65)</option>
-                            <option value="gt50">50 ට වැඩි (>= 50)</option>
-                            <option value="lt35">35 ට අඩු (< 35)</option>
+                            <option value="75_100">75 ත් 100 අතර (75-100)</option>
+                            <option value="65_74">65 ත් 74 අතර (65-74)</option>
+                            <option value="50_64">50 ත් 64 අතර (50-64)</option>
+                            <option value="35_49">35 ත් 49 අතර (35-49)</option>
+                            <option value="0_34">0 ත් 34 අතර (0-34)</option>
                         </select>
                     </div>
                 </div>
@@ -376,7 +379,7 @@
             loadSubjects();
             document.getElementById("gradeSelect").value = ""; 
             document.getElementById("subjectsContainer").innerHTML = ""; 
-            updateTable(); // Initialize table display
+            updateTable(); 
         };
 
         function saveToLocalStorage() {
@@ -409,7 +412,6 @@
             }
         });
         
-        // Subject Lists 
         const juniorSubjects = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "සෞඛ්‍යය", "තොරතුරු හා සන්නිවේදන තාක්ෂණය", "PTS"];
         const aestheticSubjects = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"];
         const seniorCore = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය"];
@@ -425,7 +427,6 @@
             arts: ["සිංහල", "බෞද්ධ ශිෂ්ටාචාරය", "ඉතිහාසය", "භූගෝල විද්‍යාව", "දේශපාලන විද්‍යාව", "තර්ක ශාස්ත්‍රය", "තොරතුරු තාක්ෂණය (ICT)", "චිත්‍ර", "නැටුම්", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"]
         };
 
-        // නව පන්ති අක්ෂර ප්‍රස්තාරය සඳහා එකතු කරන ලදී
         const classLetters = ["A", "B", "C", "D", "E", "F", "G", "A1", "A2", "C1", "C2", "T1", "T2", "M1", "S1", "S2"];
         const chartColors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#ea4335', '#34a853', '#009688', '#607d8b'];
 
@@ -510,7 +511,6 @@
             let subjectCount = 0;
             let streamName = "";
 
-            // Generic Inputs
             document.querySelectorAll(".mark-input").forEach(input => {
                 let subject = input.getAttribute("data-subject");
                 let mark = parseFloat(input.value);
@@ -521,7 +521,6 @@
                 }
             });
 
-            // Specific Grade Inputs
             if (grade <= 9) {
                 let aesSub = document.getElementById('aesSubject').value;
                 let aesMark = parseFloat(document.getElementById('m_aes').value);
@@ -587,7 +586,6 @@
             updateChart(); 
         });
 
-        // Separated to properly trigger from subject filter selects
         function applySubjectFilter() {
             updateTable(true);
         }
@@ -600,23 +598,19 @@
             let selectedGrade = document.getElementById("tableGradeSelect").value;
             let selectedClass = document.getElementById("tableClassSelect").value;
             
-            let printSubText = "වාරය: " + ((selectedTerm === "all") ? "සියලුම" : selectedTerm) + " | ";
-            printSubText += "ශ්‍රේණිය: " + ((selectedGrade === "all") ? "සියලුම" : selectedGrade) + " | ";
+            let printSubText = "වාරය: " + selectedTerm + " | ";
+            printSubText += "ශ්‍රේණිය: " + selectedGrade + " | ";
             printSubText += "පන්තිය: " + ((selectedClass === "all") ? "සියලුම" : selectedClass);
             document.getElementById("printSubHeader").innerText = printSubText;
 
-            // 1. Initial Filtering by Term/Grade/Class
             let filteredData = studentsData;
-            if (selectedTerm !== "all") { filteredData = filteredData.filter(s => s.term === selectedTerm); }
-            if (selectedGrade !== "all") { filteredData = filteredData.filter(s => s.grade === selectedGrade); }
+            filteredData = filteredData.filter(s => s.term === selectedTerm && s.grade === selectedGrade);
             if (selectedClass !== "all") { filteredData = filteredData.filter(s => s.classLetter === selectedClass); }
 
-            // 2. Populate Subject Dropdown and find Unique Subjects
             let subjectSelect = document.getElementById("filterSubject");
             let currentSelectedSub = subjectSelect.value;
             let uniqueSubjects = new Set();
             
-            // Collect all subjects that appear in the current class/grade/term data
             filteredData.forEach(s => Object.keys(s.marks).forEach(sub => uniqueSubjects.add(sub)));
             let displaySubjects = Array.from(uniqueSubjects);
             
@@ -628,7 +622,6 @@
                 });
             }
 
-            // 3. Apply Advanced Subject/Marks Filter
             let filterSub = subjectSelect.value;
             let filterCond = document.getElementById("filterCondition").value;
             let isAdvancedFilterActive = (filterSub !== "all" || filterCond !== "all");
@@ -637,15 +630,15 @@
                 filteredData = filteredData.filter(s => {
                     let mark = s.marks[filterSub];
                     if (mark === undefined) return false;
-                    if (filterCond === "gt75") return mark >= 75;
-                    if (filterCond === "gt65") return mark >= 65;
-                    if (filterCond === "gt50") return mark >= 50;
-                    if (filterCond === "lt35") return mark < 35;
+                    if (filterCond === "75_100") return mark >= 75 && mark <= 100;
+                    if (filterCond === "65_74") return mark >= 65 && mark <= 74;
+                    if (filterCond === "50_64") return mark >= 50 && mark <= 64;
+                    if (filterCond === "35_49") return mark >= 35 && mark <= 49; 
+                    if (filterCond === "0_34") return mark >= 0 && mark <= 34;
                     return true;
                 });
             }
 
-            // --- Generate Dynamic Table Headers ---
             let headHtml = `<th>No</th><th style="text-align:left;">නම</th><th>පන්තිය</th><th>වාරය</th>`;
             displaySubjects.forEach(sub => {
                 let isFiltered = (filterSub === sub);
@@ -655,13 +648,11 @@
             
             headHtml += `<th>එකතුව</th><th>සාමාන්‍යය</th>`;
             
-            // Show Rank column only if NO advanced filter is applied
             if (!isAdvancedFilterActive) {
                 headHtml += `<th>ස්ථානය (Rank)</th>`;
             }
             
             tableHeadRow.innerHTML = headHtml;
-
             tableBody.innerHTML = ""; 
 
             if(filteredData.length === 0) {
@@ -670,22 +661,18 @@
                 return;
             }
 
-            // --- Generate Dynamic Table Rows & Ranks ---
-            // Sort logic to determine Rank
             let sortedData = [...filteredData].sort((a, b) => b.total - a.total);
             let currentRank = 1;
 
             sortedData.forEach((student, index) => {
-                // Handle Ties for Ranking
                 if (index > 0 && sortedData[index].total < sortedData[index - 1].total) { currentRank = index + 1; }
 
                 let row = `<tr>
-                    <td class="serial-col">${student.serialNo}</td>
+                    <td class="serial-col">${index + 1}</td> <!-- Dynamic Serial Number -->
                     <td style="text-align:left; white-space:nowrap;">${student.name}</td>
                     <td>${student.fullClassName}</td>
                     <td><span class="term-badge">${student.term}</span></td>`;
                 
-                // Print individual subject marks dynamically
                 displaySubjects.forEach(sub => {
                     let mark = student.marks[sub];
                     let displayMark = (mark !== undefined) ? mark : '-';
@@ -698,13 +685,11 @@
                     <td style="font-weight:bold;">${student.total}</td>
                     <td style="color:#1565c0; font-weight:bold;">${student.average}</td>`;
                 
-                // Show Rank value only if NO advanced filter is applied
                 if (!isAdvancedFilterActive) {
                     row += `<td class="rank-col">${currentRank}</td>`;
                 }
 
                 row += `</tr>`;
-                
                 tableBody.innerHTML += row; 
             });
         }
@@ -740,8 +725,7 @@
             foundRecords.forEach(record => {
                 let streamDisplay = record.stream ? ` | ${record.stream}` : "";
                 
-                // Calculate Exact Rank out of Total for THIS Term and Grade
-                let sameCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade);
+                let sameCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
                 sameCohort.sort((a, b) => b.total - a.total);
                 
                 let studentRank = 1;
@@ -755,27 +739,18 @@
                 html += `<h4>👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>`;
                 html += `<div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #555;">📅 ${record.term}</div>`;
                 
-                // Set overall table text color to dark (#111) for high visibility
-                html += `<table class="search-table" style="color: #111;">`;
+                html += `<table class="search-table">`;
                 
-                // Header row with lighter background and dark text
-                html += `<tr style="background:#f5f5f5;"><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>`;
+                html += `<tr><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>`;
                 
                 for (let [sub, mark] of Object.entries(record.marks)) {
-                    html += `<tr><td>${sub}</td><td style="text-align:center; font-weight:bold;">${mark}</td></tr>`;
+                    html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`;
                 }
                 
-                // Totals Row: Light yellow bg, Dark orange values, Dark text labels
-                html += `<tr style="background:#fffde7;"><th style="text-align:right; color:#333;">එකතුව (Total):</th><th style="text-align:center; color:#e65100; font-size:14px;">${record.total}</th></tr>`;
-                
-                // Average Row: Lighter blue bg, Dark blue values, Dark text labels
-                html += `<tr style="background:#f0f8ff;"><th style="text-align:right; color:#333;">සාමාන්‍යය (Average):</th><th style="text-align:center; color:#0d47a1; font-size:14px;">${record.average}</th></tr>`;
-                
-                // Rank Row: Lighter green bg, Dark green values, Dark text labels
-                html += `<tr style="background:#f1f8e9;"><th style="text-align:right; color:#333;">ස්ථානය (Rank):</th><th style="text-align:center; color:#1b5e20; font-size:15px;">${studentRank}</th></tr>`;
-                
-                // Total Students Row: Lighter green bg, Dark green values, Dark text labels
-                html += `<tr style="background:#f1f8e9;"><th style="text-align:right; color:#333;">සිසුන් ගණන (Total Students):</th><th style="text-align:center; color:#1b5e20; font-size:15px;">${totalInCohort}</th></tr>`;
+                html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr>`;
+                html += `<tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr>`;
+                html += `<tr style="background:#2e7d32; color:white;"><th style="text-align:right;">ස්ථානය (Rank):</th><th style="font-size:15px;">${studentRank}</th></tr>`;
+                html += `<tr style="background:#388e3c; color:white;"><th style="text-align:right;">පන්තියේ සිසුන් ගණන (Total Students in Class):</th><th style="font-size:15px;">${totalInCohort}</th></tr>`;
                 
                 html += `</table>`;
                 html += `</div>`;
@@ -788,9 +763,7 @@
             resultsContainer.innerHTML = html;
         }
 
-        // Specialized Print for Search Results - dynamically forcing Portrait layout
         function printStudentSearch() {
-            // Create a temporary style element to override page size to portrait
             let printStyle = document.createElement('style');
             printStyle.id = 'search-print-style';
             printStyle.innerHTML = '@media print { @page { size: A4 portrait !important; margin: 1cm; } }';
@@ -799,7 +772,6 @@
             document.body.classList.add('print-search-mode');
             window.print();
             
-            // Remove the temporary style and class after printing dialogue triggers
             setTimeout(() => { 
                 document.body.classList.remove('print-search-mode'); 
                 let el = document.getElementById('search-print-style');
@@ -825,7 +797,6 @@
             let tGrade = document.getElementById("tableGradeSelect").value;
             let fileName = `Rank_Board_${tTerm}_Grade_${tGrade}.pdf`;
 
-            // Main table uses Landscape layout
             const opt = { 
                 margin: 0.2, 
                 filename: fileName, 
