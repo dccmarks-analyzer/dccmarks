@@ -177,7 +177,7 @@
         <div class="dashboard">
             <!-- Form -->
             <div class="card" id="formCard">
-                <h3 class="section-title">නව දත්ත ඇතුළත් කරන්න</h3>
+                <h3 class="section-title">නව දත්ත ඇතුළත් කරන්න (Single Subject Entry)</h3>
                 <form id="marksForm">
                     
                     <input type="text" id="studentId" placeholder="ශිෂ්‍ය අංකය" required>
@@ -213,11 +213,11 @@
                         </div>
                     </div>
 
-                    <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
-                    <p style="font-size: 12px; color: gray; margin-top: 0; text-align: center;">(කරුණාකර ඉහළින් ශ්‍රේණිය තෝරන්න)</p>
+                    <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂය සහ ලකුණු (Subject & Marks):</h4>
+                    <p style="font-size: 12px; color: gray; margin-top: 0; text-align: center;">(එක් වරකට එක් විෂයක් පමණක් තෝරා ලකුණු ඇතුළත් කරන්න)</p>
                     <div id="subjectsContainer"></div>
 
-                    <button type="submit" class="btn-submit">දත්ත පද්ධතියට එක් කරන්න</button>
+                    <button type="submit" class="btn-submit">ලකුණු ඇතුළත් කරන්න (Save Mark)</button>
                 </form>
             </div>
             
@@ -343,17 +343,13 @@
     <script>
         // ========================================================
         // ඔබේ Firebase URL එක මෙතැනට ඇතුළත් කරන්න 
-        // (අගට /students.json තිබීම අනිවාර්යයි!)
         // ========================================================
         const FIREBASE_DB_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/students.json"; 
         
-        // Force the app to act as Online for testing the Firebase connection
         const isOnline = true;
-
         let studentsData = []; 
         let myChart = null; 
 
-        // Initial Data Load (Firebase)
         window.onload = async function() {
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
@@ -442,33 +438,7 @@
 
             if (isNaN(grade)) return;
 
-            if (grade <= 9) {
-                juniorSubjects.forEach(subject => {
-                    container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`;
-                });
-                
-                let aesSelect = `<select id="aesSubject" required><option value="" disabled selected>සෞන්දර්ය විෂය</option>`;
-                aestheticSubjects.forEach(opt => aesSelect += `<option value="${opt}">${opt}</option>`);
-                aesSelect += `</select>`;
-                container.innerHTML += `<div class="subject-row">${aesSelect}<input type="number" id="m_aes" placeholder="ලකුණු" min="0" max="100" required></div>`;
-
-            } else if (grade === 10 || grade === 11) {
-                seniorCore.forEach(subject => {
-                    container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`;
-                });
-                
-                const createBucket = (bucketName, options, bucketId) => {
-                    let selectHtml = `<select id="${bucketId}" required><option value="" disabled selected>${bucketName}</option>`;
-                    options.forEach(opt => selectHtml += `<option value="${opt}">${opt}</option>`);
-                    selectHtml += `</select>`;
-                    return selectHtml;
-                };
-
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය I", bucket1, "b1")}<input type="number" id="m_b1" placeholder="ලකුණු" min="0" max="100" required></div>`;
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය II", bucket2, "b2")}<input type="number" id="m_b2" placeholder="ලකුණු" min="0" max="100" required></div>`;
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය III", bucket3, "b3")}<input type="number" id="m_b3" placeholder="ලකුණු" min="0" max="100" required></div>`;
-
-            } else if (grade === 12 || grade === 13) {
+            if (grade >= 12) {
                 container.innerHTML = `
                     <div style="margin-bottom: 15px;">
                         <select id="streamSelect" onchange="loadALSubjects()" required style="border-color: #ff9800; border-width: 2px;">
@@ -482,24 +452,44 @@
                     </div>
                     <div id="alSubjectsContainer"></div>
                 `;
+            } else {
+                let optionsHtml = '<option value="" disabled selected>විෂය තෝරන්න (Select Subject)</option>';
+                
+                if (grade <= 9) {
+                    juniorSubjects.forEach(s => optionsHtml += \`<option value="\${s}">\${s}</option>\`);
+                    aestheticSubjects.forEach(s => optionsHtml += \`<option value="\${s}">\${s} (සෞන්දර්ය)</option>\`);
+                } else if (grade === 10 || grade === 11) {
+                    seniorCore.forEach(s => optionsHtml += \`<option value="\${s}">\${s}</option>\`);
+                    bucket1.forEach(s => optionsHtml += \`<option value="\${s}">\${s} (කාණ්ඩය I)</option>\`);
+                    bucket2.forEach(s => optionsHtml += \`<option value="\${s}">\${s} (කාණ්ඩය II)</option>\`);
+                    bucket3.forEach(s => optionsHtml += \`<option value="\${s}">\${s} (කාණ්ඩය III)</option>\`);
+                }
+                
+                container.innerHTML = `
+                    <div class="subject-row">
+                        <select id="singleSubject" required>\${optionsHtml}</select>
+                        <input type="number" id="singleMark" placeholder="ලකුණු (0-100)" min="0" max="100" required>
+                    </div>
+                `;
             }
         }
 
         function loadALSubjects() {
             let stream = document.getElementById("streamSelect").value;
             let alContainer = document.getElementById("alSubjectsContainer");
-            alContainer.innerHTML = "";
             let options = alSubjectsList[stream] || [];
             
-            for(let i=1; i<=3; i++) {
-                let selectHtml = `<select id="al_sub${i}" required><option value="" disabled selected>ප්‍රධාන විෂය ${i}</option>`;
-                options.forEach(opt => selectHtml += `<option value="${opt}">${opt}</option>`);
-                selectHtml += `</select>`;
-                alContainer.innerHTML += `<div class="subject-row">${selectHtml}<input type="number" id="m_al${i}" placeholder="ලකුණු" min="0" max="100" required></div>`;
-            }
-            
-            alContainer.innerHTML += `<div class="subject-row"><label>සාමාන්‍ය ඉංග්‍රීසි (Gen. English)</label><input type="number" class="mark-input" data-subject="සාමාන්‍ය ඉංග්‍රීසි" placeholder="ලකුණු" min="0" max="100"></div>`;
-            alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="number" class="mark-input" data-subject="GIT" placeholder="ලකුණු" min="0" max="100"></div>`;
+            let optionsHtml = '<option value="" disabled selected>විෂය තෝරන්න (Select Subject)</option>';
+            options.forEach(s => optionsHtml += \`<option value="\${s}">\${s}</option>\`);
+            optionsHtml += '<option value="සාමාන්‍ය ඉංග්‍රීසි">සාමාන්‍ය ඉංග්‍රීසි (Gen. English)</option>';
+            optionsHtml += '<option value="GIT">GIT</option>';
+
+            alContainer.innerHTML = `
+                <div class="subject-row">
+                    <select id="singleSubject" required>\${optionsHtml}</select>
+                    <input type="number" id="singleMark" placeholder="ලකුණු (0-100)" min="0" max="100" required>
+                </div>
+            `;
         }
 
         document.getElementById("marksForm").addEventListener("submit", async function(event) {
@@ -511,72 +501,67 @@
             let grade = parseInt(document.getElementById("gradeSelect").value);
             let classLetter = document.getElementById("classSelect").value;
             
-            let total = 0;
-            let studentMarks = {};
-            let subjectCount = 0;
+            let selectedSubject = document.getElementById("singleSubject").value;
+            let mark = parseFloat(document.getElementById("singleMark").value);
+
+            if (!selectedSubject || isNaN(mark)) {
+                alert("කරුණාකර විෂය සහ ලකුණු නිවැරදිව තෝරන්න.");
+                return;
+            }
+
             let streamName = "";
-
-            document.querySelectorAll(".mark-input").forEach(input => {
-                let subject = input.getAttribute("data-subject");
-                let mark = parseFloat(input.value);
-                if (!isNaN(mark)) {
-                    studentMarks[subject] = mark;
-                    total += mark;
-                    subjectCount++;
-                }
-            });
-
-            if (grade <= 9) {
-                let aesSub = document.getElementById('aesSubject').value;
-                let aesMark = parseFloat(document.getElementById('m_aes').value);
-                if(aesSub && !isNaN(aesMark)) {
-                    studentMarks[aesSub] = aesMark;
-                    total += aesMark;
-                    subjectCount++;
-                }
-            } else if (grade === 10 || grade === 11) {
-                for (let i = 1; i <= 3; i++) {
-                    let bucketSubject = document.getElementById(`b${i}`).value;
-                    let mark = parseFloat(document.getElementById(`m_b${i}`).value);
-                    if (bucketSubject && !isNaN(mark)) {
-                        studentMarks[bucketSubject] = mark;
-                        total += mark;
-                        subjectCount++;
-                    }
-                }
-            } else if (grade === 12 || grade === 13) {
-                streamName = document.getElementById("streamSelect").options[document.getElementById("streamSelect").selectedIndex].text;
-                for (let i = 1; i <= 3; i++) {
-                    let alSubject = document.getElementById(`al_sub${i}`).value;
-                    let mark = parseFloat(document.getElementById(`m_al${i}`).value);
-                    if (alSubject && !isNaN(mark)) {
-                        studentMarks[alSubject] = mark;
-                        total += mark;
-                        subjectCount++;
-                    }
+            if (grade >= 12) {
+                let streamSelect = document.getElementById("streamSelect");
+                if (streamSelect && streamSelect.selectedIndex > 0) {
+                    streamName = streamSelect.options[streamSelect.selectedIndex].text;
                 }
             }
 
-            let average = subjectCount > 0 ? parseFloat((total / subjectCount).toFixed(2)) : 0;
-            
-            let studentRecord = { 
-                id: id, name: name, term: term, grade: grade.toString(),
-                classLetter: classLetter, fullClassName: grade + "-" + classLetter, 
-                marks: studentMarks, total: total, average: average, stream: streamName
-            };
-
+            // Find existing student record
             let existingIndex = studentsData.findIndex(s => s.id === id && s.term === term);
-            if(existingIndex !== -1) {
-                studentRecord.serialNo = studentsData[existingIndex].serialNo;
-                studentsData[existingIndex] = studentRecord;
+
+            if (existingIndex !== -1) {
+                // Update existing record
+                studentsData[existingIndex].marks[selectedSubject] = mark;
+                
+                // Recalculate Total and Average based on ALL stored subjects for this student
+                let total = 0;
+                let subjectCount = 0;
+                for (let sub in studentsData[existingIndex].marks) {
+                    total += studentsData[existingIndex].marks[sub];
+                    subjectCount++;
+                }
+                
+                studentsData[existingIndex].total = total;
+                studentsData[existingIndex].average = parseFloat((total / subjectCount).toFixed(2));
+                studentsData[existingIndex].name = name; 
+                studentsData[existingIndex].classLetter = classLetter;
+                studentsData[existingIndex].fullClassName = grade + "-" + classLetter;
+                if(streamName) studentsData[existingIndex].stream = streamName;
+
             } else {
-                studentRecord.serialNo = studentsData.length + 1;
+                // Create New Record
+                let studentMarks = {};
+                studentMarks[selectedSubject] = mark;
+                
+                let studentRecord = { 
+                    id: id, 
+                    name: name, 
+                    term: term, 
+                    grade: grade.toString(),
+                    classLetter: classLetter, 
+                    fullClassName: grade + "-" + classLetter, 
+                    marks: studentMarks, 
+                    total: mark, 
+                    average: mark, 
+                    stream: streamName,
+                    serialNo: studentsData.length + 1
+                };
                 studentsData.push(studentRecord); 
             }
             
             localStorage.setItem("dccMarksData", JSON.stringify(studentsData));
 
-            // අලුත් Error Handling එක සහිත දත්ත යැවීම
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
@@ -586,25 +571,25 @@
                         body: JSON.stringify(studentsData)
                     });
                     
-                    if(response.ok) {
-                        alert("නියමයි! Firebase එකට දත්ත සාර්ථකව සේව් වුණා.");
-                    } else {
-                        alert("Firebase Error: " + response.status + " - Rules වල ගැටළුවක් විය හැක.");
+                    if(!response.ok) {
+                        alert("Firebase Error: " + response.status);
                     }
                 } catch (e) {
-                    alert("Network Error: " + e.message + " (URL එක හෝ Internet Connection එක පරීක්ෂා කරන්න)");
+                    alert("Network Error: " + e.message);
                 }
                 document.getElementById("loadingOverlay").style.display = "none";
             }
+
+            // Clear ONLY subject & mark inputs for faster consecutive data entry for the same student
+            document.getElementById("singleMark").value = "";
+            document.getElementById("singleSubject").value = "";
+            document.getElementById("singleSubject").focus();
 
             document.getElementById("tableTermSelect").value = term;
             document.getElementById("tableGradeSelect").value = grade.toString();
             document.getElementById("tableClassSelect").value = classLetter;
             document.getElementById("chartTermSelect").value = term;
             document.getElementById("chartGradeSelect").value = grade.toString();
-
-            document.getElementById("marksForm").reset(); 
-            document.getElementById("subjectsContainer").innerHTML = ""; 
             
             updateTable(); 
             updateChart(); 
@@ -639,10 +624,10 @@
             let displaySubjects = Array.from(uniqueSubjects);
             
             if (!isSubjectFilterTrigger) {
-                subjectSelect.innerHTML = `<option value="all">සියලුම විෂයයන් (All Subjects)</option>`;
+                subjectSelect.innerHTML = \`<option value="all">සියලුම විෂයයන් (All Subjects)</option>\`;
                 displaySubjects.forEach(sub => {
                     let isSelected = (sub === currentSelectedSub) ? "selected" : "";
-                    subjectSelect.innerHTML += `<option value="${sub}" ${isSelected}>${sub}</option>`;
+                    subjectSelect.innerHTML += \`<option value="\${sub}" \${isSelected}>\${sub}</option>\`;
                 });
             }
 
@@ -663,17 +648,17 @@
                 });
             }
 
-            let headHtml = `<th>No</th><th style="text-align:left;">නම</th><th>පන්තිය</th><th>වාරය</th>`;
+            let headHtml = \`<th>No</th><th style="text-align:left;">නම</th><th>පන්තිය</th><th>වාරය</th>\`;
             displaySubjects.forEach(sub => {
                 let isFiltered = (filterSub === sub);
                 let style = isFiltered ? 'background-color: #ffb300; color: #000; font-weight: bold;' : '';
-                headHtml += `<th style="${style}">${sub}</th>`;
+                headHtml += \`<th style="\${style}">\${sub}</th>\`;
             });
             
-            headHtml += `<th>එකතුව</th><th>සාමාන්‍යය</th>`;
+            headHtml += \`<th>එකතුව</th><th>සාමාන්‍යය</th>\`;
             
             if (!isAdvancedFilterActive) {
-                headHtml += `<th>ස්ථානය (Rank)</th>`;
+                headHtml += \`<th>ස්ථානය (Rank)</th>\`;
             }
             
             tableHeadRow.innerHTML = headHtml;
@@ -681,7 +666,7 @@
 
             if(filteredData.length === 0) {
                 let totalCols = isAdvancedFilterActive ? (6 + displaySubjects.length) : (7 + displaySubjects.length);
-                tableBody.innerHTML = `<tr><td colspan="${totalCols}" style="color: gray; text-align: center; padding: 20px;">තෝරාගත් කාණ්ඩය සඳහා දත්ත නොමැත.</td></tr>`;
+                tableBody.innerHTML = \`<tr><td colspan="\${totalCols}" style="color: gray; text-align: center; padding: 20px;">තෝරාගත් කාණ්ඩය සඳහා දත්ත නොමැත.</td></tr>\`;
                 return;
             }
 
@@ -691,29 +676,29 @@
             sortedData.forEach((student, index) => {
                 if (index > 0 && sortedData[index].total < sortedData[index - 1].total) { currentRank = index + 1; }
 
-                let row = `<tr>
-                    <td class="serial-col">${index + 1}</td>
-                    <td style="text-align:left; white-space:nowrap;">${student.name}</td>
-                    <td>${student.fullClassName}</td>
-                    <td><span class="term-badge">${student.term}</span></td>`;
+                let row = \`<tr>
+                    <td class="serial-col">\${index + 1}</td>
+                    <td style="text-align:left; white-space:nowrap;">\${student.name}</td>
+                    <td>\${student.fullClassName}</td>
+                    <td><span class="term-badge">\${student.term}</span></td>\`;
                 
                 displaySubjects.forEach(sub => {
                     let mark = student.marks[sub];
                     let displayMark = (mark !== undefined) ? mark : '-';
                     let isFiltered = (filterSub === sub);
                     let style = isFiltered ? 'background-color: #fff8e1; font-weight: bold; color: #d84315;' : '';
-                    row += `<td style="${style}">${displayMark}</td>`;
+                    row += \`<td style="\${style}">\${displayMark}</td>\`;
                 });
 
-                row += `
-                    <td style="font-weight:bold;">${student.total}</td>
-                    <td style="color:#1565c0; font-weight:bold;">${student.average}</td>`;
+                row += \`
+                    <td style="font-weight:bold;">\${student.total}</td>
+                    <td style="color:#1565c0; font-weight:bold;">\${student.average}</td>\`;
                 
                 if (!isAdvancedFilterActive) {
-                    row += `<td class="rank-col">${currentRank}</td>`;
+                    row += \`<td class="rank-col">\${currentRank}</td>\`;
                 }
 
-                row += `</tr>`;
+                row += \`</tr>\`;
                 tableBody.innerHTML += row; 
             });
         }
@@ -739,15 +724,15 @@
 
             let todayStr = new Date().toLocaleDateString('si-LK');
 
-            let html = `
+            let html = \`
             <div class="print-only-header">
                 <h2 style="margin:0; font-size:22px; color:#000;">Mo/Dutugemunu Central College, Buttala</h2>
-                <h4 style="margin:5px 0 15px 0; color:#333; font-weight:normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව | මුද්‍රිත දිනය: ${todayStr}</h4>
+                <h4 style="margin:5px 0 15px 0; color:#333; font-weight:normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව | මුද්‍රිත දිනය: \${todayStr}</h4>
                 <hr style="border:1px solid #000; margin-bottom:15px;">
-            </div>`;
+            </div>\`;
 
             foundRecords.forEach(record => {
-                let streamDisplay = record.stream ? ` | ${record.stream}` : "";
+                let streamDisplay = record.stream ? \` | \${record.stream}\` : "";
                 
                 let sameCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
                 sameCohort.sort((a, b) => b.total - a.total);
@@ -759,30 +744,30 @@
                 }
                 let totalInCohort = sameCohort.length;
                 
-                html += `<div class="search-result-box">`;
-                html += `<h4>👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>`;
-                html += `<div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #555;">📅 ${record.term}</div>`;
+                html += \`<div class="search-result-box">\`;
+                html += \`<h4>👤 \${record.name} - \${record.fullClassName} \${streamDisplay}</h4>\`;
+                html += \`<div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #555;">📅 \${record.term}</div>\`;
                 
-                html += `<table class="search-table">`;
+                html += \`<table class="search-table">\`;
                 
-                html += `<tr><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>`;
+                html += \`<tr><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>\`;
                 
                 for (let [sub, mark] of Object.entries(record.marks)) {
-                    html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`;
+                    html += \`<tr><td style="text-align:left;">\${sub}</td><td style="font-weight:bold;">\${mark}</td></tr>\`;
                 }
                 
-                html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr>`;
-                html += `<tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr>`;
-                html += `<tr style="background:#2e7d32; color:white;"><th style="text-align:right;">ස්ථානය (Rank):</th><th style="font-size:15px;">${studentRank}</th></tr>`;
-                html += `<tr style="background:#388e3c; color:white;"><th style="text-align:right;">පන්තියේ සිසුන් ගණන (Total Students in Class):</th><th style="font-size:15px;">${totalInCohort}</th></tr>`;
+                html += \`<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">\${record.total}</th></tr>\`;
+                html += \`<tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">\${record.average}</th></tr>\`;
+                html += \`<tr style="background:#2e7d32; color:white;"><th style="text-align:right;">ස්ථානය (Rank):</th><th style="font-size:15px;">\${studentRank}</th></tr>\`;
+                html += \`<tr style="background:#388e3c; color:white;"><th style="text-align:right;">පන්තියේ සිසුන් ගණන (Total Students in Class):</th><th style="font-size:15px;">\${totalInCohort}</th></tr>\`;
                 
-                html += `</table>`;
-                html += `</div>`;
+                html += \`</table>\`;
+                html += \`</div>\`;
             });
 
-            html += `<div style="text-align: center; margin-top: 20px;">
+            html += \`<div style="text-align: center; margin-top: 20px;">
                         <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); max-width: 250px; margin: 0 auto; display: inline-block; padding: 12px 20px; border-radius: 8px;">🖨️ මෙම ප්‍රතිඵල මුද්‍රණය කරන්න</button>
-                     </div>`;
+                     </div>\`;
 
             resultsContainer.innerHTML = html;
         }
@@ -819,7 +804,7 @@
             
             let tTerm = document.getElementById("tableTermSelect").value;
             let tGrade = document.getElementById("tableGradeSelect").value;
-            let fileName = `Rank_Board_${tTerm}_Grade_${tGrade}.pdf`;
+            let fileName = \`Rank_Board_\${tTerm}_Grade_\${tGrade}.pdf\`;
 
             const opt = { 
                 margin: 0.2, 
