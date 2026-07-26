@@ -221,6 +221,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 10px;">
                     <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
                     
+                    <!-- Advanced Filters Area -->
                     <div class="table-filters">
                         <select id="tableTermSelect" onchange="updateTable()">
                             <option value="all">සියලුම වාර</option>
@@ -249,6 +250,7 @@
                         </select>
                     </div>
 
+                    <!-- Subject Specific Filters -->
                     <div class="table-filters" style="background: #e3f2fd; border: 1px solid #bbdefb;">
                         <div style="width: 100%; text-align: center; font-size: 12px; font-weight: bold; color: #1565c0; margin-bottom: 5px;">විෂය අනුව පෙරීම (Subject Filter)</div>
                         <select id="filterSubject" onchange="applySubjectFilter()">
@@ -331,9 +333,10 @@
         // ඔබේ Firebase URL එක මෙතැනට ඇතුළත් කරන්න 
         // (අගට /students.json තිබීම අනිවාර්යයි!)
         // ========================================================
-       const FIREBASE_DB_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/students.json"; 
+        const FIREBASE_DB_URL = "https://dcc-marks-default-rtdb.asia-southeast1.firebasedatabase.app/students.json"; 
         
-        const isOnline = FIREBASE_DB_URL !== "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/students.json" && FIREBASE_DB_URL !== "";
+        // Force the app to act as Online for testing the Firebase connection
+        const isOnline = true;
 
         let studentsData = []; 
         let myChart = null; 
@@ -347,7 +350,6 @@
                     let result = await response.json();
                     
                     if(result) { 
-                        // Firebase returns an object or array, converting to array if needed
                         studentsData = Array.isArray(result) ? result : Object.values(result);
                     }
                 } catch (e) {
@@ -373,7 +375,6 @@
                 studentsData = [];
                 localStorage.removeItem("dccMarksData");
                 
-                // Clear in Firebase
                 if(isOnline) {
                     fetch(FIREBASE_DB_URL, {
                         method: "PUT",
@@ -489,7 +490,6 @@
             alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="number" class="mark-input" data-subject="GIT" placeholder="ලකුණු" min="0" max="100"></div>`;
         }
 
-        // Save Data (Firebase + Local Storage)
         document.getElementById("marksForm").addEventListener("submit", async function(event) {
             event.preventDefault();
 
@@ -562,21 +562,25 @@
                 studentsData.push(studentRecord); 
             }
             
-            // Backup locally always
             localStorage.setItem("dccMarksData", JSON.stringify(studentsData));
 
-            // Save to Firebase using PUT (replaces entire array safely)
+            // අලුත් Error Handling එක සහිත දත්ත යැවීම
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
-                    await fetch(FIREBASE_DB_URL, {
+                    let response = await fetch(FIREBASE_DB_URL, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(studentsData)
                     });
+                    
+                    if(response.ok) {
+                        alert("නියමයි! Firebase එකට දත්ත සාර්ථකව සේව් වුණා.");
+                    } else {
+                        alert("Firebase Error: " + response.status + " - Rules වල ගැටළුවක් විය හැක.");
+                    }
                 } catch (e) {
-                    console.error("Firebase save error:", e);
-                    alert("අන්තර්ජාලයට දත්ත යැවීම අසාර්ථකයි! පරිගණකයේ පමණක් දත්ත සේව් විය.");
+                    alert("Network Error: " + e.message + " (URL එක හෝ Internet Connection එක පරීක්ෂා කරන්න)");
                 }
                 document.getElementById("loadingOverlay").style.display = "none";
             }
