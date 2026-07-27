@@ -129,18 +129,6 @@
             .dev-footer { position: fixed; bottom: 0; width: 100%; border-top: 1px dashed #ccc; padding-top: 5px;}
         }
     </style>
-    <!-- Web App Manifest -->
-<link rel="manifest" href="manifest.json">
-
-<!-- Android / Chrome සදහා -->
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6a1b9a">
-
-<!-- Apple iOS / Safari සදහා -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Marks Analyzer">
-<link rel="apple-touch-icon" href="icon.png">
 </head>
 <body>
 
@@ -203,12 +191,15 @@
                             <label style="font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 5px; text-align: center;">පන්තිය (Class):</label>
                             <select id="classSelect" required>
                                 <option value="" disabled selected>තෝරන්න</option>
-                                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                                <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                                <option disabled>── උසස් පෙළ පන්ති ──</option>
                                 <option value="A1">A1</option><option value="A2">A2</option>
                                 <option value="C1">C1</option><option value="C2">C2</option>
                                 <option value="T1">T1</option><option value="T2">T2</option>
-                                <option value="M1">M1</option><option value="S1">S1</option><option value="S2">S2</option>
+                                <option value="M1">M1</option><option value="M2">M2</option>
+                                <option value="S1">S1</option><option value="S2">S2</option>
+                                <option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                                <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
                             </select>
                         </div>
                     </div>
@@ -247,18 +238,32 @@
                             <option value="8">8 ශ්‍රේණිය</option>
                             <option value="9">9 ශ්‍රේණිය</option>
                             <option value="10">10 ශ්‍රේණිය</option>
-                            <option value="11" selected>11 ශ්‍රේණිය</option>
-                            <option value="12">12 ශ්‍රේණිය</option>
+                            <option value="11">11 ශ්‍රේණිය</option>
+                            <option value="12" selected>12 ශ්‍රේණිය</option>
                             <option value="13">13 ශ්‍රේණිය</option>
                         </select>
-                        <select id="tableClassSelect" onchange="updateTable()">
+                        <select id="tableClassSelect" onchange="updateTable()" style="border: 2px solid #6a1b9a;">
                             <option value="all">සියලු පන්ති</option>
+                            <!-- ඒකාබද්ධ උසස් පෙළ පන්ති තේරීම් (අලුත් Values) -->
+                            <option disabled>── ඒකාබද්ධ (A/L පමණි) ──</option>
+                            <option value="A_combined" style="font-weight:bold; color:blue;">A අංශය (A1, A2 ඒකාබද්ධව)</option>
+                            <option value="C_combined" style="font-weight:bold; color:blue;">C අංශය (C1, C2 ඒකාබද්ධව)</option>
+                            <option value="T_combined" style="font-weight:bold; color:blue;">T අංශය (T1, T2 ඒකාබද්ධව)</option>
+                            <option value="M_combined" style="font-weight:bold; color:blue;">M අංශය (M1, M2 ඒකාබද්ධව)</option>
+                            <option value="S_combined" style="font-weight:bold; color:blue;">S අංශය (S1, S2 ඒකාබද්ධව)</option>
+                            
+                            <!-- තනි පන්ති තේරීම් -->
+                            <option disabled>── උසස් පෙළ (තනි) ──</option>
+                            <option value="A1">A1 පමණක්</option><option value="A2">A2 පමණක්</option>
+                            <option value="C1">C1 පමණක්</option><option value="C2">C2 පමණක්</option>
+                            <option value="T1">T1 පමණක්</option><option value="T2">T2 පමණක්</option>
+                            <option value="M1">M1 පමණක්</option><option value="M2">M2 පමණක්</option>
+                            <option value="S1">S1 පමණක්</option><option value="S2">S2 පමණක්</option>
+                            
+                            <!-- සාමාන්‍ය පන්ති -->
+                            <option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option>
                             <option value="A">A</option><option value="B">B</option><option value="C">C</option>
                             <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
-                            <option value="A1">A1</option><option value="A2">A2</option>
-                            <option value="C1">C1</option><option value="C2">C2</option>
-                            <option value="T1">T1</option><option value="T2">T2</option>
-                            <option value="M1">M1</option><option value="S1">S1</option><option value="S2">S2</option>
                         </select>
                     </div>
 
@@ -343,7 +348,6 @@
     <script>
         // ========================================================
         // ඔබේ Firebase URL එක මෙතැනට ඇතුළත් කරන්න 
-        // (අගට /students.json තිබීම අනිවාර්යයි!)
         // ========================================================
         const FIREBASE_DB_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/students.json"; 
         
@@ -375,7 +379,7 @@
                 if (savedData) { studentsData = JSON.parse(savedData); }
             }
 
-            document.getElementById("gradeSelect").value = "11"; 
+            document.getElementById("gradeSelect").value = "12"; 
             loadSubjects();
             document.getElementById("gradeSelect").value = ""; 
             document.getElementById("subjectsContainer").innerHTML = ""; 
@@ -432,7 +436,7 @@
             arts: ["සිංහල", "බෞද්ධ ශිෂ්ටාචාරය", "ඉතිහාසය", "භූගෝල විද්‍යාව", "දේශපාලන විද්‍යාව", "තර්ක ශාස්ත්‍රය", "තොරතුරු තාක්ෂණය (ICT)", "චිත්‍ර", "නැටුම්", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"]
         };
 
-        const classLetters = ["A", "B", "C", "D", "E", "F", "G", "A1", "A2", "C1", "C2", "T1", "T2", "M1", "S1", "S2"];
+        const classLetters = ["A", "B", "C", "D", "E", "F", "G", "A1", "A2", "C1", "C2", "T1", "T2", "M1", "M2", "S1", "S2"];
         const chartColors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#ea4335', '#34a853', '#009688', '#607d8b'];
 
         function loadSubjects() {
@@ -565,9 +569,26 @@
                 marks: studentMarks, total: total, average: average, stream: streamName
             };
 
+            // Merge data instead of overwriting
             let existingIndex = studentsData.findIndex(s => s.id === id && s.term === term);
-            if(existingIndex !== -1) {
-                studentRecord.serialNo = studentsData[existingIndex].serialNo;
+            
+            if (existingIndex !== -1) {
+                let existingStudent = studentsData[existingIndex];
+                let mergedMarks = { ...existingStudent.marks, ...studentMarks };
+                
+                let newTotal = 0;
+                let newSubjectCount = 0;
+                for (let sub in mergedMarks) {
+                    newTotal += mergedMarks[sub];
+                    newSubjectCount++;
+                }
+                let newAverage = newSubjectCount > 0 ? parseFloat((newTotal / newSubjectCount).toFixed(2)) : 0;
+                
+                studentRecord.marks = mergedMarks;
+                studentRecord.total = newTotal;
+                studentRecord.average = newAverage;
+                studentRecord.serialNo = existingStudent.serialNo;
+                
                 studentsData[existingIndex] = studentRecord;
             } else {
                 studentRecord.serialNo = studentsData.length + 1;
@@ -576,7 +597,6 @@
             
             localStorage.setItem("dccMarksData", JSON.stringify(studentsData));
 
-            // අලුත් Error Handling එක සහිත දත්ත යැවීම
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
@@ -624,12 +644,31 @@
             
             let printSubText = "වාරය: " + selectedTerm + " | ";
             printSubText += "ශ්‍රේණිය: " + selectedGrade + " | ";
-            printSubText += "පන්තිය: " + ((selectedClass === "all") ? "සියලුම" : selectedClass);
+            
+            // MODIFICATION: Set correct class name for printing when combined is selected
+            let classDisplayName = selectedClass;
+            if (selectedClass.endsWith("_combined")) {
+                let base = selectedClass.charAt(0);
+                classDisplayName = `${base} අංශය ඒකාබද්ධව`;
+            }
+            
+            printSubText += "පන්තිය: " + ((selectedClass === "all") ? "සියලුම" : classDisplayName);
             document.getElementById("printSubHeader").innerText = printSubText;
 
+            // MODIFICATION: Safe Filtering Logic to separate A_combined from normal A
             let filteredData = studentsData;
             filteredData = filteredData.filter(s => s.term === selectedTerm && s.grade === selectedGrade);
-            if (selectedClass !== "all") { filteredData = filteredData.filter(s => s.classLetter === selectedClass); }
+            
+            if (selectedClass !== "all") {
+                if (selectedClass.endsWith("_combined")) {
+                    // Extract the base letter (e.g., 'A' from 'A_combined') and filter all starting with 'A'
+                    let baseLetter = selectedClass.charAt(0);
+                    filteredData = filteredData.filter(s => s.classLetter.startsWith(baseLetter));
+                } else {
+                    // For normal classes (A, B, C, A1, C2 etc.) just do an exact match
+                    filteredData = filteredData.filter(s => s.classLetter === selectedClass);
+                }
+            }
 
             let subjectSelect = document.getElementById("filterSubject");
             let currentSelectedSub = subjectSelect.value;
@@ -749,15 +788,35 @@
             foundRecords.forEach(record => {
                 let streamDisplay = record.stream ? ` | ${record.stream}` : "";
                 
-                let sameCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
-                sameCohort.sort((a, b) => b.total - a.total);
-                
-                let studentRank = 1;
-                for(let i = 0; i < sameCohort.length; i++) {
-                    if (i > 0 && sameCohort[i].total < sameCohort[i - 1].total) { studentRank = i + 1; }
-                    if (sameCohort[i].id === record.id) break;
+                // 1. තනි පන්තියේ රෑන්ක් එක සෙවීම (Class Rank)
+                let sameClassCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
+                sameClassCohort.sort((a, b) => b.total - a.total);
+                let classRank = 1;
+                for(let i = 0; i < sameClassCohort.length; i++) {
+                    if (i > 0 && sameClassCohort[i].total < sameClassCohort[i - 1].total) { classRank = i + 1; }
+                    if (sameClassCohort[i].id === record.id) break;
                 }
-                let totalInCohort = sameCohort.length;
+                let totalInClass = sameClassCohort.length;
+
+                // 2. අංශයේ (Combined Stream) රෑන්ක් එක සෙවීම (Stream Rank) - උසස් පෙළ සඳහා පමණි
+                let streamRankHTML = "";
+                if(record.grade === "12" || record.grade === "13") {
+                    let baseLetter = record.classLetter.charAt(0);
+                    let sameStreamCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter.startsWith(baseLetter));
+                    sameStreamCohort.sort((a, b) => b.total - a.total);
+                    let streamRank = 1;
+                    for(let i = 0; i < sameStreamCohort.length; i++) {
+                        if (i > 0 && sameStreamCohort[i].total < sameStreamCohort[i - 1].total) { streamRank = i + 1; }
+                        if (sameStreamCohort[i].id === record.id) break;
+                    }
+                    let totalInStream = sameStreamCohort.length;
+                    
+                    streamRankHTML = `
+                    <tr style="background:#5e35b1; color:white;">
+                        <th style="text-align:right;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th>
+                        <th style="font-size:15px;">${streamRank} / ${totalInStream}</th>
+                    </tr>`;
+                }
                 
                 html += `<div class="search-result-box">`;
                 html += `<h4>👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>`;
@@ -773,8 +832,8 @@
                 
                 html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr>`;
                 html += `<tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr>`;
-                html += `<tr style="background:#2e7d32; color:white;"><th style="text-align:right;">ස්ථානය (Rank):</th><th style="font-size:15px;">${studentRank}</th></tr>`;
-                html += `<tr style="background:#388e3c; color:white;"><th style="text-align:right;">පන්තියේ සිසුන් ගණන (Total Students in Class):</th><th style="font-size:15px;">${totalInCohort}</th></tr>`;
+                html += `<tr style="background:#2e7d32; color:white;"><th style="text-align:right;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px;">${classRank} / ${totalInClass}</th></tr>`;
+                html += streamRankHTML; // Add Stream rank if Grade 12 or 13
                 
                 html += `</table>`;
                 html += `</div>`;
