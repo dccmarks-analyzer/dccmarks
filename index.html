@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="si">
 <head>
     <meta charset="UTF-8">
@@ -41,19 +41,27 @@
         .school-header { background: linear-gradient(135deg, #6a1b9a, #8e24aa); color: white; text-align: center; padding: 15px; border-radius: 10px; margin-bottom: 15px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
         .school-header h1 { margin: 0; font-size: clamp(18px, 4vw, 26px); font-weight: 700; }
         .school-header h3 { margin: 5px 0 0 0; font-size: clamp(13px, 3vw, 16px); color: #f3e5f5; }
+
+        /* --- Tabs --- */
+        .tab-nav { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn { flex: 1 1 30%; background: #e0e0e0; border: none; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; color: #444; min-width: 120px;}
+        .tab-btn.active { background: #6a1b9a; color: white; box-shadow: 0 4px 8px rgba(106, 27, 154, 0.3); }
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: block; }
         
         .dashboard { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
         
         /* --- Cards --- */
-        .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; border-top: 4px solid #007bff; overflow: hidden; }
+        .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; border-top: 4px solid #007bff; overflow: hidden; margin-bottom: 15px;}
         .card:nth-child(2) { border-top-color: #28a745; }
         .card:nth-child(3) { border-top-color: #ff9800; }
         .card:nth-child(4) { border-top-color: #9c27b0; }
         h3.section-title { margin-top: 0; color: #333; padding-bottom: 10px; border-bottom: 1px solid #eee; font-size: 16px; text-align: center;}
 
         /* --- Inputs & Buttons --- */
-        input, select, button { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 14px; text-align: center; text-align-last: center; max-width: 100%; box-sizing: border-box;}
-        input:focus, select:focus { border-color: #6a1b9a; outline: none; }
+        input, select, button, textarea { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 14px; box-sizing: border-box;}
+        input:focus, select:focus, textarea:focus { border-color: #6a1b9a; outline: none; }
+        input[type="text"], input[type="number"], select { text-align: center; text-align-last: center; }
         
         .flex-row { display: flex; gap: 10px; width: 100%; flex-direction: column; } 
         .subject-row { display: flex; flex-direction: row; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 10px; border-radius: 6px; margin-bottom: 8px; gap: 10px; width: 100%;}
@@ -96,10 +104,11 @@
         .search-table th, .search-table td { border: 1px solid #ccc; padding: 6px; font-size: 13px; text-align: center;}
         .print-only-header { display: none; }
 
+        .hint-text { font-size: 11px; color: #888; margin-top: -4px; margin-bottom: 10px; display: block; text-align: center;}
+
         /* Desktop View - Full Width Cards */
         @media (min-width: 768px) {
             #mainApp { padding: 20px; }
-            .dashboard { grid-template-columns: 1fr; } 
             .flex-row { flex-direction: row; }
         }
 
@@ -107,12 +116,12 @@
         @media print {
             @page { size: A4 landscape; margin: 1cm; }
             body { background: white; margin: 0; padding: 0; overflow: visible; }
-            .school-header, #formCard, #chartCard, .action-buttons, .table-filters { display: none !important; }
+            .school-header, .tab-nav, #formCard, #chartCard, .action-buttons, .table-filters, #regStudentFormCard, #regTeacherFormCard { display: none !important; }
             body:not(.print-search-mode) #searchCard { display: none !important; }
             body:not(.print-search-mode) #printHeader { display: block; }
             body:not(.print-search-mode) .table-responsive { overflow-x: visible !important; border: none; display: table; width: 100%;}
             body.print-search-mode @page { size: A4 portrait; margin: 1cm; }
-            body.print-search-mode #reportCard { display: none !important; }
+            body.print-search-mode #reportCard, body.print-search-mode #regStudentTableCard, body.print-search-mode #regTeacherTableCard { display: none !important; }
             body.print-search-mode #searchCard { display: block !important; box-shadow: none; border: none; padding: 0; margin: 0;}
             body.print-search-mode .flex-row { display: none !important; } 
             body.print-search-mode .search-result-box { border: 1px solid #000; box-shadow: none; page-break-inside: avoid; margin-top: 0;}
@@ -135,7 +144,7 @@
     <!-- Loading Indicator -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
-        <div style="font-weight: bold; color: #ff4b2b; font-size: 18px;">Firebase දත්ත යාවත්කාලීන වෙමින් පවතී...<br><span style="font-size: 14px; color: #555;">(Please Wait)</span></div>
+        <div style="font-weight: bold; color: #ff4b2b; font-size: 18px;">දත්ත යාවත්කාලීන වෙමින් පවතී...<br><span style="font-size: 14px; color: #555;">(Please Wait)</span></div>
     </div>
 
     <!-- Login -->
@@ -150,7 +159,7 @@
                 <button type="submit" class="btn-login">Login</button>
             </form>
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
-                Developer - Kelum Konara | Smart Soft
+                Developer - Kelum Koonara | Smart Soft
             </div>
         </div>
     </div>
@@ -161,42 +170,121 @@
             <h1>Mo/Dutugemunu Central College - Buttala</h1>
             <h3>ශිෂ්‍ය ලකුණු විශ්ලේෂණ පද්ධතිය</h3>
         </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tab-nav">
+            <button class="tab-btn active" id="btn-marks" onclick="openTab('marks')">📊 ලකුණු කළමනාකරණය</button>
+            <button class="tab-btn" id="btn-students" onclick="openTab('students')">🎓 ශිෂ්‍ය ලියාපදිංචිය</button>
+            <button class="tab-btn" id="btn-teachers" onclick="openTab('teachers')">👨‍🏫 ගුරු ලියාපදිංචිය</button>
+        </div>
         
-        <div class="dashboard">
-            <!-- Form -->
-            <div class="card" id="formCard">
-                <h3 class="section-title">නව දත්ත ඇතුළත් කරන්න</h3>
-                <form id="marksForm">
-                    
-                    <input type="text" id="studentId" placeholder="ශිෂ්‍ය අංකය" required>
-                    <input type="text" id="studentName" placeholder="ශිෂ්‍යයාගේ නම" required>
-                    <select id="termSelect" required>
-                        <option value="" disabled selected>වාරය තෝරන්න</option>
-                        <option value="පළමු වාරය">පළමු වාරය</option>
-                        <option value="දෙවන වාරය">දෙවන වාරය</option>
-                        <option value="තෙවන වාරය">තෙවන වාරය</option>
-                    </select>
-                    
-                    <div class="flex-row">
-                        <div style="width: 100%;">
-                            <label style="font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 5px; text-align: center;">ශ්‍රේණිය (Grade):</label>
-                            <select id="gradeSelect" onchange="loadSubjects()" required>
-                                <option value="" disabled selected>තෝරන්න</option>
-                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                                <option value="9">9</option><option value="10">10</option><option value="11">11</option>
-                                <option value="12">12</option><option value="13">13</option>
-                            </select>
+        <!-- ========================================== -->
+        <!-- TAB 1: ලකුණු කළමනාකරණය (Marks Management) -->
+        <!-- ========================================== -->
+        <div id="tab-marks" class="tab-content active">
+            <div class="dashboard">
+                <!-- Form -->
+                <div class="card" id="formCard">
+                    <h3 class="section-title">විෂය ලකුණු ඇතුළත් කරන්න</h3>
+                    <form id="marksForm">
+                        
+                        <select id="termSelect" required style="border-width: 2px; border-color: #6a1b9a;">
+                            <option value="" disabled selected>වාරය තෝරන්න</option>
+                            <option value="පළමු වාරය">පළමු වාරය</option>
+                            <option value="දෙවන වාරය">දෙවන වාරය</option>
+                            <option value="තෙවන වාරය">තෙවන වාරය</option>
+                        </select>
+                        
+                        <div class="flex-row">
+                            <div style="width: 100%;">
+                                <label style="font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 5px; text-align: center;">ශ්‍රේණිය (Grade):</label>
+                                <select id="gradeSelect" onchange="loadStudentsForMarks(); loadSubjects();" required>
+                                    <option value="" disabled selected>තෝරන්න</option>
+                                    <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                    <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                                    <option value="12">12</option><option value="13">13</option>
+                                </select>
+                            </div>
+                            <div style="width: 100%;">
+                                <label style="font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 5px; text-align: center;">පන්තිය (Class):</label>
+                                <select id="classSelect" onchange="loadStudentsForMarks(); loadSubjects();" required>
+                                    <option value="" disabled selected>තෝරන්න</option>
+                                    <option disabled>── උසස් පෙළ පන්ති ──</option>
+                                    <option value="A1">A1</option><option value="A2">A2</option>
+                                    <option value="C1">C1</option><option value="C2">C2</option>
+                                    <option value="T1">T1</option><option value="T2">T2</option>
+                                    <option value="M1">M1</option><option value="M2">M2</option>
+                                    <option value="S1">S1</option><option value="S2">S2</option>
+                                    <option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option>
+                                    <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                                    <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                                </select>
+                            </div>
                         </div>
-                        <div style="width: 100%;">
-                            <label style="font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 5px; text-align: center;">පන්තිය (Class):</label>
-                            <select id="classSelect" required>
-                                <option value="" disabled selected>තෝරන්න</option>
-                                <option disabled>── උසස් පෙළ පන්ති ──</option>
-                                <option value="A1">A1</option><option value="A2">A2</option>
-                                <option value="C1">C1</option><option value="C2">C2</option>
-                                <option value="T1">T1</option><option value="T2">T2</option>
-                                <option value="M1">M1</option><option value="M2">M2</option>
-                                <option value="S1">S1</option><option value="S2">S2</option>
+
+                        <!-- Smart Student Selector -->
+                        <div style="margin-top: 15px; padding: 10px; background: #e8eaf6; border-radius: 8px; border: 1px solid #c5cae9;">
+                            <label style="font-size: 14px; font-weight: bold; color: #1a237e; display: block; margin-bottom: 5px; text-align: center;">ශිෂ්‍යයා තෝරන්න (Select Student):</label>
+                            <select id="selectedStudentDrop" required onchange="populateStudentHiddenFields()">
+                                <option value="" disabled selected>පළමුව ශ්‍රේණිය හා පන්තිය තෝරන්න</option>
+                            </select>
+                            <span class="hint-text">ළමුන් නොපෙන්වයි නම් පළමුව "ශිෂ්‍ය ලියාපදිංචිය" මගින් ළමුන් ඇතුළත් කරන්න.</span>
+                            <!-- Hidden fields to store selected student ID and Name -->
+                            <input type="hidden" id="studentId" required>
+                            <input type="hidden" id="studentName" required>
+                        </div>
+
+                        <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
+                        <div id="subjectsContainer"></div>
+
+                        <button type="submit" class="btn-submit">ලකුණු පද්ධතියට එක් කරන්න</button>
+                    </form>
+                </div>
+                
+                <!-- Report Table -->
+                <div class="card" id="reportCard">
+                    <div id="printHeader">
+                        <h2>Mo/Dutugemunu Central College, Buttala</h2>
+                        <h4>ශිෂ්‍ය ලකුණු වාර්තාව</h4>
+                        <h4 id="printSubHeader" style="font-weight: bold; color: #000;"></h4>
+                        <hr>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 10px;">
+                        <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
+                        
+                        <!-- Advanced Filters Area -->
+                        <div class="table-filters">
+                            <select id="tableTermSelect" onchange="updateTable()">
+                                <option value="all">සියලුම වාර</option>
+                                <option value="පළමු වාරය" selected>පළමු වාරය</option>
+                                <option value="දෙවන වාරය">දෙවන වාරය</option>
+                                <option value="තෙවන වාරය">තෙවන වාරය</option>
+                            </select>
+                            <select id="tableGradeSelect" onchange="updateTable()">
+                                <option value="6">6 ශ්‍රේණිය</option>
+                                <option value="7">7 ශ්‍රේණිය</option>
+                                <option value="8">8 ශ්‍රේණිය</option>
+                                <option value="9">9 ශ්‍රේණිය</option>
+                                <option value="10">10 ශ්‍රේණිය</option>
+                                <option value="11">11 ශ්‍රේණිය</option>
+                                <option value="12" selected>12 ශ්‍රේණිය</option>
+                                <option value="13">13 ශ්‍රේණිය</option>
+                            </select>
+                            <select id="tableClassSelect" onchange="updateTable()" style="border: 2px solid #6a1b9a;">
+                                <option value="all">සියලු පන්ති</option>
+                                <option disabled>── ඒකාබද්ධ (A/L පමණි) ──</option>
+                                <option value="A_combined" style="font-weight:bold; color:blue;">A අංශය (A1, A2 ඒකාබද්ධව)</option>
+                                <option value="C_combined" style="font-weight:bold; color:blue;">C අංශය (C1, C2 ඒකාබද්ධව)</option>
+                                <option value="T_combined" style="font-weight:bold; color:blue;">T අංශය (T1, T2 ඒකාබද්ධව)</option>
+                                <option value="M_combined" style="font-weight:bold; color:blue;">M අංශය (M1, M2 ඒකාබද්ධව)</option>
+                                <option value="S_combined" style="font-weight:bold; color:blue;">S අංශය (S1, S2 ඒකාබද්ධව)</option>
+                                <option disabled>── උසස් පෙළ (තනි) ──</option>
+                                <option value="A1">A1 පමණක්</option><option value="A2">A2 පමණක්</option>
+                                <option value="C1">C1 පමණක්</option><option value="C2">C2 පමණක්</option>
+                                <option value="T1">T1 පමණක්</option><option value="T2">T2 පමණක්</option>
+                                <option value="M1">M1 පමණක්</option><option value="M2">M2 පමණක්</option>
+                                <option value="S1">S1 පමණක්</option><option value="S2">S2 පමණක්</option>
                                 <option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option>
                                 <option value="A">A</option><option value="B">B</option><option value="C">C</option>
                                 <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
@@ -204,223 +292,419 @@
                         </div>
                     </div>
 
-                    <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
-                    <p style="font-size: 12px; color: gray; margin-top: 0; text-align: center;">(කරුණාකර ඉහළින් ශ්‍රේණිය තෝරන්න)</p>
-                    <div id="subjectsContainer"></div>
-
-                    <button type="submit" class="btn-submit">දත්ත පද්ධතියට එක් කරන්න</button>
-                </form>
-            </div>
-            
-            <!-- Table -->
-            <div class="card" id="reportCard">
-                <div id="printHeader">
-                    <h2>Mo/Dutugemunu Central College, Buttala</h2>
-                    <h4>ශිෂ්‍ය ලකුණු වාර්තාව</h4>
-                    <h4 id="printSubHeader" style="font-weight: bold; color: #000;"></h4>
-                    <hr>
+                    <div class="action-buttons" id="actionButtons">
+                        <button onclick="window.print()" class="btn-print">🖨️ Print</button>
+                        <button onclick="downloadPDF()" class="btn-pdf">📄 PDF</button>
+                    </div>
+                    
+                    <div class="table-responsive" id="tableResponsiveContainer">
+                        <table id="dataTable">
+                            <thead><tr id="tableHeadRow"></tr></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 10px;">
-                    <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
-                    
-                    <!-- Advanced Filters Area -->
+                <!-- Student Search Card -->
+                <div class="card" id="searchCard">
+                    <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
+                    <div class="flex-row" style="align-items: center;">
+                        <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
+                        <button type="button" class="btn-submit" style="margin-top: 6px; padding: 12px; width: 100%;" onclick="searchStudentById()">සොයන්න</button>
+                    </div>
+                    <div id="searchResults"></div>
+                </div>
+
+                <!-- Chart -->
+                <div class="card" id="chartCard">
+                    <h3 class="section-title">සමාන්තර පන්ති විශ්ලේෂණය</h3>
+                    <div class="flex-row" style="margin-bottom: 10px;">
+                        <div style="width: 100%;">
+                            <select id="chartTermSelect" onchange="updateChart()">
+                                <option value="පළමු වාරය" selected>පළමු වාරය</option>
+                                <option value="දෙවන වාරය">දෙවන වාරය</option>
+                                <option value="තෙවන වාරය">තෙවන වාරය</option>
+                            </select>
+                        </div>
+                        <div style="width: 100%;">
+                            <select id="chartGradeSelect" onchange="updateChart()">
+                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                <option value="9">9</option><option value="10">10</option><option value="11" selected>11</option>
+                                <option value="12">12</option><option value="13">13</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="marksChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: ශිෂ්‍ය ලියාපදිංචිය (Student Reg)     -->
+        <!-- ========================================== -->
+        <div id="tab-students" class="tab-content">
+            <div class="dashboard">
+                <div class="card" id="regStudentFormCard">
+                    <h3 class="section-title">නව ශිෂ්‍ය තොරතුරු ඇතුළත් කරන්න</h3>
+                    <form id="studentRegForm">
+                        <div class="flex-row">
+                            <input type="text" id="reg_admNo" placeholder="ඇතුළත්වීමේ අංකය (Admission No)" required>
+                        </div>
+                        <input type="text" id="reg_fullName" placeholder="සම්පූර්ණ නම (Full Name)" required style="text-align: left; padding-left: 15px;">
+                        <input type="text" id="reg_initialName" placeholder="මුලකුරු සමග නම (Name with Initials)" required style="text-align: left; padding-left: 15px;">
+                        
+                        <div class="flex-row">
+                            <select id="reg_grade" required>
+                                <option value="" disabled selected>ශ්‍රේණිය තෝරන්න</option>
+                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                                <option value="12">12</option><option value="13">13</option>
+                            </select>
+                            <select id="reg_class" required>
+                                <option value="" disabled selected>පන්තිය තෝරන්න</option>
+                                <option value="A1">A1</option><option value="A2">A2</option>
+                                <option value="C1">C1</option><option value="C2">C2</option>
+                                <option value="T1">T1</option><option value="T2">T2</option>
+                                <option value="M1">M1</option><option value="M2">M2</option>
+                                <option value="S1">S1</option><option value="S2">S2</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                                <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                            </select>
+                        </div>
+                        
+                        <input type="text" id="reg_address" placeholder="ලිපිනය (Address)" style="text-align: left; padding-left: 15px;" required>
+                        <input type="tel" id="reg_phone" placeholder="භාරකරුගේ දුරකථන අංකය (Guardian Phone)" required>
+                        
+                        <button type="submit" class="btn-submit" style="background: linear-gradient(to right, #ff9800, #f57c00);">ශිෂ්‍යයා ලියාපදිංචි කරන්න</button>
+                    </form>
+                </div>
+
+                <div class="card" id="regStudentTableCard">
+                    <h3 class="section-title">ලියාපදිංචි සිසුන්ගේ නාමලේඛනය</h3>
                     <div class="table-filters">
-                        <select id="tableTermSelect" onchange="updateTable()">
-                            <option value="all">සියලුම වාර</option>
-                            <option value="පළමු වාරය" selected>පළමු වාරය</option>
-                            <option value="දෙවන වාරය">දෙවන වාරය</option>
-                            <option value="තෙවන වාරය">තෙවන වාරය</option>
+                        <select id="filterRegGrade" onchange="renderStudentsTable()">
+                            <option value="all">සියලුම ශ්‍රේණි</option>
+                            <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                            <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                            <option value="12">12</option><option value="13">13</option>
                         </select>
-                        <select id="tableGradeSelect" onchange="updateTable()">
-                            <option value="6">6 ශ්‍රේණිය</option>
-                            <option value="7">7 ශ්‍රේණිය</option>
-                            <option value="8">8 ශ්‍රේණිය</option>
-                            <option value="9">9 ශ්‍රේණිය</option>
-                            <option value="10">10 ශ්‍රේණිය</option>
-                            <option value="11">11 ශ්‍රේණිය</option>
-                            <option value="12" selected>12 ශ්‍රේණිය</option>
-                            <option value="13">13 ශ්‍රේණිය</option>
-                        </select>
-                        <select id="tableClassSelect" onchange="updateTable()" style="border: 2px solid #6a1b9a;">
-                            <option value="all">සියලු පන්ති</option>
-                            <!-- ඒකාබද්ධ උසස් පෙළ පන්ති තේරීම් (අලුත් Values) -->
-                            <option disabled>── ඒකාබද්ධ (A/L පමණි) ──</option>
-                            <option value="A_combined" style="font-weight:bold; color:blue;">A අංශය (A1, A2 ඒකාබද්ධව)</option>
-                            <option value="C_combined" style="font-weight:bold; color:blue;">C අංශය (C1, C2 ඒකාබද්ධව)</option>
-                            <option value="T_combined" style="font-weight:bold; color:blue;">T අංශය (T1, T2 ඒකාබද්ධව)</option>
-                            <option value="M_combined" style="font-weight:bold; color:blue;">M අංශය (M1, M2 ඒකාබද්ධව)</option>
-                            <option value="S_combined" style="font-weight:bold; color:blue;">S අංශය (S1, S2 ඒකාබද්ධව)</option>
-                            
-                            <!-- තනි පන්ති තේරීම් -->
-                            <option disabled>── උසස් පෙළ (තනි) ──</option>
-                            <option value="A1">A1 පමණක්</option><option value="A2">A2 පමණක්</option>
-                            <option value="C1">C1 පමණක්</option><option value="C2">C2 පමණක්</option>
-                            <option value="T1">T1 පමණක්</option><option value="T2">T2 පමණක්</option>
-                            <option value="M1">M1 පමණක්</option><option value="M2">M2 පමණක්</option>
-                            <option value="S1">S1 පමණක්</option><option value="S2">S2 පමණක්</option>
-                            
-                            <!-- සාමාන්‍ය පන්ති -->
-                            <option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option>
+                        <select id="filterRegClass" onchange="renderStudentsTable()">
+                            <option value="all">සියලුම පන්ති</option>
+                            <option value="A1">A1</option><option value="A2">A2</option>
+                            <option value="C1">C1</option><option value="C2">C2</option>
+                            <option value="T1">T1</option><option value="T2">T2</option>
+                            <option value="M1">M1</option><option value="M2">M2</option>
+                            <option value="S1">S1</option><option value="S2">S2</option>
                             <option value="A">A</option><option value="B">B</option><option value="C">C</option>
                             <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
                         </select>
                     </div>
-
-                    <!-- Subject Specific Filters -->
-                    <div class="table-filters" style="background: #e3f2fd; border: 1px solid #bbdefb;">
-                        <div style="width: 100%; text-align: center; font-size: 12px; font-weight: bold; color: #1565c0; margin-bottom: 5px;">විෂය අනුව පෙරීම (Subject Filter)</div>
-                        <select id="filterSubject" onchange="applySubjectFilter()">
-                            <option value="all">සියලුම විෂයයන් (All Subjects)</option>
-                        </select>
-                        <select id="filterCondition" onchange="applySubjectFilter()">
-                            <option value="all">ඕනෑම ලකුණු මට්ටමක් (All Marks)</option>
-                            <option value="75_100">75 ත් 100 අතර (75-100)</option>
-                            <option value="65_74">65 ත් 74 අතර (65-74)</option>
-                            <option value="50_64">50 ත් 64 අතර (50-64)</option>
-                            <option value="35_49">35 ත් 49 අතර (35-49)</option>
-                            <option value="0_34">0 ත් 34 අතර (0-34)</option>
-                        </select>
+                    <div class="table-responsive">
+                        <table id="studentsRegTable">
+                            <thead>
+                                <tr>
+                                    <th>අංකය</th>
+                                    <th>මුලකුරු සමග නම</th>
+                                    <th>පන්තිය</th>
+                                    <th>දුරකථන අංකය</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsRegTableBody"></tbody>
+                        </table>
                     </div>
-                </div>
-
-                <div class="action-buttons" id="actionButtons">
-                    <button onclick="window.print()" class="btn-print">🖨️ Print</button>
-                    <button onclick="downloadPDF()" class="btn-pdf">📄 PDF</button>
-                    <button onclick="clearAllData()" class="btn-clear">🗑️ Clear Data</button>
-                </div>
-                
-                <div class="table-responsive" id="tableResponsiveContainer">
-                    <table id="dataTable">
-                        <thead>
-                            <tr id="tableHeadRow">
-                                <!-- Headers dynamically generated -->
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- Body dynamically generated -->
-                        </tbody>
-                    </table>
                 </div>
             </div>
+        </div>
 
-            <!-- Student Search Card -->
-            <div class="card" id="searchCard">
-                <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
-                <div class="flex-row" style="align-items: center;">
-                    <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
-                    <button type="button" class="btn-submit" style="margin-top: 6px; padding: 12px; width: 100%;" onclick="searchStudentById()">සොයන්න</button>
-                </div>
-                <div id="searchResults"></div>
-            </div>
-
-            <!-- Chart -->
-            <div class="card" id="chartCard">
-                <h3 class="section-title">සමාන්තර පන්ති විශ්ලේෂණය</h3>
-                <div class="flex-row" style="margin-bottom: 10px;">
-                    <div style="width: 100%;">
-                        <select id="chartTermSelect" onchange="updateChart()">
-                            <option value="පළමු වාරය" selected>පළමු වාරය</option>
-                            <option value="දෙවන වාරය">දෙවන වාරය</option>
-                            <option value="තෙවන වාරය">තෙවන වාරය</option>
-                        </select>
-                    </div>
-                    <div style="width: 100%;">
-                        <select id="chartGradeSelect" onchange="updateChart()">
-                            <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                            <option value="9">9</option><option value="10">10</option><option value="11" selected>11</option>
-                            <option value="12">12</option><option value="13">13</option>
-                        </select>
-                    </div>
+        <!-- ========================================== -->
+        <!-- TAB 3: ගුරු ලියාපදිංචිය (Teacher Reg)       -->
+        <!-- ========================================== -->
+        <div id="tab-teachers" class="tab-content">
+            <div class="dashboard">
+                <div class="card" id="regTeacherFormCard">
+                    <h3 class="section-title">නව ගුරු තොරතුරු ඇතුළත් කරන්න</h3>
+                    <form id="teacherRegForm">
+                        <input type="text" id="treg_id" placeholder="ගුරු හැඳුනුම් අංකය (Teacher ID)" required>
+                        <input type="text" id="treg_name" placeholder="නම (Name)" required style="text-align: left; padding-left: 15px;">
+                        <input type="text" id="treg_subject" placeholder="උගන්වන විෂය / විෂයයන් (Subjects)" required style="text-align: left; padding-left: 15px;">
+                        <input type="tel" id="treg_phone" placeholder="දුරකථන අංකය (Phone Number)" required>
+                        <button type="submit" class="btn-submit" style="background: linear-gradient(to right, #9c27b0, #7b1fa2);">ගුරුවරයා ලියාපදිංචි කරන්න</button>
+                    </form>
                 </div>
 
-                <div class="chart-container">
-                    <canvas id="marksChart"></canvas>
+                <div class="card" id="regTeacherTableCard">
+                    <h3 class="section-title">ගුරු මණ්ඩලය</h3>
+                    <div class="table-responsive">
+                        <table id="teachersRegTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>නම</th>
+                                    <th>විෂයයන්</th>
+                                    <th>දුරකථන අංකය</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachersRegTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="dev-footer">
-            Developer - <span>Kelum Konara</span> | Smart Soft
+            Developer - <span>Kelum Koonara</span> | Smart Soft
         </div>
     </div>
 
     <script>
         // ========================================================
-        // ඔබේ Firebase URL එක මෙතැනට ඇතුළත් කරන්න 
+        // Firebase Configuration URLs
         // ========================================================
-        const FIREBASE_DB_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/students.json"; 
+        const FIREBASE_MARKS_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/students.json"; 
+        const FIREBASE_STUDENTS_INFO_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/registered_students.json";
+        const FIREBASE_TEACHERS_INFO_URL = "https://dcc-marks-analyzer-default-rtdb.asia-southeast1.firebasedatabase.app/registered_teachers.json";
         
-        // Force the app to act as Online for testing the Firebase connection
         const isOnline = true;
 
-        let studentsData = []; 
+        let studentsData = []; // Marks Data
+        let registeredStudents = []; // Student Profiles
+        let registeredTeachers = []; // Teacher Profiles
         let myChart = null; 
 
-        // Initial Data Load (Firebase)
+        // Initial Data Load
         window.onload = async function() {
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
-                    let response = await fetch(FIREBASE_DB_URL);
-                    let result = await response.json();
+                    // Load Marks
+                    let resMarks = await fetch(FIREBASE_MARKS_URL);
+                    let dataMarks = await resMarks.json();
+                    if(dataMarks) studentsData = Array.isArray(dataMarks) ? dataMarks : Object.values(dataMarks);
                     
-                    if(result) { 
-                        studentsData = Array.isArray(result) ? result : Object.values(result);
-                    }
+                    // Load Registered Students
+                    let resStudents = await fetch(FIREBASE_STUDENTS_INFO_URL);
+                    let dataStudents = await resStudents.json();
+                    if(dataStudents) registeredStudents = Array.isArray(dataStudents) ? dataStudents : Object.values(dataStudents);
+
+                    // Load Registered Teachers
+                    let resTeachers = await fetch(FIREBASE_TEACHERS_INFO_URL);
+                    let dataTeachers = await resTeachers.json();
+                    if(dataTeachers) registeredTeachers = Array.isArray(dataTeachers) ? dataTeachers : Object.values(dataTeachers);
+
                 } catch (e) {
                     console.error("Firebase Error:", e);
-                    let savedData = localStorage.getItem("dccMarksData");
-                    if (savedData) { studentsData = JSON.parse(savedData); }
+                    loadFromLocalStorage();
                 }
                 document.getElementById("loadingOverlay").style.display = "none";
             } else {
-                let savedData = localStorage.getItem("dccMarksData");
-                if (savedData) { studentsData = JSON.parse(savedData); }
+                loadFromLocalStorage();
             }
 
             document.getElementById("gradeSelect").value = "12"; 
             loadSubjects();
             document.getElementById("gradeSelect").value = ""; 
             document.getElementById("subjectsContainer").innerHTML = ""; 
+            
             updateTable(); 
+            renderStudentsTable();
+            renderTeachersTable();
         };
 
-        function clearAllData() {
-            if (confirm("ඔබට විශ්වාසද සියලුම ශිෂ්‍ය දත්ත පද්ධතියෙන් මකා දැමිය යුතු බව? මෙම ක්‍රියාව ආපසු හැරවිය නොහැක!")) {
-                studentsData = [];
-                localStorage.removeItem("dccMarksData");
-                
-                if(isOnline) {
-                    fetch(FIREBASE_DB_URL, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify([])
-                    });
-                }
-                
-                updateTable();
-                updateChart();
-                document.getElementById("searchResults").innerHTML = "";
-                alert("සියලු දත්ත සාර්ථකව මකා දමන ලදී.");
-            }
+        function loadFromLocalStorage() {
+            let savedMarks = localStorage.getItem("dccMarksData");
+            if (savedMarks) studentsData = JSON.parse(savedMarks);
+            let savedStudents = localStorage.getItem("dccRegStudents");
+            if (savedStudents) registeredStudents = JSON.parse(savedStudents);
+            let savedTeachers = localStorage.getItem("dccRegTeachers");
+            if (savedTeachers) registeredTeachers = JSON.parse(savedTeachers);
+        }
+
+        // ==========================================
+        // Helper: Get Required Subject Count
+        // ==========================================
+        function getReqSubCount(gradeStr) {
+            let grade = parseInt(gradeStr);
+            if (grade <= 9) return 12; // 11 junior + 1 aesthetic
+            if (grade <= 11) return 9; // 6 core + 3 buckets
+            return 5; // 3 AL + GenEng + GIT
+        }
+
+        // ==========================================
+        // Tab Management
+        // ==========================================
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
         }
 
         document.getElementById("loginForm").addEventListener("submit", function(e) {
             e.preventDefault();
             let user = document.getElementById("username").value;
             let pass = document.getElementById("password").value;
-            
             if(user === "admin" && pass === "1234") {
                 document.getElementById("loginScreen").style.display = "none";
                 document.getElementById("mainApp").style.display = "block";
-                updateTable(); 
-                updateChart(); 
             } else {
                 document.getElementById("loginError").style.display = "block";
             }
         });
-        
+
+        // ==========================================
+        // TAB 2: Student Registration Logic
+        // ==========================================
+        document.getElementById("studentRegForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            let phone = document.getElementById("reg_phone").value.trim();
+            if (!/^\d{10}$/.test(phone)) {
+                alert("කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න (ඉලක්කම් 10 යි).");
+                return;
+            }
+
+            let newStudent = {
+                admissionNo: document.getElementById("reg_admNo").value.trim(),
+                fullName: document.getElementById("reg_fullName").value.trim(),
+                nameInitials: document.getElementById("reg_initialName").value.trim(),
+                grade: document.getElementById("reg_grade").value,
+                classLetter: document.getElementById("reg_class").value,
+                address: document.getElementById("reg_address").value.trim(),
+                phone: phone
+            };
+
+            // Avoid duplicates by admission No
+            let existingIdx = registeredStudents.findIndex(s => s.admissionNo === newStudent.admissionNo);
+            if(existingIdx !== -1) {
+                registeredStudents[existingIdx] = newStudent;
+            } else {
+                registeredStudents.push(newStudent);
+            }
+
+            localStorage.setItem("dccRegStudents", JSON.stringify(registeredStudents));
+            
+            if(isOnline) {
+                await fetch(FIREBASE_STUDENTS_INFO_URL, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(registeredStudents)
+                });
+            }
+
+            document.getElementById("studentRegForm").reset();
+            renderStudentsTable();
+            loadStudentsForMarks(); // Refresh dropdown in marks tab
+            alert("ශිෂ්‍ය තොරතුරු සාර්ථකව ලියාපදිංචි කරන ලදී!");
+        });
+
+        function renderStudentsTable() {
+            let filterGrade = document.getElementById("filterRegGrade").value;
+            let filterClass = document.getElementById("filterRegClass").value;
+            let tbody = document.getElementById("studentsRegTableBody");
+            tbody.innerHTML = "";
+
+            let filtered = registeredStudents;
+            if(filterGrade !== "all") filtered = filtered.filter(s => s.grade === filterGrade);
+            if(filterClass !== "all") filtered = filtered.filter(s => s.classLetter === filterClass);
+
+            filtered.forEach(s => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:#6a1b9a;">${s.admissionNo}</td>
+                        <td style="text-align:left;">${s.nameInitials}</td>
+                        <td>${s.grade}-${s.classLetter}</td>
+                        <td>${s.phone}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ==========================================
+        // TAB 3: Teacher Registration Logic
+        // ==========================================
+        document.getElementById("teacherRegForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            let phone = document.getElementById("treg_phone").value.trim();
+            if (!/^\d{10}$/.test(phone)) {
+                alert("කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න (ඉලක්කම් 10 යි).");
+                return;
+            }
+
+            let newTeacher = {
+                id: document.getElementById("treg_id").value.trim(),
+                name: document.getElementById("treg_name").value.trim(),
+                subject: document.getElementById("treg_subject").value.trim(),
+                phone: phone
+            };
+
+            let existingIdx = registeredTeachers.findIndex(t => t.id === newTeacher.id);
+            if(existingIdx !== -1) { registeredTeachers[existingIdx] = newTeacher; } 
+            else { registeredTeachers.push(newTeacher); }
+
+            localStorage.setItem("dccRegTeachers", JSON.stringify(registeredTeachers));
+            if(isOnline) {
+                await fetch(FIREBASE_TEACHERS_INFO_URL, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(registeredTeachers)
+                });
+            }
+
+            document.getElementById("teacherRegForm").reset();
+            renderTeachersTable();
+            alert("ගුරු තොරතුරු සාර්ථකව ලියාපදිංචි කරන ලදී!");
+        });
+
+        function renderTeachersTable() {
+            let tbody = document.getElementById("teachersRegTableBody");
+            tbody.innerHTML = "";
+            registeredTeachers.forEach(t => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:#d32f2f;">${t.id}</td>
+                        <td style="text-align:left;">${t.name}</td>
+                        <td style="text-align:left;">${t.subject}</td>
+                        <td>${t.phone}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ==========================================
+        // TAB 1: Marks Entry Logic (Updated for partial subjects)
+        // ==========================================
+        function loadStudentsForMarks() {
+            let grade = document.getElementById("gradeSelect").value;
+            let classLetter = document.getElementById("classSelect").value;
+            let drop = document.getElementById("selectedStudentDrop");
+            
+            drop.innerHTML = '<option value="" disabled selected>පළමුව ශ්‍රේණිය හා පන්තිය තෝරන්න</option>';
+            document.getElementById("studentId").value = "";
+            document.getElementById("studentName").value = "";
+
+            if(grade && classLetter) {
+                let studentsInClass = registeredStudents.filter(s => s.grade === grade && s.classLetter === classLetter);
+                if(studentsInClass.length > 0) {
+                    drop.innerHTML = '<option value="" disabled selected>ශිෂ්‍යයා තෝරන්න (Select Student)</option>';
+                    studentsInClass.forEach(s => {
+                        drop.innerHTML += `<option value="${s.admissionNo}">${s.admissionNo} - ${s.nameInitials}</option>`;
+                    });
+                } else {
+                    drop.innerHTML = '<option value="" disabled selected>මෙම පන්තිය සඳහා ළමුන් ලියාපදිංචි කර නොමැත</option>';
+                }
+            }
+        }
+
+        function populateStudentHiddenFields() {
+            let selectedAdmNo = document.getElementById("selectedStudentDrop").value;
+            let student = registeredStudents.find(s => s.admissionNo === selectedAdmNo);
+            if(student) {
+                document.getElementById("studentId").value = student.admissionNo;
+                document.getElementById("studentName").value = student.nameInitials;
+            }
+        }
+
         const juniorSubjects = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "සෞඛ්‍යය", "තොරතුරු හා සන්නිවේදන තාක්ෂණය", "PTS"];
         const aestheticSubjects = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"];
         const seniorCore = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය"];
@@ -446,36 +730,32 @@
 
             if (isNaN(grade)) return;
 
+            // Notice: inputs are NO LONGER required. This allows subject teachers to enter only their subject marks.
             if (grade <= 9) {
                 juniorSubjects.forEach(subject => {
                     container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`;
                 });
-                
-                let aesSelect = `<select id="aesSubject" required><option value="" disabled selected>සෞන්දර්ය විෂය</option>`;
+                let aesSelect = `<select id="aesSubject"><option value="" disabled selected>සෞන්දර්ය විෂය</option>`;
                 aestheticSubjects.forEach(opt => aesSelect += `<option value="${opt}">${opt}</option>`);
                 aesSelect += `</select>`;
-                container.innerHTML += `<div class="subject-row">${aesSelect}<input type="number" id="m_aes" placeholder="ලකුණු" min="0" max="100" required></div>`;
-
+                container.innerHTML += `<div class="subject-row">${aesSelect}<input type="number" id="m_aes" placeholder="ලකුණු" min="0" max="100"></div>`;
             } else if (grade === 10 || grade === 11) {
                 seniorCore.forEach(subject => {
                     container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`;
                 });
-                
                 const createBucket = (bucketName, options, bucketId) => {
-                    let selectHtml = `<select id="${bucketId}" required><option value="" disabled selected>${bucketName}</option>`;
+                    let selectHtml = `<select id="${bucketId}"><option value="" disabled selected>${bucketName}</option>`;
                     options.forEach(opt => selectHtml += `<option value="${opt}">${opt}</option>`);
                     selectHtml += `</select>`;
                     return selectHtml;
                 };
-
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය I", bucket1, "b1")}<input type="number" id="m_b1" placeholder="ලකුණු" min="0" max="100" required></div>`;
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය II", bucket2, "b2")}<input type="number" id="m_b2" placeholder="ලකුණු" min="0" max="100" required></div>`;
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය III", bucket3, "b3")}<input type="number" id="m_b3" placeholder="ලකුණු" min="0" max="100" required></div>`;
-
+                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය I", bucket1, "b1")}<input type="number" id="m_b1" placeholder="ලකුණු" min="0" max="100"></div>`;
+                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය II", bucket2, "b2")}<input type="number" id="m_b2" placeholder="ලකුණු" min="0" max="100"></div>`;
+                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය III", bucket3, "b3")}<input type="number" id="m_b3" placeholder="ලකුණු" min="0" max="100"></div>`;
             } else if (grade === 12 || grade === 13) {
                 container.innerHTML = `
                     <div style="margin-bottom: 15px;">
-                        <select id="streamSelect" onchange="loadALSubjects()" required style="border-color: #ff9800; border-width: 2px;">
+                        <select id="streamSelect" onchange="loadALSubjects()" style="border-color: #ff9800; border-width: 2px;">
                             <option value="" disabled selected>විෂය ධාරාව තෝරන්න (Select Stream)</option>
                             <option value="maths">ගණිත අංශය (Maths)</option>
                             <option value="science">විද්‍යා අංශය (Science)</option>
@@ -496,12 +776,11 @@
             let options = alSubjectsList[stream] || [];
             
             for(let i=1; i<=3; i++) {
-                let selectHtml = `<select id="al_sub${i}" required><option value="" disabled selected>ප්‍රධාන විෂය ${i}</option>`;
+                let selectHtml = `<select id="al_sub${i}"><option value="" disabled selected>ප්‍රධාන විෂය ${i}</option>`;
                 options.forEach(opt => selectHtml += `<option value="${opt}">${opt}</option>`);
                 selectHtml += `</select>`;
-                alContainer.innerHTML += `<div class="subject-row">${selectHtml}<input type="number" id="m_al${i}" placeholder="ලකුණු" min="0" max="100" required></div>`;
+                alContainer.innerHTML += `<div class="subject-row">${selectHtml}<input type="number" id="m_al${i}" placeholder="ලකුණු" min="0" max="100"></div>`;
             }
-            
             alContainer.innerHTML += `<div class="subject-row"><label>සාමාන්‍ය ඉංග්‍රීසි (Gen. English)</label><input type="number" class="mark-input" data-subject="සාමාන්‍ය ඉංග්‍රීසි" placeholder="ලකුණු" min="0" max="100"></div>`;
             alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="number" class="mark-input" data-subject="GIT" placeholder="ලකුණු" min="0" max="100"></div>`;
         }
@@ -509,64 +788,53 @@
         document.getElementById("marksForm").addEventListener("submit", async function(event) {
             event.preventDefault();
 
-            let id = document.getElementById("studentId").value.trim();
+            let id = document.getElementById("studentId").value;
             let name = document.getElementById("studentName").value;
+            let dropValue = document.getElementById("selectedStudentDrop").value;
+
+            if(!id || !name || dropValue === "") {
+                alert("කරුණාකර පළමුව ලැයිස්තුවෙන් ශිෂ්‍යයාව තෝරන්න!");
+                return;
+            }
+
             let term = document.getElementById("termSelect").value;
             let grade = parseInt(document.getElementById("gradeSelect").value);
             let classLetter = document.getElementById("classSelect").value;
             
-            let total = 0;
-            let studentMarks = {};
-            let subjectCount = 0;
-            let streamName = "";
+            let total = 0; let studentMarks = {}; let subjectCount = 0; let streamName = "";
 
             document.querySelectorAll(".mark-input").forEach(input => {
                 let subject = input.getAttribute("data-subject");
                 let mark = parseFloat(input.value);
-                if (!isNaN(mark)) {
-                    studentMarks[subject] = mark;
-                    total += mark;
-                    subjectCount++;
-                }
+                if (!isNaN(mark)) { studentMarks[subject] = mark; total += mark; subjectCount++; }
             });
 
             if (grade <= 9) {
-                let aesSub = document.getElementById('aesSubject').value;
-                let aesMark = parseFloat(document.getElementById('m_aes').value);
-                if(aesSub && !isNaN(aesMark)) {
-                    studentMarks[aesSub] = aesMark;
-                    total += aesMark;
-                    subjectCount++;
-                }
+                let aesSub = document.getElementById('aesSubject') ? document.getElementById('aesSubject').value : "";
+                let aesMark = document.getElementById('m_aes') ? parseFloat(document.getElementById('m_aes').value) : NaN;
+                if(aesSub && !isNaN(aesMark)) { studentMarks[aesSub] = aesMark; total += aesMark; subjectCount++; }
             } else if (grade === 10 || grade === 11) {
                 for (let i = 1; i <= 3; i++) {
-                    let bucketSubject = document.getElementById(`b${i}`).value;
-                    let mark = parseFloat(document.getElementById(`m_b${i}`).value);
-                    if (bucketSubject && !isNaN(mark)) {
-                        studentMarks[bucketSubject] = mark;
-                        total += mark;
-                        subjectCount++;
-                    }
+                    let bucketSubject = document.getElementById(`b${i}`) ? document.getElementById(`b${i}`).value : "";
+                    let mark = document.getElementById(`m_b${i}`) ? parseFloat(document.getElementById(`m_b${i}`).value) : NaN;
+                    if (bucketSubject && !isNaN(mark)) { studentMarks[bucketSubject] = mark; total += mark; subjectCount++; }
                 }
             } else if (grade === 12 || grade === 13) {
-                streamName = document.getElementById("streamSelect").options[document.getElementById("streamSelect").selectedIndex].text;
+                if(document.getElementById("streamSelect") && document.getElementById("streamSelect").selectedIndex > 0) {
+                    streamName = document.getElementById("streamSelect").options[document.getElementById("streamSelect").selectedIndex].text;
+                }
                 for (let i = 1; i <= 3; i++) {
-                    let alSubject = document.getElementById(`al_sub${i}`).value;
-                    let mark = parseFloat(document.getElementById(`m_al${i}`).value);
-                    if (alSubject && !isNaN(mark)) {
-                        studentMarks[alSubject] = mark;
-                        total += mark;
-                        subjectCount++;
-                    }
+                    let alSubject = document.getElementById(`al_sub${i}`) ? document.getElementById(`al_sub${i}`).value : "";
+                    let mark = document.getElementById(`m_al${i}`) ? parseFloat(document.getElementById(`m_al${i}`).value) : NaN;
+                    if (alSubject && !isNaN(mark)) { studentMarks[alSubject] = mark; total += mark; subjectCount++; }
                 }
             }
 
             let average = subjectCount > 0 ? parseFloat((total / subjectCount).toFixed(2)) : 0;
             
             let studentRecord = { 
-                id: id, name: name, term: term, grade: grade.toString(),
-                classLetter: classLetter, fullClassName: grade + "-" + classLetter, 
-                marks: studentMarks, total: total, average: average, stream: streamName
+                id: id, name: name, term: term, grade: grade.toString(), classLetter: classLetter, 
+                fullClassName: grade + "-" + classLetter, marks: studentMarks, total: total, average: average, stream: streamName
             };
 
             // Merge data instead of overwriting
@@ -576,12 +844,8 @@
                 let existingStudent = studentsData[existingIndex];
                 let mergedMarks = { ...existingStudent.marks, ...studentMarks };
                 
-                let newTotal = 0;
-                let newSubjectCount = 0;
-                for (let sub in mergedMarks) {
-                    newTotal += mergedMarks[sub];
-                    newSubjectCount++;
-                }
+                let newTotal = 0; let newSubjectCount = 0;
+                for (let sub in mergedMarks) { newTotal += mergedMarks[sub]; newSubjectCount++; }
                 let newAverage = newSubjectCount > 0 ? parseFloat((newTotal / newSubjectCount).toFixed(2)) : 0;
                 
                 studentRecord.marks = mergedMarks;
@@ -600,39 +864,46 @@
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
-                    let response = await fetch(FIREBASE_DB_URL, {
+                    await fetch(FIREBASE_MARKS_URL, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(studentsData)
                     });
-                    
-                    if(response.ok) {
-                        alert("නියමයි! Firebase එකට දත්ත සාර්ථකව සේව් වුණා.");
-                    } else {
-                        alert("Firebase Error: " + response.status + " - Rules වල ගැටළුවක් විය හැක.");
-                    }
+                    alert("නියමයි! ලකුණු සාර්ථකව සේව් වුණා.");
                 } catch (e) {
-                    alert("Network Error: " + e.message + " (URL එක හෝ Internet Connection එක පරීක්ෂා කරන්න)");
+                    alert("Network Error: කරුණාකර Internet Connection එක පරීක්ෂා කරන්න");
                 }
                 document.getElementById("loadingOverlay").style.display = "none";
             }
 
             document.getElementById("tableTermSelect").value = term;
             document.getElementById("tableGradeSelect").value = grade.toString();
-            document.getElementById("tableClassSelect").value = classLetter;
-            document.getElementById("chartTermSelect").value = term;
-            document.getElementById("chartGradeSelect").value = grade.toString();
-
-            document.getElementById("marksForm").reset(); 
-            document.getElementById("subjectsContainer").innerHTML = ""; 
+            
+            // Do not reset the whole form to keep the class/grade selected. Just clear inputs.
+            document.querySelectorAll(".mark-input, input[id^='m_']").forEach(inp => inp.value = "");
+            document.getElementById("selectedStudentDrop").value = "";
+            document.getElementById("studentId").value = "";
+            document.getElementById("studentName").value = "";
             
             updateTable(); 
             updateChart(); 
         });
 
-        function applySubjectFilter() {
-            updateTable(true);
+        // ==========================================
+        // Reporting Logic & Ranking Lock
+        // ==========================================
+        function clearAllData() {
+            if (confirm("ඔබට විශ්වාසද සියලුම ලකුණු දත්ත පද්ධතියෙන් මකා දැමිය යුතු බව? (ලියාපදිංචි සිසුන් මකා නොදැමේ) මෙම ක්‍රියාව ආපසු හැරවිය නොහැක!")) {
+                studentsData = [];
+                localStorage.removeItem("dccMarksData");
+                if(isOnline) fetch(FIREBASE_MARKS_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify([]) });
+                updateTable(); updateChart();
+                document.getElementById("searchResults").innerHTML = "";
+                alert("ලකුණු දත්ත සාර්ථකව මකා දමන ලදී.");
+            }
         }
+
+        function applySubjectFilter() { updateTable(true); }
 
         function updateTable(isSubjectFilterTrigger = false) {
             let tableHeadRow = document.getElementById("tableHeadRow");
@@ -642,30 +913,21 @@
             let selectedGrade = document.getElementById("tableGradeSelect").value;
             let selectedClass = document.getElementById("tableClassSelect").value;
             
-            let printSubText = "වාරය: " + selectedTerm + " | ";
-            printSubText += "ශ්‍රේණිය: " + selectedGrade + " | ";
-            
-            // MODIFICATION: Set correct class name for printing when combined is selected
+            let printSubText = "වාරය: " + selectedTerm + " | ශ්‍රේණිය: " + selectedGrade + " | ";
             let classDisplayName = selectedClass;
             if (selectedClass.endsWith("_combined")) {
-                let base = selectedClass.charAt(0);
-                classDisplayName = `${base} අංශය ඒකාබද්ධව`;
+                let base = selectedClass.charAt(0); classDisplayName = `${base} අංශය ඒකාබද්ධව`;
             }
-            
             printSubText += "පන්තිය: " + ((selectedClass === "all") ? "සියලුම" : classDisplayName);
             document.getElementById("printSubHeader").innerText = printSubText;
 
-            // MODIFICATION: Safe Filtering Logic to separate A_combined from normal A
-            let filteredData = studentsData;
-            filteredData = filteredData.filter(s => s.term === selectedTerm && s.grade === selectedGrade);
+            let filteredData = studentsData.filter(s => s.term === selectedTerm && s.grade === selectedGrade);
             
             if (selectedClass !== "all") {
                 if (selectedClass.endsWith("_combined")) {
-                    // Extract the base letter (e.g., 'A' from 'A_combined') and filter all starting with 'A'
                     let baseLetter = selectedClass.charAt(0);
                     filteredData = filteredData.filter(s => s.classLetter.startsWith(baseLetter));
                 } else {
-                    // For normal classes (A, B, C, A1, C2 etc.) just do an exact match
                     filteredData = filteredData.filter(s => s.classLetter === selectedClass);
                 }
             }
@@ -673,7 +935,6 @@
             let subjectSelect = document.getElementById("filterSubject");
             let currentSelectedSub = subjectSelect.value;
             let uniqueSubjects = new Set();
-            
             filteredData.forEach(s => Object.keys(s.marks).forEach(sub => uniqueSubjects.add(sub)));
             let displaySubjects = Array.from(uniqueSubjects);
             
@@ -708,12 +969,8 @@
                 let style = isFiltered ? 'background-color: #ffb300; color: #000; font-weight: bold;' : '';
                 headHtml += `<th style="${style}">${sub}</th>`;
             });
-            
             headHtml += `<th>එකතුව</th><th>සාමාන්‍යය</th>`;
-            
-            if (!isAdvancedFilterActive) {
-                headHtml += `<th>ස්ථානය (Rank)</th>`;
-            }
+            if (!isAdvancedFilterActive) headHtml += `<th>ස්ථානය (Rank)</th>`;
             
             tableHeadRow.innerHTML = headHtml;
             tableBody.innerHTML = ""; 
@@ -724,14 +981,25 @@
                 return;
             }
 
-            let sortedData = [...filteredData].sort((a, b) => b.total - a.total);
-            let currentRank = 1;
+            // Lock and Rank Logic: Separate complete and incomplete records
+            let reqCount = getReqSubCount(selectedGrade);
+            let completeStudents = filteredData.filter(s => Object.keys(s.marks).length >= reqCount);
+            let pendingStudents = filteredData.filter(s => Object.keys(s.marks).length < reqCount);
 
-            sortedData.forEach((student, index) => {
-                if (index > 0 && sortedData[index].total < sortedData[index - 1].total) { currentRank = index + 1; }
+            completeStudents.sort((a, b) => b.total - a.total);
+            pendingStudents.sort((a, b) => b.total - a.total);
+
+            let currentRank = 1;
+            let previousTotal = -1;
+            let serialNoCounter = 1;
+
+            // Render Complete Students (Ranked & Locked)
+            completeStudents.forEach((student, index) => {
+                if (index > 0 && student.total < previousTotal) { currentRank = index + 1; }
+                previousTotal = student.total;
 
                 let row = `<tr>
-                    <td class="serial-col">${index + 1}</td>
+                    <td class="serial-col">${serialNoCounter++}</td>
                     <td style="text-align:left; white-space:nowrap;">${student.name}</td>
                     <td>${student.fullClassName}</td>
                     <td><span class="term-badge">${student.term}</span></td>`;
@@ -744,105 +1012,90 @@
                     row += `<td style="${style}">${displayMark}</td>`;
                 });
 
-                row += `
-                    <td style="font-weight:bold;">${student.total}</td>
-                    <td style="color:#1565c0; font-weight:bold;">${student.average}</td>`;
-                
-                if (!isAdvancedFilterActive) {
-                    row += `<td class="rank-col">${currentRank}</td>`;
-                }
-
+                row += `<td style="font-weight:bold;">${student.total}</td><td style="color:#1565c0; font-weight:bold;">${student.average}</td>`;
+                if (!isAdvancedFilterActive) row += `<td class="rank-col">${currentRank} 🔒</td>`;
                 row += `</tr>`;
                 tableBody.innerHTML += row; 
             });
+
+            // Render Pending Students
+            pendingStudents.forEach((student) => {
+                let row = `<tr>
+                    <td class="serial-col">${serialNoCounter++}</td>
+                    <td style="text-align:left; white-space:nowrap;">${student.name}</td>
+                    <td>${student.fullClassName}</td>
+                    <td><span class="term-badge">${student.term}</span></td>`;
+                
+                displaySubjects.forEach(sub => {
+                    let mark = student.marks[sub];
+                    let displayMark = (mark !== undefined) ? mark : '-';
+                    let isFiltered = (filterSub === sub);
+                    let style = isFiltered ? 'background-color: #fff8e1; font-weight: bold; color: #d84315;' : '';
+                    row += `<td style="${style}">${displayMark}</td>`;
+                });
+
+                row += `<td style="font-weight:bold; color:gray;">${student.total}</td><td style="color:gray; font-weight:bold;">${student.average}</td>`;
+                if (!isAdvancedFilterActive) row += `<td class="rank-col" style="color:#f44336; font-size:12px;">Pending ⏳</td>`;
+                row += `</tr>`;
+                tableBody.innerHTML += row; 
+            });
+        }
+
+        // Rank Calculator for Search Results
+        function calculateRankIfComplete(cohort, recordId, reqCount) {
+            let completeCohort = cohort.filter(s => Object.keys(s.marks).length >= reqCount);
+            completeCohort.sort((a, b) => b.total - a.total);
+            let rank = 1;
+            let prevTotal = -1;
+            for(let i=0; i<completeCohort.length; i++){
+                if(i > 0 && completeCohort[i].total < prevTotal) rank = i + 1;
+                prevTotal = completeCohort[i].total;
+                if(completeCohort[i].id === recordId) return rank + " 🔒";
+            }
+            return "Pending ⏳";
         }
 
         function searchStudentById() {
             let searchId = document.getElementById("searchIdInput").value.trim();
             let resultsContainer = document.getElementById("searchResults");
             
-            if(!searchId) { 
-                resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>කරුණාකර ශිෂ්‍ය අංකය ඇතුළත් කරන්න.</p>"; 
-                return; 
-            }
-            
+            if(!searchId) { resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>කරුණාකර ශිෂ්‍ය අංකය ඇතුළත් කරන්න.</p>"; return; }
             let foundRecords = studentsData.filter(s => s.id === searchId);
-            
-            if(foundRecords.length === 0) {
-                resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>මෙම අංකය සහිත ශිෂ්‍යයෙකු පද්ධතියේ නොමැත.</p>";
-                return;
-            }
+            if(foundRecords.length === 0) { resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>මෙම අංකය සහිත ප්‍රතිඵල පද්ධතියේ නොමැත.</p>"; return; }
 
             const termOrder = { "පළමු වාරය": 1, "දෙවන වාරය": 2, "තෙවන වාරය": 3 };
             foundRecords.sort((a, b) => (termOrder[a.term] || 99) - (termOrder[b.term] || 99));
 
-            let todayStr = new Date().toLocaleDateString('si-LK');
-
-            let html = `
-            <div class="print-only-header">
+            let html = `<div class="print-only-header">
                 <h2 style="margin:0; font-size:22px; color:#000;">Mo/Dutugemunu Central College, Buttala</h2>
-                <h4 style="margin:5px 0 15px 0; color:#333; font-weight:normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව | මුද්‍රිත දිනය: ${todayStr}</h4>
+                <h4 style="margin:5px 0 15px 0; color:#333; font-weight:normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව | මුද්‍රිත දිනය: ${new Date().toLocaleDateString('si-LK')}</h4>
                 <hr style="border:1px solid #000; margin-bottom:15px;">
             </div>`;
 
             foundRecords.forEach(record => {
                 let streamDisplay = record.stream ? ` | ${record.stream}` : "";
-                
-                // 1. තනි පන්තියේ රෑන්ක් එක සෙවීම (Class Rank)
-                let sameClassCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
-                sameClassCohort.sort((a, b) => b.total - a.total);
-                let classRank = 1;
-                for(let i = 0; i < sameClassCohort.length; i++) {
-                    if (i > 0 && sameClassCohort[i].total < sameClassCohort[i - 1].total) { classRank = i + 1; }
-                    if (sameClassCohort[i].id === record.id) break;
-                }
-                let totalInClass = sameClassCohort.length;
+                let reqCount = getReqSubCount(record.grade);
+                let isComplete = Object.keys(record.marks).length >= reqCount;
 
-                // 2. අංශයේ (Combined Stream) රෑන්ක් එක සෙවීම (Stream Rank) - උසස් පෙළ සඳහා පමණි
+                // 1. Class Rank
+                let sameClassCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
+                let classRankDisplay = calculateRankIfComplete(sameClassCohort, record.id, reqCount);
+                
+                // 2. Stream Rank
                 let streamRankHTML = "";
                 if(record.grade === "12" || record.grade === "13") {
                     let baseLetter = record.classLetter.charAt(0);
                     let sameStreamCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter.startsWith(baseLetter));
-                    sameStreamCohort.sort((a, b) => b.total - a.total);
-                    let streamRank = 1;
-                    for(let i = 0; i < sameStreamCohort.length; i++) {
-                        if (i > 0 && sameStreamCohort[i].total < sameStreamCohort[i - 1].total) { streamRank = i + 1; }
-                        if (sameStreamCohort[i].id === record.id) break;
-                    }
-                    let totalInStream = sameStreamCohort.length;
+                    let streamRankDisplay = calculateRankIfComplete(sameStreamCohort, record.id, reqCount);
                     
-                    streamRankHTML = `
-                    <tr style="background:#5e35b1; color:white;">
-                        <th style="text-align:right;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th>
-                        <th style="font-size:15px;">${streamRank} / ${totalInStream}</th>
-                    </tr>`;
+                    streamRankHTML = `<tr style="background:#5e35b1; color:white;"><th style="text-align:right;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px;">${streamRankDisplay}</th></tr>`;
                 }
                 
-                html += `<div class="search-result-box">`;
-                html += `<h4>👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>`;
-                html += `<div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #555;">📅 ${record.term}</div>`;
-                
-                html += `<table class="search-table">`;
-                
-                html += `<tr><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>`;
-                
-                for (let [sub, mark] of Object.entries(record.marks)) {
-                    html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`;
-                }
-                
-                html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr>`;
-                html += `<tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr>`;
-                html += `<tr style="background:#2e7d32; color:white;"><th style="text-align:right;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px;">${classRank} / ${totalInClass}</th></tr>`;
-                html += streamRankHTML; // Add Stream rank if Grade 12 or 13
-                
-                html += `</table>`;
-                html += `</div>`;
+                html += `<div class="search-result-box"><h4>👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4><div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #555;">📅 ${record.term}</div><table class="search-table"><tr><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>`;
+                for (let [sub, mark] of Object.entries(record.marks)) { html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`; }
+                html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr><tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr><tr style="background:#2e7d32; color:white;"><th style="text-align:right;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px;">${classRankDisplay}</th></tr>${streamRankHTML}</table></div>`;
             });
-
-            html += `<div style="text-align: center; margin-top: 20px;">
-                        <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); max-width: 250px; margin: 0 auto; display: inline-block; padding: 12px 20px; border-radius: 8px;">🖨️ මෙම ප්‍රතිඵල මුද්‍රණය කරන්න</button>
-                     </div>`;
-
+            html += `<div style="text-align: center; margin-top: 20px;"><button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); max-width: 250px; margin: 0 auto; display: inline-block; padding: 12px 20px; border-radius: 8px;">🖨️ මෙම ප්‍රතිඵල මුද්‍රණය කරන්න</button></div>`;
             resultsContainer.innerHTML = html;
         }
 
@@ -851,83 +1104,47 @@
             printStyle.id = 'search-print-style';
             printStyle.innerHTML = '@media print { @page { size: A4 portrait !important; margin: 1cm; } }';
             document.head.appendChild(printStyle);
-            
             document.body.classList.add('print-search-mode');
             window.print();
-            
-            setTimeout(() => { 
-                document.body.classList.remove('print-search-mode'); 
-                let el = document.getElementById('search-print-style');
-                if (el) el.remove();
-            }, 1000);
+            setTimeout(() => { document.body.classList.remove('print-search-mode'); let el = document.getElementById('search-print-style'); if (el) el.remove(); }, 1000);
         }
 
         function downloadPDF() {
             if(studentsData.length === 0) { alert("PDF කිරීමට පෙර දත්ත ඇතුළත් කරන්න!"); return; }
-
             const element = document.getElementById('reportCard');
             const tableContainer = document.getElementById('tableResponsiveContainer');
-
             document.getElementById('printHeader').style.display = 'block';
             document.getElementById('actionButtons').style.display = 'none';
             document.querySelectorAll('.table-filters').forEach(el => el.style.display = 'none'); 
+            tableContainer.style.overflow = 'visible'; tableContainer.style.display = 'table'; tableContainer.style.width = '100%';
             
-            tableContainer.style.overflow = 'visible';
-            tableContainer.style.display = 'table';
-            tableContainer.style.width = '100%';
-            
-            let tTerm = document.getElementById("tableTermSelect").value;
-            let tGrade = document.getElementById("tableGradeSelect").value;
-            let fileName = `Rank_Board_${tTerm}_Grade_${tGrade}.pdf`;
-
-            const opt = { 
-                margin: 0.2, 
-                filename: fileName, 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 2 }, 
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } 
-            };
-
+            let fileName = `Rank_Board_${document.getElementById("tableTermSelect").value}_Grade_${document.getElementById("tableGradeSelect").value}.pdf`;
+            const opt = { margin: 0.2, filename: fileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
             html2pdf().set(opt).from(element).save().then(() => {
                 document.getElementById('printHeader').style.display = 'none';
                 document.getElementById('actionButtons').style.display = 'flex';
                 document.querySelectorAll('.table-filters').forEach(el => el.style.display = 'flex');
-                
-                tableContainer.style.overflow = 'auto';
-                tableContainer.style.display = 'block';
+                tableContainer.style.overflow = 'auto'; tableContainer.style.display = 'block';
             });
         }
 
         function updateChart() {
-            let selectedChartTerm = document.getElementById("chartTermSelect").value; 
-            let selectedChartGrade = document.getElementById("chartGradeSelect").value; 
-            
-            let filteredChartData = studentsData.filter(s => s.term === selectedChartTerm && s.grade === selectedChartGrade);
-            
+            let filteredChartData = studentsData.filter(s => s.term === document.getElementById("chartTermSelect").value && s.grade === document.getElementById("chartGradeSelect").value);
             let uniqueSubjects = new Set();
             filteredChartData.forEach(s => Object.keys(s.marks).forEach(sub => uniqueSubjects.add(sub)));
-            let dynamicSubjects = Array.from(uniqueSubjects);
-
-            let chartDatasets = dynamicSubjects.map((subject, index) => {
+            let chartDatasets = Array.from(uniqueSubjects).map((subject, index) => {
                 let dataForSubject = classLetters.map(letter => {
                     let classStudents = filteredChartData.filter(s => s.classLetter === letter);
                     let count = 0; let sum = 0;
-                    classStudents.forEach(s => {
-                        if (s.marks[subject] !== undefined) { sum += s.marks[subject]; count++; }
-                    });
+                    classStudents.forEach(s => { if (s.marks[subject] !== undefined) { sum += s.marks[subject]; count++; } });
                     return count === 0 ? 0 : parseFloat((sum / count).toFixed(2));
                 });
-
                 return { label: subject, data: dataForSubject, backgroundColor: chartColors[index % chartColors.length] };
             });
 
             if (myChart !== null) { myChart.destroy(); }
             const ctx = document.getElementById('marksChart').getContext('2d');
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: classLetters.map(letter => selectedChartGrade + "-" + letter), datasets: chartDatasets },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
-            });
+            myChart = new Chart(ctx, { type: 'bar', data: { labels: classLetters.map(letter => document.getElementById("chartGradeSelect").value + "-" + letter), datasets: chartDatasets }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
         }
     </script>
 </body>
