@@ -77,7 +77,7 @@
         .btn-clear { background: linear-gradient(to right, #6c757d, #343a40); color: white; border: none; }
 
         .table-filters { display: flex; gap: 8px; flex-wrap: wrap; background: #f1f3f5; padding: 10px; border-radius: 8px; width: 100%; justify-content: center;}
-        .table-filters select { flex: 1 1 45%; min-width: 100px; padding: 10px 5px; font-size: 13px;}
+        .table-filters select, .table-filters button { flex: 1 1 30%; min-width: 100px; padding: 10px 5px; font-size: 13px;}
 
         /* --- Scrollable Table Container --- */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; border: 1px solid #eee; display: block;}
@@ -159,7 +159,7 @@
                 <button type="submit" class="btn-login">Login</button>
             </form>
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
-                Developer - Kelum Konara | Smart Soft
+                Developer - Kelum Koonara | Smart Soft
             </div>
         </div>
     </div>
@@ -236,8 +236,12 @@
 
                         <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
                         <div id="subjectsContainer"></div>
-
-                        <button type="submit" class="btn-submit">ලකුණු පද්ධතියට එක් කරන්න</button>
+                        
+                        <!-- ADDED: Clear Form Button in the Entry Section -->
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0;">ලකුණු පද්ධතියට එක් කරන්න</button>
+                            <button type="button" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearMarksInputs()">Clear</button>
+                        </div>
                     </form>
                 </div>
                 
@@ -253,7 +257,7 @@
                     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 10px;">
                         <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
                         
-                        <!-- Advanced Filters Area -->
+                        <!-- Advanced Filters Area (RESTORED MISSING FILTERS) -->
                         <div class="table-filters">
                             <select id="tableTermSelect" onchange="updateTable()">
                                 <option value="all">සියලුම වාර</option>
@@ -289,6 +293,22 @@
                                 <option value="A">A</option><option value="B">B</option><option value="C">C</option>
                                 <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
                             </select>
+
+                            <!-- FIXED: These were missing in your previous version, which broke the normal table view -->
+                            <select id="filterSubject" onchange="applySubjectFilter()">
+                                <option value="all">සියලුම විෂයයන් (All Subjects)</option>
+                            </select>
+                            <select id="filterCondition" onchange="updateTable(true)">
+                                <option value="all">සියලුම මට්ටම්</option>
+                                <option value="75_100">75 - 100 (A)</option>
+                                <option value="65_74">65 - 74 (B)</option>
+                                <option value="50_64">50 - 64 (C)</option>
+                                <option value="35_49">35 - 49 (S)</option>
+                                <option value="0_34">0 - 34 (W)</option>
+                            </select>
+                            
+                            <!-- ADDED: Clear Filters Button (Reset List View) -->
+                            <button class="btn-clear" onclick="clearTableFilters()" style="flex: 1 1 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">🔄 Reset List View (Clear Filters)</button>
                         </div>
                     </div>
 
@@ -310,7 +330,11 @@
                     <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
                     <div class="flex-row" style="align-items: center;">
                         <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
-                        <button type="button" class="btn-submit" style="margin-top: 6px; padding: 12px; width: 100%;" onclick="searchStudentById()">සොයන්න</button>
+                        <!-- ADDED: Clear Search Button -->
+                        <div style="display: flex; gap: 8px; width: 100%;">
+                            <button type="button" class="btn-submit" style="flex: 2; margin-top: 6px; padding: 12px;" onclick="searchStudentById()">සොයන්න</button>
+                            <button type="button" class="btn-clear" style="flex: 1; margin-top: 6px; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearSearchInputs()">Clear</button>
+                        </div>
                     </div>
                     <div id="searchResults"></div>
                 </div>
@@ -375,7 +399,10 @@
                         <input type="text" id="reg_address" placeholder="ලිපිනය (Address)" style="text-align: left; padding-left: 15px;" required>
                         <input type="tel" id="reg_phone" placeholder="භාරකරුගේ දුරකථන අංකය (Guardian Phone)" required>
                         
-                        <button type="submit" class="btn-submit" style="background: linear-gradient(to right, #ff9800, #f57c00);">ශිෂ්‍යයා ලියාපදිංචි කරන්න</button>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0; background: linear-gradient(to right, #ff9800, #f57c00);">ශිෂ්‍යයා ලියාපදිංචි කරන්න</button>
+                            <button type="reset" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
+                        </div>
                     </form>
                 </div>
 
@@ -428,7 +455,11 @@
                         <input type="text" id="treg_name" placeholder="නම (Name)" required style="text-align: left; padding-left: 15px;">
                         <input type="text" id="treg_subject" placeholder="උගන්වන විෂය / විෂයයන් (Subjects)" required style="text-align: left; padding-left: 15px;">
                         <input type="tel" id="treg_phone" placeholder="දුරකථන අංකය (Phone Number)" required>
-                        <button type="submit" class="btn-submit" style="background: linear-gradient(to right, #9c27b0, #7b1fa2);">ගුරුවරයා ලියාපදිංචි කරන්න</button>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0; background: linear-gradient(to right, #9c27b0, #7b1fa2);">ගුරුවරයා ලියාපදිංචි කරන්න</button>
+                            <button type="reset" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
+                        </div>
                     </form>
                 </div>
 
@@ -452,7 +483,7 @@
         </div>
 
         <div class="dev-footer">
-            Developer - <span>Kelum Konara</span> | Smart Soft
+            Developer - <span>Kelum Koonara</span> | Smart Soft
         </div>
     </div>
 
@@ -520,13 +551,41 @@
         }
 
         // ==========================================
+        // ADDED CLEAR FUNCTIONS 
+        // ==========================================
+        
+        // 1. Clear Marks Form Inputs Only
+        function clearMarksInputs() {
+            document.querySelectorAll(".mark-input, input[id^='m_']").forEach(inp => inp.value = "");
+            document.getElementById("selectedStudentDrop").value = "";
+            document.getElementById("studentId").value = "";
+            document.getElementById("studentName").value = "";
+        }
+
+        // 2. Clear Table Filters (Reset View)
+        function clearTableFilters() {
+            document.getElementById("tableTermSelect").value = "පළමු වාරය"; 
+            document.getElementById("tableGradeSelect").value = "12";
+            document.getElementById("tableClassSelect").value = "all";
+            document.getElementById("filterSubject").value = "all";
+            document.getElementById("filterCondition").value = "all";
+            updateTable();
+        }
+
+        // 3. Clear Search Field
+        function clearSearchInputs() {
+            document.getElementById("searchIdInput").value = "";
+            document.getElementById("searchResults").innerHTML = "";
+        }
+
+        // ==========================================
         // Helper: Get Required Subject Count
         // ==========================================
         function getReqSubCount(gradeStr) {
             let grade = parseInt(gradeStr);
-            if (grade <= 9) return 12; // 11 junior + 1 aesthetic
-            if (grade <= 11) return 9; // 6 core + 3 buckets
-            return 5; // 3 AL + GenEng + GIT
+            if (grade <= 9) return 12; 
+            if (grade <= 11) return 9; 
+            return 5; 
         }
 
         // ==========================================
@@ -573,7 +632,6 @@
                 phone: phone
             };
 
-            // Avoid duplicates by admission No
             let existingIdx = registeredStudents.findIndex(s => s.admissionNo === newStudent.admissionNo);
             if(existingIdx !== -1) {
                 registeredStudents[existingIdx] = newStudent;
@@ -593,7 +651,7 @@
 
             document.getElementById("studentRegForm").reset();
             renderStudentsTable();
-            loadStudentsForMarks(); // Refresh dropdown in marks tab
+            loadStudentsForMarks(); 
             alert("ශිෂ්‍ය තොරතුරු සාර්ථකව ලියාපදිංචි කරන ලදී!");
         });
 
@@ -672,7 +730,7 @@
         }
 
         // ==========================================
-        // TAB 1: Marks Entry Logic (Updated for partial subjects)
+        // TAB 1: Marks Entry Logic 
         // ==========================================
         function loadStudentsForMarks() {
             let grade = document.getElementById("gradeSelect").value;
@@ -730,7 +788,6 @@
 
             if (isNaN(grade)) return;
 
-            // Notice: inputs are NO LONGER required. This allows subject teachers to enter only their subject marks.
             if (grade <= 9) {
                 juniorSubjects.forEach(subject => {
                     container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`;
@@ -837,7 +894,6 @@
                 fullClassName: grade + "-" + classLetter, marks: studentMarks, total: total, average: average, stream: streamName
             };
 
-            // Merge data instead of overwriting
             let existingIndex = studentsData.findIndex(s => s.id === id && s.term === term);
             
             if (existingIndex !== -1) {
@@ -879,12 +935,7 @@
             document.getElementById("tableTermSelect").value = term;
             document.getElementById("tableGradeSelect").value = grade.toString();
             
-            // Do not reset the whole form to keep the class/grade selected. Just clear inputs.
-            document.querySelectorAll(".mark-input, input[id^='m_']").forEach(inp => inp.value = "");
-            document.getElementById("selectedStudentDrop").value = "";
-            document.getElementById("studentId").value = "";
-            document.getElementById("studentName").value = "";
-            
+            clearMarksInputs(); 
             updateTable(); 
             updateChart(); 
         });
@@ -933,12 +984,12 @@
             }
 
             let subjectSelect = document.getElementById("filterSubject");
-            let currentSelectedSub = subjectSelect.value;
+            let currentSelectedSub = subjectSelect ? subjectSelect.value : "all";
             let uniqueSubjects = new Set();
             filteredData.forEach(s => Object.keys(s.marks).forEach(sub => uniqueSubjects.add(sub)));
             let displaySubjects = Array.from(uniqueSubjects);
             
-            if (!isSubjectFilterTrigger) {
+            if (!isSubjectFilterTrigger && subjectSelect) {
                 subjectSelect.innerHTML = `<option value="all">සියලුම විෂයයන් (All Subjects)</option>`;
                 displaySubjects.forEach(sub => {
                     let isSelected = (sub === currentSelectedSub) ? "selected" : "";
@@ -946,8 +997,9 @@
                 });
             }
 
-            let filterSub = subjectSelect.value;
-            let filterCond = document.getElementById("filterCondition").value;
+            let filterSub = subjectSelect ? subjectSelect.value : "all";
+            let filterCondSelect = document.getElementById("filterCondition");
+            let filterCond = filterCondSelect ? filterCondSelect.value : "all";
             let isAdvancedFilterActive = (filterSub !== "all" || filterCond !== "all");
 
             if (isAdvancedFilterActive) {
@@ -981,7 +1033,7 @@
                 return;
             }
 
-            // Lock and Rank Logic: Separate complete and incomplete records
+            // Lock and Rank Logic
             let reqCount = getReqSubCount(selectedGrade);
             let completeStudents = filteredData.filter(s => Object.keys(s.marks).length >= reqCount);
             let pendingStudents = filteredData.filter(s => Object.keys(s.marks).length < reqCount);
@@ -993,7 +1045,6 @@
             let previousTotal = -1;
             let serialNoCounter = 1;
 
-            // Render Complete Students (Ranked & Locked)
             completeStudents.forEach((student, index) => {
                 if (index > 0 && student.total < previousTotal) { currentRank = index + 1; }
                 previousTotal = student.total;
@@ -1018,7 +1069,6 @@
                 tableBody.innerHTML += row; 
             });
 
-            // Render Pending Students
             pendingStudents.forEach((student) => {
                 let row = `<tr>
                     <td class="serial-col">${serialNoCounter++}</td>
@@ -1041,7 +1091,6 @@
             });
         }
 
-        // Rank Calculator for Search Results
         function calculateRankIfComplete(cohort, recordId, reqCount) {
             let completeCohort = cohort.filter(s => Object.keys(s.marks).length >= reqCount);
             completeCohort.sort((a, b) => b.total - a.total);
@@ -1077,11 +1126,9 @@
                 let reqCount = getReqSubCount(record.grade);
                 let isComplete = Object.keys(record.marks).length >= reqCount;
 
-                // 1. Class Rank
                 let sameClassCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter === record.classLetter);
                 let classRankDisplay = calculateRankIfComplete(sameClassCohort, record.id, reqCount);
                 
-                // 2. Stream Rank
                 let streamRankHTML = "";
                 if(record.grade === "12" || record.grade === "13") {
                     let baseLetter = record.classLetter.charAt(0);
