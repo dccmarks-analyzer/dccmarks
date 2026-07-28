@@ -105,6 +105,17 @@
         .print-only-header { display: none; }
 
         .hint-text { font-size: 11px; color: #888; margin-top: -4px; margin-bottom: 10px; display: block; text-align: center;}
+        
+        .btn-edit { 
+            background: linear-gradient(to right, #17a2b8, #138496); 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: bold;
+        }
 
         /* Desktop View - Full Width Cards */
         @media (min-width: 768px) {
@@ -434,6 +445,7 @@
                                     <th>මුලකුරු සමග නම</th>
                                     <th>පන්තිය</th>
                                     <th>දුරකථන අංකය</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="studentsRegTableBody"></tbody>
@@ -473,6 +485,7 @@
                                     <th>නම</th>
                                     <th>විෂයයන්</th>
                                     <th>දුරකථන අංකය</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="teachersRegTableBody"></tbody>
@@ -672,6 +685,7 @@
                         <td style="text-align:left;">${s.nameInitials}</td>
                         <td>${s.grade}-${s.classLetter}</td>
                         <td>${s.phone}</td>
+                        <td><button class="btn-edit" onclick="editStudent('${s.admissionNo}')">Edit</button></td>
                     </tr>
                 `;
             });
@@ -724,6 +738,7 @@
                         <td style="text-align:left;">${t.name}</td>
                         <td style="text-align:left;">${t.subject}</td>
                         <td>${t.phone}</td>
+                        <td><button class="btn-edit" onclick="editTeacher('${t.id}')">Edit</button></td>
                     </tr>
                 `;
             });
@@ -817,7 +832,7 @@
                             <option value="maths">ගණිත අංශය (Maths)</option>
                             <option value="science">විද්‍යා අංශය (Science)</option>
                             <option value="commerce">වාණිජ අංශය (Commerce)</option>
-                            <option value="tech">තාක්ෂණ අංශය (Technology)</option>
+                            <option value="tech">තාක්ෂ අංශය (Technology)</option>
                             <option value="arts">කලා අංශය (Arts)</option>
                         </select>
                     </div>
@@ -1192,6 +1207,38 @@
             if (myChart !== null) { myChart.destroy(); }
             const ctx = document.getElementById('marksChart').getContext('2d');
             myChart = new Chart(ctx, { type: 'bar', data: { labels: classLetters.map(letter => document.getElementById("chartGradeSelect").value + "-" + letter), datasets: chartDatasets }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
+        }
+
+        // ==========================================
+        // Edit Functionality
+        // ==========================================
+        function editStudent(admNo) {
+            let student = registeredStudents.find(s => s.admissionNo === admNo);
+            if(student) {
+                document.getElementById("reg_admNo").value = student.admissionNo;
+                document.getElementById("reg_fullName").value = student.fullName;
+                document.getElementById("reg_initialName").value = student.nameInitials;
+                document.getElementById("reg_grade").value = student.grade;
+                document.getElementById("reg_class").value = student.classLetter;
+                document.getElementById("reg_address").value = student.address;
+                document.getElementById("reg_phone").value = student.phone;
+                
+                // Scroll to the form
+                window.scrollTo({ top: document.getElementById("regStudentFormCard").offsetTop, behavior: 'smooth' });
+            }
+        }
+
+        function editTeacher(tid) {
+            let teacher = registeredTeachers.find(t => t.id === tid);
+            if(teacher) {
+                document.getElementById("treg_id").value = teacher.id;
+                document.getElementById("treg_name").value = teacher.name;
+                document.getElementById("treg_subject").value = teacher.subject;
+                document.getElementById("treg_phone").value = teacher.phone;
+                
+                // Scroll to the form
+                window.scrollTo({ top: document.getElementById("regTeacherFormCard").offsetTop, behavior: 'smooth' });
+            }
         }
     </script>
 </body>
