@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dutugemunu Central College - Marks Analyser</title>
+    <title>Dutugemunu Central College - Marks Analyzer</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -80,8 +80,8 @@
         .table-filters select, .table-filters button { flex: 1 1 30%; min-width: 100px; padding: 10px 5px; font-size: 13px;}
 
         /* --- Scrollable Table Container --- */
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; border: 1px solid #eee; display: block;}
-        table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff;}
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; border: 1px solid #eee; display: block; text-align: left;}
+        table { width: 100%; min-width: max-content; border-collapse: collapse; font-size: 13px; background: #fff; margin: 0;}
         th, td { padding: 8px 6px; border-bottom: 1px solid #eee; text-align: center; border-right: 1px solid #f1f1f1;}
         th { background-color: #6a1b9a; color: white; font-weight: 500; white-space: nowrap;}
         tr:nth-child(even) { background-color: #fcfcfc; }
@@ -117,6 +117,8 @@
             font-weight: bold;
         }
 
+        .pdf-mode .no-print { display: none !important; }
+
         /* Desktop View - Full Width Cards */
         @media (min-width: 768px) {
             #mainApp { padding: 20px; }
@@ -125,6 +127,7 @@
 
         /* --- Print Styles --- */
         @media print {
+            .no-print { display: none !important; }
             @page { size: A4 landscape; margin: 1cm; }
             body { background: white; margin: 0; padding: 0; overflow: visible; }
             .school-header, .tab-nav, #formCard, #chartCard, .action-buttons, .table-filters, #regStudentFormCard, #regTeacherFormCard { display: none !important; }
@@ -1079,7 +1082,7 @@
                 });
 
                 row += `<td style="font-weight:bold;">${student.total}</td><td style="color:#1565c0; font-weight:bold;">${student.average}</td>`;
-                if (!isAdvancedFilterActive) row += `<td class="rank-col">${currentRank} 🔒</td>`;
+                if (!isAdvancedFilterActive) row += `<td class="rank-col">${currentRank} <span class="no-print">🔒</span></td>`;
                 row += `</tr>`;
                 tableBody.innerHTML += row; 
             });
@@ -1100,7 +1103,7 @@
                 });
 
                 row += `<td style="font-weight:bold; color:gray;">${student.total}</td><td style="color:gray; font-weight:bold;">${student.average}</td>`;
-                if (!isAdvancedFilterActive) row += `<td class="rank-col" style="color:#f44336; font-size:12px;">Pending ⏳</td>`;
+                if (!isAdvancedFilterActive) row += `<td class="rank-col" style="color:#f44336; font-size:12px;">Pending <span class="no-print">⏳</span></td>`;
                 row += `</tr>`;
                 tableBody.innerHTML += row; 
             });
@@ -1114,9 +1117,9 @@
             for(let i=0; i<completeCohort.length; i++){
                 if(i > 0 && completeCohort[i].total < prevTotal) rank = i + 1;
                 prevTotal = completeCohort[i].total;
-                if(completeCohort[i].id === recordId) return rank + " 🔒";
+                if(completeCohort[i].id === recordId) return rank + " <span class='no-print'>🔒</span>";
             }
-            return "Pending ⏳";
+            return "Pending <span class='no-print'>⏳</span>";
         }
 
         function searchStudentById() {
@@ -1180,6 +1183,8 @@
             document.querySelectorAll('.table-filters').forEach(el => el.style.display = 'none'); 
             tableContainer.style.overflow = 'visible'; tableContainer.style.display = 'table'; tableContainer.style.width = '100%';
             
+            document.body.classList.add('pdf-mode');
+
             let fileName = `Rank_Board_${document.getElementById("tableTermSelect").value}_Grade_${document.getElementById("tableGradeSelect").value}.pdf`;
             const opt = { margin: 0.2, filename: fileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
             html2pdf().set(opt).from(element).save().then(() => {
@@ -1187,6 +1192,8 @@
                 document.getElementById('actionButtons').style.display = 'flex';
                 document.querySelectorAll('.table-filters').forEach(el => el.style.display = 'flex');
                 tableContainer.style.overflow = 'auto'; tableContainer.style.display = 'block';
+                
+                document.body.classList.remove('pdf-mode');
             });
         }
 
