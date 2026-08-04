@@ -130,17 +130,30 @@
             .no-print { display: none !important; }
             @page { size: A4 landscape; margin: 1cm; }
             body { background: white; margin: 0; padding: 0; overflow: visible; }
+            
+            /* Hide admin panels during print */
             .school-header, .tab-nav, #formCard, #chartCard, .action-buttons, .table-filters, #regStudentFormCard, #regTeacherFormCard { display: none !important; }
+            
+            /* Print mode for Search section specifically */
             body:not(.print-search-mode) #searchCard { display: none !important; }
             body:not(.print-search-mode) #printHeader { display: block; }
             body:not(.print-search-mode) .table-responsive { overflow-x: visible !important; border: none; display: table; width: 100%;}
+            
             body.print-search-mode @page { size: A4 portrait; margin: 1cm; }
             body.print-search-mode #reportCard, body.print-search-mode #regStudentTableCard, body.print-search-mode #regTeacherTableCard { display: none !important; }
+            
+            /* Clean up Search Card for printing */
             body.print-search-mode #searchCard { display: block !important; box-shadow: none; border: none; padding: 0; margin: 0;}
-            body.print-search-mode .flex-row { display: none !important; } 
-            body.print-search-mode .search-result-box { border: 1px solid #000; box-shadow: none; page-break-inside: avoid; margin-top: 0;}
+            
+            /* HIDE unnecessary elements during search print (Inputs, titles, buttons) */
+            body.print-search-mode .flex-row, 
+            body.print-search-mode .section-title,
+            body.print-search-mode [data-html2canvas-ignore="true"],
             body.print-search-mode .btn-print-search { display: none !important; } 
+            
+            body.print-search-mode .search-result-box { border: none; padding: 0; box-shadow: none; page-break-inside: avoid; margin-top: 10px;}
             body.print-search-mode .print-only-header { display: block !important; text-align: center; margin-bottom: 20px; }
+            
             .dashboard { display: block; }
             .card { box-shadow: none; border: none; padding: 0; margin: 0; width: 100%; }
             table { min-width: 100%; border: 1px solid #000; }
@@ -152,8 +165,6 @@
             .dev-footer { position: fixed; bottom: 0; width: 100%; border-top: 1px dashed #ccc; padding-top: 5px;}
         }
     </style>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4a148c">
 </head>
 <body>
 
@@ -167,7 +178,7 @@
     <div id="loginScreen">
         <div class="login-box">
             <h2>Welcome Back!</h2>
-            <p>Mo/Dutugemunu Central College<br>Marks Analyzer System</p>
+            <p>Mo/Dutugemunu Central College<br>Marks Analyser System</p>
             <form id="loginForm">
                 <input type="text" id="username" placeholder="Username" required>
                 <input type="password" id="password" placeholder="Password" required>
@@ -842,7 +853,7 @@
                             <option value="maths">ගණිත අංශය (Maths)</option>
                             <option value="science">විද්‍යා අංශය (Science)</option>
                             <option value="commerce">වාණිජ අංශය (Commerce)</option>
-                            <option value="tech">තාක්ෂණ අංශය (Technology)</option>
+                            <option value="tech">තාක්ෂ අංශය (Technology)</option>
                             <option value="arts">කලා අංශය (Arts)</option>
                         </select>
                     </div>
@@ -1135,14 +1146,17 @@
             
             if(!searchId) { resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>කරුණාකර ශිෂ්‍ය අංකය ඇතුළත් කරන්න.</p>"; return; }
             
+            // මුලින්ම ශිෂ්‍ය අංකය අනුව පෙරීම
             let foundRecords = studentsData.filter(s => s.id === searchId);
 
+            // තෝරාගත් වාරය අනුව නිශ්චිතවම පෙරීම (Strict Term Filtering)
             if (searchTerm !== "all") {
                 foundRecords = foundRecords.filter(s => s.term === searchTerm);
             }
 
+            // තෝරාගත් වාරයට අදාළ දත්ත නොමැති නම්
             if(foundRecords.length === 0) { 
-                resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>මෙම අංකය සහ වාරය සඳහා ප්‍රතිඵල පද්ධතියේ නොමැත.</p>"; 
+                resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>මෙම අංකය සහ තෝරාගත් වාරය සඳහා ප්‍රතිඵල පද්ධතියේ නොමැත.</p>"; 
                 return; 
             }
 
@@ -1288,11 +1302,12 @@
             
             let fileName = `Student_Result_${studentId}.pdf`;
             
+            // PDF A4 Margins & Customization
             const opt = { 
-                margin: 0.3, 
+                margin: [0.5, 0.5, 0.5, 0.5], // Top, Left, Bottom, Right margin in inches 
                 filename: fileName, 
                 image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 2 }, 
+                html2canvas: { scale: 2, useCORS: true, windowWidth: 800 }, // Fix width for A4 ratio
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
             };
             
