@@ -98,14 +98,13 @@
         #printHeader h4 { margin: 5px 0; color: #444; font-size: 14px; font-weight: normal;}
         #printHeader hr { border: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;}
 
-        /* Search Results Styles */
-        .search-result-box { background:#f8f9fa; border-radius:8px; padding:15px; margin-top:15px; text-align:left; border: 1px solid #ddd;}
-        .search-result-box h4 { margin: 0 0 10px 0; color: #6a1b9a; font-size: 16px; }
-        .search-table { width: 100%; min-width: 100%; border-collapse: collapse;}
-        .search-table th, .search-table td { border: 1px solid #ccc; padding: 8px; font-size: 13px; text-align: center;}
+        /* --- Search Results Styles (Mobile Responsive) --- */
+        .search-result-box { background:#fff; border-radius:8px; padding:15px; margin-top:15px; text-align:left; border: 1px solid #ddd;}
+        .table-responsive-search { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 6px;}
+        .search-table { width: 100%; min-width: 480px; border-collapse: collapse;}
+        .search-table th, .search-table td { border: 1px solid #ccc; padding: 10px; font-size: 13px; text-align: center;}
         
         .hint-text { font-size: 11px; color: #888; margin-top: -4px; margin-bottom: 10px; display: block; text-align: center;}
-        
         .btn-edit { background: linear-gradient(to right, #17a2b8, #138496); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
 
         /* Desktop View - Full Width Cards */
@@ -114,25 +113,22 @@
             .flex-row { flex-direction: row; }
         }
 
-        /* --- PDF Generation Specific A4 Mode --- */
-        .pdf-export-mode #searchCard { 
-            box-shadow: none !important; border: none !important; padding: 0 !important; background: white !important;
-        }
-        .pdf-export-mode #searchResults {
-            width: 750px !important; /* Force desktop-like width for A4 scale */
-            max-width: 750px !important;
-            margin: 0 auto !important;
+        /* --- PDF Generation Specific A4 Layout Fix --- */
+        .pdf-export-mode body { overflow: hidden !important; }
+        .pdf-export-mode #printArea {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 750px !important; /* Force exact A4 Portrait width */
             background: white !important;
+            z-index: 10000 !important;
+            margin: 0 !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
         }
-        .pdf-export-mode .search-result-box { 
-            background: white !important; border: none !important; padding: 0 !important; margin-top: 0 !important;
-        }
-        .pdf-export-mode .search-table th, .pdf-export-mode .search-table td { 
-            color: #000 !important; border: 1px solid #000 !important; font-size: 14px !important; padding: 8px !important;
-        }
-        /* Remove colored backgrounds in PDF for clean look */
-        .pdf-export-mode tr[style*="background"] { background: transparent !important; color: #000 !important; }
-        .pdf-export-mode tr[style*="background"] th { color: #000 !important; }
+        .pdf-export-mode .table-responsive-search { overflow-x: visible !important; width: 100% !important; }
+        .pdf-export-mode .search-table { min-width: 100% !important; width: 100% !important; }
+        .pdf-export-mode .search-result-box { border: none !important; padding: 0 !important; margin-top: 5px !important; }
 
         /* --- Global Print Styles --- */
         @media print {
@@ -142,21 +138,21 @@
             /* Hide Admin elements */
             .school-header, .tab-nav, #formCard, #chartCard, .table-filters, #regStudentFormCard, #regTeacherFormCard { display: none !important; }
             
-            /* General Print Settings */
-            @page { margin: 1cm; }
+            @page { margin: 1cm; size: A4 portrait; }
             .card { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; margin: 0 !important;}
             
-            /* Search Card Print specific */
-            #searchCard { display: block !important; }
-            #searchCard .section-title, #searchCard .flex-row { display: none !important; } /* Hide search inputs */
+            /* Student Search Print Fixes */
+            body.print-search-mode #searchCard { display: block !important; }
+            body.print-search-mode #searchCard .section-title, 
+            body.print-search-mode #searchCard .flex-row { display: none !important; } /* Hide search inputs */
             
-            #searchResults { width: 100% !important; display: block !important; background: white !important; }
-            .search-result-box { background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; page-break-inside: avoid; }
+            body.print-search-mode #printArea { display: block !important; width: 100% !important; padding: 0 !important; }
+            body.print-search-mode .table-responsive-search { overflow-x: visible !important; width: 100% !important; border: none !important; }
+            body.print-search-mode .search-table { min-width: 100% !important; width: 100% !important; }
+            body.print-search-mode .search-result-box { background: transparent !important; border: none !important; padding: 0 !important; page-break-inside: avoid; margin-bottom: 20px !important; }
+            
+            /* Table Print Aesthetics */
             .search-table th, .search-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 13px !important;}
-            
-            /* Remove inline colored backgrounds for cleaner print */
-            .search-table tr[style*="background"] { background: transparent !important; color: #000 !important; }
-            .search-table tr[style*="background"] th { color: #000 !important; }
         }
     </style>
 </head>
@@ -391,7 +387,7 @@
             </div>
         </div>
 
-        <!-- TAB 2 & 3: Registration Forms (Same as before) -->
+        <!-- TAB 2 & 3: Registration Forms -->
         <div id="tab-students" class="tab-content no-print">
             <div class="dashboard">
                 <div class="card" id="regStudentFormCard">
@@ -416,6 +412,24 @@
                 </div>
                 <div class="card" id="regStudentTableCard">
                     <h3 class="section-title">ලියාපදිංචි සිසුන්ගේ නාමලේඛනය</h3>
+                    <div class="table-filters">
+                        <select id="filterRegGrade" onchange="renderStudentsTable()">
+                            <option value="all">සියලුම ශ්‍රේණි</option>
+                            <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                            <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                            <option value="12">12</option><option value="13">13</option>
+                        </select>
+                        <select id="filterRegClass" onchange="renderStudentsTable()">
+                            <option value="all">සියලුම පන්ති</option>
+                            <option value="A1">A1</option><option value="A2">A2</option>
+                            <option value="C1">C1</option><option value="C2">C2</option>
+                            <option value="T1">T1</option><option value="T2">T2</option>
+                            <option value="M1">M1</option><option value="M2">M2</option>
+                            <option value="S1">S1</option><option value="S2">S2</option>
+                            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                            <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                        </select>
+                    </div>
                     <div class="table-responsive">
                         <table id="studentsRegTable">
                             <thead><tr><th>අංකය</th><th>මුලකුරු සමග නම</th><th>පන්තිය</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead>
@@ -532,7 +546,6 @@
             } else { document.getElementById("loginError").style.display = "block"; }
         });
 
-        /* --- Registration & Form Logs omitted for brevity, keeping all existing logic exactly intact --- */
         document.getElementById("studentRegForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             let phone = document.getElementById("reg_phone").value.trim();
@@ -768,7 +781,7 @@
         }
 
         // =========================================================
-        // Updated Search & Print Logic for Student Portal (A4 clean)
+        // Updated Search & Print Logic for Student Portal
         // =========================================================
         function searchStudentById() {
             let searchId = document.getElementById("searchIdInput").value.trim();
@@ -777,7 +790,6 @@
             
             if(!searchId) { resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>කරුණාකර ශිෂ්‍ය අංකය ඇතුළත් කරන්න.</p>"; return; }
             
-            // Strict Filtering
             let foundRecords = studentsData.filter(s => s.id === searchId);
             if (searchTerm !== "all") { foundRecords = foundRecords.filter(s => s.term === searchTerm); }
 
@@ -789,9 +801,9 @@
             const termOrder = { "පළමු වාරය": 1, "දෙවන වාරය": 2, "තෙවන වාරය": 3 };
             foundRecords.sort((a, b) => (termOrder[a.term] || 99) - (termOrder[b.term] || 99));
 
-            // Setup Clean Header for the generated PDF/Print
+            // Clean structure for perfect A4 generation
             let html = `
-            <div id="printArea" style="background: white; padding: 20px;">
+            <div id="printArea" style="background: white; padding: 10px;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <h2 style="margin: 0; font-size: 22px; color: #000; text-transform: uppercase;">Mo/Dutugemunu Central College, Buttala</h2>
                     <h4 style="margin: 5px 0 0 0; color: #333; font-size: 16px; font-weight: normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව - ${searchTerm === 'all' ? 'සියලුම වාර' : searchTerm}</h4>
@@ -812,59 +824,66 @@
                     let baseLetter = record.classLetter.charAt(0);
                     let sameStreamCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter.startsWith(baseLetter));
                     let streamRankDisplay = calculateRankIfComplete(sameStreamCohort, record.id, reqCount);
-                    streamRankHTML = `<tr style="background:#f1f1f1; color:black;"><th style="text-align:right;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px;">${streamRankDisplay}</th></tr>`;
+                    streamRankHTML = `<tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${streamRankDisplay}</th></tr>`;
                 }
                 
-                html += `<div class="search-result-box">
+                html += `<div class="search-result-box" style="background:#fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
                     <h4 style="margin: 0 0 10px 0; color: #000; font-size: 16px;">👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>
-                    <div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #333;">📅 ${record.term}</div>
-                    <table class="search-table">
-                        <tr><th style="background:#eee; color:#000;">විෂය (Subject)</th><th style="background:#eee; color:#000;">ලකුණු (Marks)</th></tr>`;
+                    <div style="margin-bottom: 12px; font-size: 13px; font-weight: bold; color: #333;">📅 ${record.term}</div>
+                    
+                    <!-- Table wrapper with scroll for mobile -->
+                    <div class="table-responsive-search">
+                        <table class="search-table" style="width: 100%; min-width: 480px; border-collapse: collapse;">
+                            <tr><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">විෂය (Subject)</th><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">ලකුණු (Marks)</th></tr>`;
                 
                 for (let [sub, mark] of Object.entries(record.marks)) { 
-                    html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`; 
+                    html += `<tr><td style="text-align:left; padding:10px; border: 1px solid #ccc;">${sub}</td><td style="font-weight:bold; padding:10px; border: 1px solid #ccc;">${mark}</td></tr>`; 
                 }
                 
                 html += `
-                        <tr style="background:#f1f1f1; color:black;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr>
-                        <tr style="background:#f1f1f1; color:black;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr>
-                        <tr style="background:#f1f1f1; color:black;"><th style="text-align:right;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px;">${classRankDisplay}</th></tr>
-                        ${streamRankHTML}
-                    </table>
+                            <tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">එකතුව (Total):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.total}</th></tr>
+                            <tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.average}</th></tr>
+                            <tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${classRankDisplay}</th></tr>
+                            ${streamRankHTML}
+                        </table>
+                    </div>
                 </div>`;
             });
             
             html += `</div>`; // Close Print Area
             
-            // Buttons section - completely hidden during print (class="no-print" and data-html2canvas-ignore)
+            // Hidden from print entirely via CSS
             html += `<div style="text-align: center; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;" data-html2canvas-ignore="true" class="no-print">
-                <button class="btn-submit btn-print-search" onclick="window.print()" style="background: linear-gradient(to right, #28a745, #218838); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color:white;">🖨️ Print</button>
+                <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color:white;">🖨️ Print</button>
                 <button class="btn-submit btn-pdf" onclick="downloadStudentPDF('${searchId}')" style="background: linear-gradient(to right, #dc3545, #c82333); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color: white;">📄 PDF Download</button>
             </div>`;
             
             resultsContainer.innerHTML = html;
         }
 
-        // ==========================================
-        // Mobile-Optimized A4 Portrait PDF Export
-        // ==========================================
+        function printStudentSearch() {
+            document.body.classList.add('print-search-mode');
+            window.print();
+            setTimeout(() => { document.body.classList.remove('print-search-mode'); }, 1000);
+        }
+
         function downloadStudentPDF(studentId) {
-            const element = document.getElementById('searchResults');
+            const element = document.getElementById('printArea');
             if(!element || element.innerHTML.trim() === "") return;
             
-            // Apply the PDF Export CSS class to enforce Desktop-like width 
-            // so that when downloading from mobile, the PDF is not squished.
+            // Add absolute positioning class to fix offset/shifting issues on mobile
             document.body.classList.add('pdf-export-mode');
+            window.scrollTo(0, 0); // Scroll to top corner so PDF capture aligns perfectly at (0,0)
             
             let termVal = document.getElementById("searchTermSelect").value;
             let termName = termVal === "all" ? "All_Terms" : termVal;
             let fileName = `Result_${studentId}_${termName}.pdf`;
             
             const opt = { 
-                margin: [0.5, 0.5, 0.5, 0.5], // Top, Left, Bottom, Right in inches
+                margin: [0.5, 0.5, 0.5, 0.5],
                 filename: fileName, 
                 image: { type: 'jpeg', quality: 1 }, 
-                html2canvas: { scale: 2, useCORS: true, logging: false }, // Highest quality scale
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0 }, 
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
             };
             
@@ -874,11 +893,10 @@
             
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.innerHTML = originalText;
-                document.body.classList.remove('pdf-export-mode'); // Remove layout override
+                document.body.classList.remove('pdf-export-mode');
             });
         }
 
-        // (Other basic functions left intact)
         function downloadPDF() {
             if(studentsData.length === 0) { alert("PDF කිරීමට පෙර දත්ත ඇතුළත් කරන්න!"); return; }
             const element = document.getElementById('reportCard'); const tableContainer = document.getElementById('tableResponsiveContainer');
