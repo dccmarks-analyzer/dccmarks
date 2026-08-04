@@ -172,6 +172,14 @@
                 <div id="loginError" class="login-error">Username හෝ Password වැරදියි!</div>
                 <button type="submit" class="btn-login">Login</button>
             </form>
+            
+            <!-- අලුතින් එකතු කළ කොටස: සිසුන් සඳහා ලොග් වීම -->
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+            <p style="color: #444; margin-bottom: 10px; font-weight: bold; font-size: 14px;">සිසුන් සඳහා (For Students):</p>
+            <button type="button" onclick="showStudentPortal()" style="background: linear-gradient(to right, #17a2b8, #138496); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                🎓 තමාගේ ප්‍රතිඵල බලන්න
+            </button>
+            
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
                 Developer - Kelum Konara | Smart Soft
             </div>
@@ -251,7 +259,6 @@
                         <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
                         <div id="subjectsContainer"></div>
                         
-                        <!-- ADDED: Clear Form Button in the Entry Section -->
                         <div style="display: flex; gap: 10px; margin-top: 15px;">
                             <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0;">ලකුණු පද්ධතියට එක් කරන්න</button>
                             <button type="button" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearMarksInputs()">Clear</button>
@@ -271,7 +278,6 @@
                     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 10px;">
                         <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
                         
-                        <!-- Advanced Filters Area (RESTORED MISSING FILTERS) -->
                         <div class="table-filters">
                             <select id="tableTermSelect" onchange="updateTable()">
                                 <option value="all">සියලුම වාර</option>
@@ -308,7 +314,6 @@
                                 <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
                             </select>
 
-                            <!-- FIXED: These were missing in your previous version, which broke the normal table view -->
                             <select id="filterSubject" onchange="applySubjectFilter()">
                                 <option value="all">සියලුම විෂයයන් (All Subjects)</option>
                             </select>
@@ -321,7 +326,6 @@
                                 <option value="0_34">0 - 34 (W)</option>
                             </select>
                             
-                            <!-- ADDED: Clear Filters Button (Reset List View) -->
                             <button class="btn-clear" onclick="clearTableFilters()" style="flex: 1 1 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">🔄 Reset List View (Clear Filters)</button>
                         </div>
                     </div>
@@ -344,7 +348,6 @@
                     <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
                     <div class="flex-row" style="align-items: center;">
                         <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
-                        <!-- ADDED: Clear Search Button -->
                         <div style="display: flex; gap: 8px; width: 100%;">
                             <button type="button" class="btn-submit" style="flex: 2; margin-top: 6px; padding: 12px;" onclick="searchStudentById()">සොයන්න</button>
                             <button type="button" class="btn-clear" style="flex: 1; margin-top: 6px; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearSearchInputs()">Clear</button>
@@ -570,7 +573,6 @@
         // ADDED CLEAR FUNCTIONS 
         // ==========================================
         
-        // 1. Clear Marks Form Inputs Only
         function clearMarksInputs() {
             document.querySelectorAll(".mark-input, input[id^='m_']").forEach(inp => inp.value = "");
             document.getElementById("selectedStudentDrop").value = "";
@@ -578,7 +580,6 @@
             document.getElementById("studentName").value = "";
         }
 
-        // 2. Clear Table Filters (Reset View)
         function clearTableFilters() {
             document.getElementById("tableTermSelect").value = "පළමු වාරය"; 
             document.getElementById("tableGradeSelect").value = "12";
@@ -588,7 +589,6 @@
             updateTable();
         }
 
-        // 3. Clear Search Field
         function clearSearchInputs() {
             document.getElementById("searchIdInput").value = "";
             document.getElementById("searchResults").innerHTML = "";
@@ -1159,8 +1159,13 @@
                 html += `<div class="search-result-box"><h4>👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4><div style="margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #555;">📅 ${record.term}</div><table class="search-table"><tr><th>විෂය (Subject)</th><th>ලකුණු (Marks)</th></tr>`;
                 for (let [sub, mark] of Object.entries(record.marks)) { html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`; }
                 html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr><tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr><tr style="background:#2e7d32; color:white;"><th style="text-align:right;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px;">${classRankDisplay}</th></tr>${streamRankHTML}</table></div>`;
+                
+                // අලුතින් එකතු කළ බොත්තම් කොටස (Print සහ PDF Download)
+                html += `<div style="text-align: center; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;" data-html2canvas-ignore="true">
+                    <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0;">🖨️ මුද්‍රණය (Print)</button>
+                    <button class="btn-submit btn-pdf" onclick="downloadStudentPDF('${record.id}')" style="background: linear-gradient(to right, #dc3545, #c82333); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color: white;">📄 PDF Download</button>
+                </div>`;
             });
-            html += `<div style="text-align: center; margin-top: 20px;"><button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); max-width: 250px; margin: 0 auto; display: inline-block; padding: 12px 20px; border-radius: 8px;">🖨️ මෙම ප්‍රතිඵල මුද්‍රණය කරන්න</button></div>`;
             resultsContainer.innerHTML = html;
         }
 
@@ -1230,7 +1235,6 @@
                 document.getElementById("reg_address").value = student.address;
                 document.getElementById("reg_phone").value = student.phone;
                 
-                // Scroll to the form
                 window.scrollTo({ top: document.getElementById("regStudentFormCard").offsetTop, behavior: 'smooth' });
             }
         }
@@ -1243,9 +1247,55 @@
                 document.getElementById("treg_subject").value = teacher.subject;
                 document.getElementById("treg_phone").value = teacher.phone;
                 
-                // Scroll to the form
                 window.scrollTo({ top: document.getElementById("regTeacherFormCard").offsetTop, behavior: 'smooth' });
             }
+        }
+
+        // ==========================================
+        // අලුතින් එකතු කළ ශිෂ්‍ය පෝටල් ෆන්ක්ෂන්ස්
+        // ==========================================
+        function showStudentPortal() {
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            
+            // Admin ට අදාළ දේවල් සැඟවීම (Hide)
+            document.querySelector(".tab-nav").style.display = "none";
+            document.getElementById("formCard").style.display = "none";
+            document.getElementById("reportCard").style.display = "none";
+            document.getElementById("chartCard").style.display = "none";
+            
+            // Search Card එක පමණක් පෙන්වීම
+            document.getElementById("searchCard").style.display = "block";
+            
+            // අමතර ආරක්ෂාවට අනිත් Tabs ද hide කිරීම
+            document.getElementById("tab-students").style.display = "none";
+            document.getElementById("tab-teachers").style.display = "none";
+        }
+
+        function downloadStudentPDF(studentId) {
+            const element = document.getElementById('searchResults');
+            
+            if(!element || element.innerHTML.trim() === "") return;
+            
+            // PDF එකේ නම
+            let fileName = `Student_Result_${studentId}.pdf`;
+            
+            const opt = { 
+                margin: 0.3, 
+                filename: fileName, 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { scale: 2 }, 
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+            };
+            
+            // බොත්තමේ නම වෙනස් කරමින් Loading Effect එකක් පෙන්වීම
+            let btn = document.querySelector(`button[onclick="downloadStudentPDF('${studentId}')"]`);
+            let originalText = btn.innerHTML;
+            btn.innerHTML = "⏳ Downloading...";
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText; // Download වූ පසු නැවතත් පරණ නම පෙන්වීම
+            });
         }
     </script>
 </body>
