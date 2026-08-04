@@ -173,15 +173,14 @@
                 <button type="submit" class="btn-login">Login</button>
             </form>
             
-            <!-- අලුතින් එකතු කළ කොටස: සිසුන් සඳහා ලොග් වීම -->
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
             <p style="color: #444; margin-bottom: 10px; font-weight: bold; font-size: 14px;">සිසුන් සඳහා (For Students):</p>
             <button type="button" onclick="showStudentPortal()" style="background: linear-gradient(to right, #17a2b8, #138496); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                🎓 තමාගේ ප්‍රතිඵල බලන්න
+                🎓 ඔබේ ප්‍රතිඵලය ලබාගන්න
             </button>
             
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
-                Developer - Kelum Konara | Smart Soft
+                Developer - Kelum Koonara | Smart Soft
             </div>
         </div>
     </div>
@@ -251,7 +250,6 @@
                                 <option value="" disabled selected>පළමුව ශ්‍රේණිය හා පන්තිය තෝරන්න</option>
                             </select>
                             <span class="hint-text">ළමුන් නොපෙන්වයි නම් පළමුව "ශිෂ්‍ය ලියාපදිංචිය" මගින් ළමුන් ඇතුළත් කරන්න.</span>
-                            <!-- Hidden fields to store selected student ID and Name -->
                             <input type="hidden" id="studentId" required>
                             <input type="hidden" id="studentName" required>
                         </div>
@@ -346,12 +344,18 @@
                 <!-- Student Search Card -->
                 <div class="card" id="searchCard">
                     <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
-                    <div class="flex-row" style="align-items: center;">
+                    <div class="flex-row" style="align-items: center; margin-bottom: 10px;">
                         <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
-                        <div style="display: flex; gap: 8px; width: 100%;">
-                            <button type="button" class="btn-submit" style="flex: 2; margin-top: 6px; padding: 12px;" onclick="searchStudentById()">සොයන්න</button>
-                            <button type="button" class="btn-clear" style="flex: 1; margin-top: 6px; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearSearchInputs()">Clear</button>
-                        </div>
+                        <select id="searchTermSelect" style="border: 1px solid #ccc; border-radius: 6px; padding: 12px; font-size: 14px;">
+                            <option value="all" selected>සියලුම වාර (All Terms)</option>
+                            <option value="පළමු වාරය">පළමු වාරය</option>
+                            <option value="දෙවන වාරය">දෙවන වාරය</option>
+                            <option value="තෙවන වාරය">තෙවන වාරය</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 8px; width: 100%;">
+                        <button type="button" class="btn-submit" style="flex: 2; margin-top: 6px; padding: 12px;" onclick="searchStudentById()">සොයන්න</button>
+                        <button type="button" class="btn-clear" style="flex: 1; margin-top: 6px; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearSearchInputs()">Clear</button>
                     </div>
                     <div id="searchResults"></div>
                 </div>
@@ -502,7 +506,7 @@
         </div>
 
         <div class="dev-footer">
-            Developer - <span>Kelum Konara</span> | Smart Soft
+            Developer - <span>Kelum Koonara</span> | Smart Soft
         </div>
     </div>
 
@@ -591,6 +595,7 @@
 
         function clearSearchInputs() {
             document.getElementById("searchIdInput").value = "";
+            document.getElementById("searchTermSelect").value = "all";
             document.getElementById("searchResults").innerHTML = "";
         }
 
@@ -1051,7 +1056,6 @@
                 return;
             }
 
-            // Lock and Rank Logic
             let reqCount = getReqSubCount(selectedGrade);
             let completeStudents = filteredData.filter(s => Object.keys(s.marks).length >= reqCount);
             let pendingStudents = filteredData.filter(s => Object.keys(s.marks).length < reqCount);
@@ -1124,11 +1128,21 @@
 
         function searchStudentById() {
             let searchId = document.getElementById("searchIdInput").value.trim();
+            let searchTerm = document.getElementById("searchTermSelect").value;
             let resultsContainer = document.getElementById("searchResults");
             
             if(!searchId) { resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>කරුණාකර ශිෂ්‍ය අංකය ඇතුළත් කරන්න.</p>"; return; }
+            
             let foundRecords = studentsData.filter(s => s.id === searchId);
-            if(foundRecords.length === 0) { resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>මෙම අංකය සහිත ප්‍රතිඵල පද්ධතියේ නොමැත.</p>"; return; }
+
+            if (searchTerm !== "all") {
+                foundRecords = foundRecords.filter(s => s.term === searchTerm);
+            }
+
+            if(foundRecords.length === 0) { 
+                resultsContainer.innerHTML = "<p style='color:red; text-align:center; font-size:13px;'>මෙම අංකය සහ වාරය සඳහා ප්‍රතිඵල පද්ධතියේ නොමැත.</p>"; 
+                return; 
+            }
 
             const termOrder = { "පළමු වාරය": 1, "දෙවන වාරය": 2, "තෙවන වාරය": 3 };
             foundRecords.sort((a, b) => (termOrder[a.term] || 99) - (termOrder[b.term] || 99));
@@ -1160,7 +1174,6 @@
                 for (let [sub, mark] of Object.entries(record.marks)) { html += `<tr><td style="text-align:left;">${sub}</td><td style="font-weight:bold;">${mark}</td></tr>`; }
                 html += `<tr style="background:#f57c00; color:white;"><th style="text-align:right;">එකතුව (Total):</th><th style="font-size:14px;">${record.total}</th></tr><tr style="background:#1976d2; color:white;"><th style="text-align:right;">සාමාන්‍යය (Average):</th><th style="font-size:14px;">${record.average}</th></tr><tr style="background:#2e7d32; color:white;"><th style="text-align:right;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px;">${classRankDisplay}</th></tr>${streamRankHTML}</table></div>`;
                 
-                // අලුතින් එකතු කළ බොත්තම් කොටස (Print සහ PDF Download)
                 html += `<div style="text-align: center; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;" data-html2canvas-ignore="true">
                     <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0;">🖨️ මුද්‍රණය (Print)</button>
                     <button class="btn-submit btn-pdf" onclick="downloadStudentPDF('${record.id}')" style="background: linear-gradient(to right, #dc3545, #c82333); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color: white;">📄 PDF Download</button>
@@ -1221,9 +1234,6 @@
             myChart = new Chart(ctx, { type: 'bar', data: { labels: classLetters.map(letter => document.getElementById("chartGradeSelect").value + "-" + letter), datasets: chartDatasets }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
         }
 
-        // ==========================================
-        // Edit Functionality
-        // ==========================================
         function editStudent(admNo) {
             let student = registeredStudents.find(s => s.admissionNo === admNo);
             if(student) {
@@ -1252,22 +1262,19 @@
         }
 
         // ==========================================
-        // අලුතින් එකතු කළ ශිෂ්‍ය පෝටල් ෆන්ක්ෂන්ස්
+        // Student Portal Functions
         // ==========================================
         function showStudentPortal() {
             document.getElementById("loginScreen").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             
-            // Admin ට අදාළ දේවල් සැඟවීම (Hide)
             document.querySelector(".tab-nav").style.display = "none";
             document.getElementById("formCard").style.display = "none";
             document.getElementById("reportCard").style.display = "none";
             document.getElementById("chartCard").style.display = "none";
             
-            // Search Card එක පමණක් පෙන්වීම
             document.getElementById("searchCard").style.display = "block";
             
-            // අමතර ආරක්ෂාවට අනිත් Tabs ද hide කිරීම
             document.getElementById("tab-students").style.display = "none";
             document.getElementById("tab-teachers").style.display = "none";
         }
@@ -1277,7 +1284,6 @@
             
             if(!element || element.innerHTML.trim() === "") return;
             
-            // PDF එකේ නම
             let fileName = `Student_Result_${studentId}.pdf`;
             
             const opt = { 
@@ -1288,13 +1294,12 @@
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
             };
             
-            // බොත්තමේ නම වෙනස් කරමින් Loading Effect එකක් පෙන්වීම
             let btn = document.querySelector(`button[onclick="downloadStudentPDF('${studentId}')"]`);
             let originalText = btn.innerHTML;
             btn.innerHTML = "⏳ Downloading...";
             
             html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerHTML = originalText; // Download වූ පසු නැවතත් පරණ නම පෙන්වීම
+                btn.innerHTML = originalText;
             });
         }
     </script>
