@@ -116,7 +116,6 @@
         /* =========================================================
            --- EXACT A4 PORTRAIT FIX FOR PDF EXPORT ---
            ========================================================= */
-        /* PDF එක හැදෙන වෙලාවට අනිත් ඔක්කොම hide කරලා Container එක විතරක් පෙන්නන CSS */
         body.pdf-exporting > :not(#tempPdfContainer) {
             display: none !important;
         }
@@ -125,6 +124,7 @@
             padding: 0 !important;
             margin: 0 !important;
             overflow: visible !important;
+            height: auto !important;
         }
         #tempPdfContainer {
             width: 794px !important; /* A4 Width proportion */
@@ -134,6 +134,10 @@
             background: #ffffff !important;
             box-sizing: border-box !important;
             display: block !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 999999 !important;
         }
         #tempPdfContainer .table-responsive-search { overflow: visible !important; width: 100% !important; border: none !important;}
         #tempPdfContainer .search-table { min-width: 100% !important; width: 100% !important; }
@@ -726,7 +730,6 @@
             const termOrder = { "පළමු වාරය": 1, "දෙවන වාරය": 2, "තෙවන වාරය": 3 };
             foundRecords.sort((a, b) => (termOrder[a.term] || 99) - (termOrder[b.term] || 99));
 
-            // Clean structure. This printArea wrapper is crucial for the perfect A4 layout.
             let html = `
             <div id="printArea">
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -775,9 +778,8 @@
                 </div>`;
             });
             
-            html += `</div>`; // Close Print Area
+            html += `</div>`; 
             
-            // Buttons section - completely hidden during print
             html += `
             <div style="text-align: center; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;" class="no-print">
                 <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color:white;">🖨️ Print</button>
@@ -793,29 +795,36 @@
             setTimeout(() => { document.body.classList.remove('print-search-mode'); }, 1000);
         }
 
+        // =========================================================
+        // FULLY FIXED PDF GENERATION (NO SCROLL OFFSET)
+        // =========================================================
         function downloadStudentPDF(studentId) {
             const originalElement = document.getElementById('printArea');
             if(!originalElement || originalElement.innerHTML.trim() === "") return;
             
-            // සම්පූර්ණ offset ප්‍රශ්නය විසඳීම සඳහා නව Container එකක් හදා එය පිටුවේ ඉහළටම (0,0) ගෙන ඒම
+            // 1. දැනට scroll කරලා තියෙන දුර මතක තබා ගැනීම
+            const scrollPos = window.scrollY; 
+            
+            // 2. අලුත් තාවකාලික container එකක් සාදා එයට දත්ත දැමීම
             const tempContainer = document.createElement('div');
             tempContainer.id = 'tempPdfContainer';
             tempContainer.innerHTML = originalElement.innerHTML;
             document.body.appendChild(tempContainer);
             
-            // අනිත් ඔක්කොම සඟවා (hide), scroll එක මුලටම (0) ගෙන ඒම
+            // 3. පද්ධතියේ අනෙකුත් සියලුම දේවල් hide කර scroll එක 0 ට ගැනීම
             document.body.classList.add('pdf-exporting');
-            window.scrollTo(0, 0);
+            window.scrollTo(0, 0); 
             
             let termVal = document.getElementById("searchTermSelect").value;
             let termName = termVal === "all" ? "All_Terms" : termVal;
             let fileName = `Result_${studentId}_${termName}.pdf`;
             
+            // 800px පළලක් ලබාදීමෙන් A4 Portrait එකකට අන්තර්ගතය අඩුවක් නොමැතිව fit වේ
             const opt = { 
-                margin: [0.3, 0.3, 0.3, 0.3], // Add small margin around the A4 page
+                margin: [0.3, 0.3, 0.3, 0.3], 
                 filename: fileName, 
                 image: { type: 'jpeg', quality: 1 }, 
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0 }, 
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0, windowWidth: 800 }, 
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
             };
             
@@ -823,12 +832,18 @@
             let originalText = btn ? btn.innerHTML : "📄 PDF Download";
             if(btn) btn.innerHTML = "⏳ Downloading...";
             
-            // PDF එක හැදුවට පස්සේ ආපහු පරණ විදියටම පද්ධතිය සැකසීම
-            html2pdf().set(opt).from(tempContainer).save().then(() => {
-                if(btn) btn.innerHTML = originalText;
-                document.body.classList.remove('pdf-exporting');
-                document.body.removeChild(tempContainer);
-            });
+            // 4. Timeout එකක් දීමෙන් browser එකට (0,0) ස්ථානය හඳුනාගැනීමට (repaint වීමට) අවස්ථාව ලබා දේ
+            // මේ නිසා PDF එකේ උඩින් හිස් ඉඩක් එන්නේ නැත.
+            setTimeout(() => {
+                html2pdf().set(opt).from(tempContainer).save().then(() => {
+                    if(btn) btn.innerHTML = originalText;
+                    
+                    // වැඩේ ඉවර වූ පසු පද්ධතිය නැවත පරණ විදියටම සැකසීම
+                    document.body.classList.remove('pdf-exporting');
+                    document.body.removeChild(tempContainer);
+                    window.scrollTo(0, scrollPos); // කලින් හිටපු තැනටම නැවත scroll කිරීම
+                });
+            }, 150); 
         }
 
         function downloadPDF() {
