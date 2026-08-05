@@ -113,22 +113,50 @@
             .flex-row { flex-direction: row; }
         }
 
-        /* --- PDF Generation Specific A4 Layout Fix --- */
-        .pdf-export-mode body { overflow: hidden !important; }
-        .pdf-export-mode #printArea {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 750px !important; /* Force exact A4 Portrait width */
+        /* =========================================================
+           --- PERFECT A4 PDF GENERATION CSS ---
+           ========================================================= */
+        body.pdf-export-mode {
             background: white !important;
-            z-index: 10000 !important;
             margin: 0 !important;
-            padding: 20px !important;
-            box-sizing: border-box !important;
+            padding: 0 !important;
+            overflow: visible !important;
         }
-        .pdf-export-mode .table-responsive-search { overflow-x: visible !important; width: 100% !important; }
+        
+        /* Hide EVERYTHING else to force the printArea to the absolute top-left */
+        .pdf-export-mode #loginScreen,
+        .pdf-export-mode .school-header,
+        .pdf-export-mode .tab-nav,
+        .pdf-export-mode #formCard,
+        .pdf-export-mode #reportCard,
+        .pdf-export-mode #chartCard,
+        .pdf-export-mode .dev-footer,
+        .pdf-export-mode #searchCard > .section-title,
+        .pdf-export-mode #searchCard > .flex-row {
+            display: none !important;
+        }
+
+        .pdf-export-mode #mainApp { padding: 0 !important; margin: 0 !important; }
+        
+        .pdf-export-mode #searchCard {
+            box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: white !important;
+        }
+
+        /* Format the printArea exactly like an A4 document */
+        .pdf-export-mode #printArea {
+            width: 794px !important; /* Exact A4 width proportion */
+            max-width: 794px !important;
+            margin: 0 auto !important;
+            padding: 20px !important;
+            background: white !important;
+            box-sizing: border-box !important;
+            display: block !important;
+        }
+        
+        .pdf-export-mode .table-responsive-search { overflow: visible !important; width: 100% !important; border: none !important;}
         .pdf-export-mode .search-table { min-width: 100% !important; width: 100% !important; }
-        .pdf-export-mode .search-result-box { border: none !important; padding: 0 !important; margin-top: 5px !important; }
+        .pdf-export-mode .search-result-box { border: none !important; padding: 0 !important; margin-top: 5px !important; box-shadow: none !important; }
+        .pdf-export-mode .search-table th, .pdf-export-mode .search-table td { font-size: 14px !important; color: #000 !important;}
 
         /* --- Global Print Styles --- */
         @media print {
@@ -183,7 +211,7 @@
             </button>
             
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
-                Developer - Kelum Konara | Smart Soft
+                Developer - Kelum Koonara | Smart Soft
             </div>
         </div>
     </div>
@@ -468,7 +496,7 @@
         </div>
 
         <div class="dev-footer no-print">
-            Developer - <span>Kelum Konara</span> | Smart Soft
+            Developer - <span>Kelum Koonara</span> | Smart Soft
         </div>
     </div>
 
@@ -781,7 +809,7 @@
         }
 
         // =========================================================
-        // Updated Search & Print Logic for Student Portal
+        // Updated Search & Print Logic for PERFECT A4 Alignment
         // =========================================================
         function searchStudentById() {
             let searchId = document.getElementById("searchIdInput").value.trim();
@@ -801,9 +829,9 @@
             const termOrder = { "පළමු වාරය": 1, "දෙවන වාරය": 2, "තෙවන වාරය": 3 };
             foundRecords.sort((a, b) => (termOrder[a.term] || 99) - (termOrder[b.term] || 99));
 
-            // Clean structure for perfect A4 generation
+            // Clean structure. This printArea wrapper is crucial for the perfect A4 layout.
             let html = `
-            <div id="printArea" style="background: white; padding: 10px;">
+            <div id="printArea">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <h2 style="margin: 0; font-size: 22px; color: #000; text-transform: uppercase;">Mo/Dutugemunu Central College, Buttala</h2>
                     <h4 style="margin: 5px 0 0 0; color: #333; font-size: 16px; font-weight: normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව - ${searchTerm === 'all' ? 'සියලුම වාර' : searchTerm}</h4>
@@ -827,7 +855,8 @@
                     streamRankHTML = `<tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${streamRankDisplay}</th></tr>`;
                 }
                 
-                html += `<div class="search-result-box" style="background:#fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                html += `
+                <div class="search-result-box" style="background:#fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
                     <h4 style="margin: 0 0 10px 0; color: #000; font-size: 16px;">👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>
                     <div style="margin-bottom: 12px; font-size: 13px; font-weight: bold; color: #333;">📅 ${record.term}</div>
                     
@@ -852,8 +881,9 @@
             
             html += `</div>`; // Close Print Area
             
-            // Hidden from print entirely via CSS
-            html += `<div style="text-align: center; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;" data-html2canvas-ignore="true" class="no-print">
+            // Buttons section - completely hidden during print
+            html += `
+            <div style="text-align: center; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;" class="no-print">
                 <button class="btn-submit btn-print-search" onclick="printStudentSearch()" style="background: linear-gradient(to right, #28a745, #218838); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color:white;">🖨️ Print</button>
                 <button class="btn-submit btn-pdf" onclick="downloadStudentPDF('${searchId}')" style="background: linear-gradient(to right, #dc3545, #c82333); padding: 12px 20px; border-radius: 8px; width: auto; max-width: 250px; margin: 0; color: white;">📄 PDF Download</button>
             </div>`;
@@ -871,16 +901,19 @@
             const element = document.getElementById('printArea');
             if(!element || element.innerHTML.trim() === "") return;
             
-            // Add absolute positioning class to fix offset/shifting issues on mobile
+            // Apply the PDF Export CSS class to hide EVERYTHING else.
+            // This guarantees the 'printArea' is at the absolute top-left of the page.
             document.body.classList.add('pdf-export-mode');
-            window.scrollTo(0, 0); // Scroll to top corner so PDF capture aligns perfectly at (0,0)
+            
+            // Force scroll to top so html2canvas captures from the absolute beginning
+            window.scrollTo(0, 0);
             
             let termVal = document.getElementById("searchTermSelect").value;
             let termName = termVal === "all" ? "All_Terms" : termVal;
             let fileName = `Result_${studentId}_${termName}.pdf`;
             
             const opt = { 
-                margin: [0.5, 0.5, 0.5, 0.5],
+                margin: [0.3, 0.3, 0.3, 0.3], // Add small margin around the A4 page
                 filename: fileName, 
                 image: { type: 'jpeg', quality: 1 }, 
                 html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0 }, 
@@ -888,12 +921,13 @@
             };
             
             let btn = document.querySelector(`button[onclick="downloadStudentPDF('${studentId}')"]`);
-            let originalText = btn.innerHTML;
-            btn.innerHTML = "⏳ Downloading...";
+            let originalText = btn ? btn.innerHTML : "📄 PDF Download";
+            if(btn) btn.innerHTML = "⏳ Downloading...";
             
             html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerHTML = originalText;
-                document.body.classList.remove('pdf-export-mode');
+                if(btn) btn.innerHTML = originalText;
+                // Remove the layout override after generating
+                document.body.classList.remove('pdf-export-mode'); 
             });
         }
 
