@@ -180,7 +180,7 @@
             body.print-search-mode .search-result-box { background: transparent !important; border: none !important; padding: 0 !important; page-break-inside: avoid; margin-bottom: 20px !important; }
             
             /* Table Print Aesthetics */
-            .search-table th, .search-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 13px !important;}
+            .search-table th, .search-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 13px !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
         }
     </style>
 </head>
@@ -852,7 +852,7 @@
                     let baseLetter = record.classLetter.charAt(0);
                     let sameStreamCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter.startsWith(baseLetter));
                     let streamRankDisplay = calculateRankIfComplete(sameStreamCohort, record.id, reqCount);
-                    streamRankHTML = `<tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${streamRankDisplay}</th></tr>`;
+                    streamRankHTML = `<tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${streamRankDisplay}</th></tr>`;
                 }
                 
                 html += `
@@ -870,9 +870,9 @@
                 }
                 
                 html += `
-                            <tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">එකතුව (Total):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.total}</th></tr>
-                            <tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.average}</th></tr>
-                            <tr style="background:#f9f9f9; color:black;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${classRankDisplay}</th></tr>
+                            <tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">එකතුව (Total):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.total}</th></tr>
+                            <tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.average}</th></tr>
+                            <tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${classRankDisplay}</th></tr>
                             ${streamRankHTML}
                         </table>
                     </div>
