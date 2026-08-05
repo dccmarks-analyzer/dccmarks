@@ -123,7 +123,7 @@
             background: #ffffff !important;
             padding: 0 !important;
             margin: 0 !important;
-            overflow: visible !important;
+            overflow: hidden !important; /* Hide scrollbars during capture */
             height: auto !important;
         }
         #tempPdfContainer {
@@ -614,7 +614,7 @@
                 try {
                     await fetch(FIREBASE_MARKS_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(studentsData) });
                     alert("නියමයි! ලකුණු සාර්ථකව සේව් වුණා.");
-                } catch (e) { alert("Network Error: කරුණාකර Internet Connection එක පරීක්ෂා කරන්න"); }
+                } catch (e) { alert("Network Error: කරුණාකර Internet Connection එක පරීක්ෂා জ্ঞකරන්න"); }
                 document.getElementById("loadingOverlay").style.display = "none";
             }
             document.getElementById("tableTermSelect").value = term; document.getElementById("tableGradeSelect").value = grade.toString();
@@ -710,7 +710,7 @@
         }
 
         // =========================================================
-        // Updated Search & Print Logic for PERFECT A4 Alignment
+        // Updated Search & Print Logic 
         // =========================================================
         function searchStudentById() {
             let searchId = document.getElementById("searchIdInput").value.trim();
@@ -752,7 +752,7 @@
                     let baseLetter = record.classLetter.charAt(0);
                     let sameStreamCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter.startsWith(baseLetter));
                     let streamRankDisplay = calculateRankIfComplete(sameStreamCohort, record.id, reqCount);
-                    streamRankHTML = `<tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${streamRankDisplay}</th></tr>`;
+                    streamRankHTML = `<tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc; color:#000;">${streamRankDisplay}</th></tr>`;
                 }
                 
                 html += `
@@ -769,9 +769,9 @@
                 }
                 
                 html += `
-                            <tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">එකතුව (Total):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.total}</th></tr>
-                            <tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc;">${record.average}</th></tr>
-                            <tr style="background:#f3e5f5; color:#000;"><th style="text-align:right; padding:10px; border: 1px solid #ccc;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc;">${classRankDisplay}</th></tr>
+                            <tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">එකතුව (Total):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc; color:#000;">${record.total}</th></tr>
+                            <tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc; color:#000;">${record.average}</th></tr>
+                            <tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc; color:#000;">${classRankDisplay}</th></tr>
                             ${streamRankHTML}
                         </table>
                     </div>
@@ -802,16 +802,23 @@
             const originalElement = document.getElementById('printArea');
             if(!originalElement || originalElement.innerHTML.trim() === "") return;
             
-            // 1. දැනට scroll කරලා තියෙන දුර මතක තබා ගැනීම
             const scrollPos = window.scrollY; 
             
-            // 2. අලුත් තාවකාලික container එකක් සාදා එයට දත්ත දැමීම
+            document.body.style.overflow = 'hidden';
+            
             const tempContainer = document.createElement('div');
             tempContainer.id = 'tempPdfContainer';
             tempContainer.innerHTML = originalElement.innerHTML;
+            
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.top = '0';
+            tempContainer.style.left = '0';
+            tempContainer.style.width = '794px';
+            tempContainer.style.backgroundColor = '#ffffff';
+            tempContainer.style.zIndex = '999999';
+            
             document.body.appendChild(tempContainer);
             
-            // 3. පද්ධතියේ අනෙකුත් සියලුම දේවල් hide කර scroll එක 0 ට ගැනීම
             document.body.classList.add('pdf-exporting');
             window.scrollTo(0, 0); 
             
@@ -819,12 +826,18 @@
             let termName = termVal === "all" ? "All_Terms" : termVal;
             let fileName = `Result_${studentId}_${termName}.pdf`;
             
-            // 800px පළලක් ලබාදීමෙන් A4 Portrait එකකට අන්තර්ගතය අඩුවක් නොමැතිව fit වේ
             const opt = { 
                 margin: [0.3, 0.3, 0.3, 0.3], 
                 filename: fileName, 
                 image: { type: 'jpeg', quality: 1 }, 
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0, windowWidth: 800 }, 
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    scrollY: 0, 
+                    scrollX: 0, 
+                    windowWidth: 794,
+                    y: 0 
+                }, 
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
             };
             
@@ -832,18 +845,16 @@
             let originalText = btn ? btn.innerHTML : "📄 PDF Download";
             if(btn) btn.innerHTML = "⏳ Downloading...";
             
-            // 4. Timeout එකක් දීමෙන් browser එකට (0,0) ස්ථානය හඳුනාගැනීමට (repaint වීමට) අවස්ථාව ලබා දේ
-            // මේ නිසා PDF එකේ උඩින් හිස් ඉඩක් එන්නේ නැත.
             setTimeout(() => {
                 html2pdf().set(opt).from(tempContainer).save().then(() => {
                     if(btn) btn.innerHTML = originalText;
                     
-                    // වැඩේ ඉවර වූ පසු පද්ධතිය නැවත පරණ විදියටම සැකසීම
                     document.body.classList.remove('pdf-exporting');
                     document.body.removeChild(tempContainer);
-                    window.scrollTo(0, scrollPos); // කලින් හිටපු තැනටම නැවත scroll කිරීම
+                    document.body.style.overflow = '';
+                    window.scrollTo(0, scrollPos);
                 });
-            }, 150); 
+            }, 300); 
         }
 
         function downloadPDF() {
