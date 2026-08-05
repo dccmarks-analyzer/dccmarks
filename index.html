@@ -114,79 +114,57 @@
         }
 
         /* =========================================================
-           --- PERFECT A4 PDF GENERATION CSS ---
+           --- EXACT A4 PORTRAIT FIX FOR PDF EXPORT ---
            ========================================================= */
-        body.pdf-export-mode {
-            background: white !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: visible !important;
-        }
-        
-        /* Hide EVERYTHING else to force the printArea to the absolute top-left */
-        .pdf-export-mode #loginScreen,
-        .pdf-export-mode .school-header,
-        .pdf-export-mode .tab-nav,
-        .pdf-export-mode #formCard,
-        .pdf-export-mode #reportCard,
-        .pdf-export-mode #chartCard,
-        .pdf-export-mode .dev-footer,
-        .pdf-export-mode #searchCard > .section-title,
-        .pdf-export-mode #searchCard > .flex-row {
+        /* PDF එක හැදෙන වෙලාවට අනිත් ඔක්කොම hide කරලා Container එක විතරක් පෙන්නන CSS */
+        body.pdf-exporting > :not(#tempPdfContainer) {
             display: none !important;
         }
-
-        .pdf-export-mode #mainApp { padding: 0 !important; margin: 0 !important; }
-        
-        .pdf-export-mode #searchCard {
-            box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: white !important;
+        body.pdf-exporting {
+            background: #ffffff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
         }
-
-        /* Format the printArea exactly like an A4 document */
-        .pdf-export-mode #printArea {
-            width: 794px !important; /* Exact A4 width proportion */
+        #tempPdfContainer {
+            width: 794px !important; /* A4 Width proportion */
             max-width: 794px !important;
             margin: 0 auto !important;
             padding: 20px !important;
-            background: white !important;
+            background: #ffffff !important;
             box-sizing: border-box !important;
             display: block !important;
         }
-        
-        .pdf-export-mode .table-responsive-search { overflow: visible !important; width: 100% !important; border: none !important;}
-        .pdf-export-mode .search-table { min-width: 100% !important; width: 100% !important; }
-        .pdf-export-mode .search-result-box { border: none !important; padding: 0 !important; margin-top: 5px !important; box-shadow: none !important; }
-        .pdf-export-mode .search-table th, .pdf-export-mode .search-table td { font-size: 14px !important; color: #000 !important;}
+        #tempPdfContainer .table-responsive-search { overflow: visible !important; width: 100% !important; border: none !important;}
+        #tempPdfContainer .search-table { min-width: 100% !important; width: 100% !important; }
+        #tempPdfContainer .search-result-box { border: none !important; padding: 0 !important; margin-top: 5px !important; box-shadow: none !important; }
+        #tempPdfContainer .search-table th, #tempPdfContainer .search-table td { font-size: 14px !important; color: #000 !important;}
 
         /* --- Global Print Styles --- */
         @media print {
             .no-print, [data-html2canvas-ignore="true"] { display: none !important; }
             body { background: white; margin: 0; padding: 0; }
             
-            /* Hide Admin elements */
             .school-header, .tab-nav, #formCard, #chartCard, .table-filters, #regStudentFormCard, #regTeacherFormCard { display: none !important; }
             
             @page { margin: 1cm; size: A4 portrait; }
             .card { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; margin: 0 !important;}
             
-            /* Student Search Print Fixes */
             body.print-search-mode #searchCard { display: block !important; }
             body.print-search-mode #searchCard .section-title, 
-            body.print-search-mode #searchCard .flex-row { display: none !important; } /* Hide search inputs */
+            body.print-search-mode #searchCard .flex-row { display: none !important; } 
             
             body.print-search-mode #printArea { display: block !important; width: 100% !important; padding: 0 !important; }
             body.print-search-mode .table-responsive-search { overflow-x: visible !important; width: 100% !important; border: none !important; }
             body.print-search-mode .search-table { min-width: 100% !important; width: 100% !important; }
             body.print-search-mode .search-result-box { background: transparent !important; border: none !important; padding: 0 !important; page-break-inside: avoid; margin-bottom: 20px !important; }
             
-            /* Table Print Aesthetics */
             .search-table th, .search-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 13px !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
         }
     </style>
 </head>
 <body>
 
-    <!-- Loading Indicator -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
         <div style="font-weight: bold; color: #ff4b2b; font-size: 18px;">දත්ත යාවත්කාලීන වෙමින් පවතී...<br><span style="font-size: 14px; color: #555;">(Please Wait)</span></div>
@@ -223,7 +201,6 @@
             <h3>ශිෂ්‍ය ලකුණු විශ්ලේෂණ පද්ධතිය</h3>
         </div>
 
-        <!-- Navigation Tabs -->
         <div class="tab-nav">
             <button class="tab-btn active" id="btn-marks" onclick="openTab('marks')">📊 ලකුණු කළමනාකරණය</button>
             <button class="tab-btn" id="btn-students" onclick="openTab('students')">🎓 ශිෂ්‍ය ලියාපදිංචිය</button>
@@ -234,7 +211,6 @@
         <div id="tab-marks" class="tab-content active">
             <div class="dashboard">
                 
-                <!-- Form -->
                 <div class="card" id="formCard">
                     <h3 class="section-title">විෂය ලකුණු ඇතුළත් කරන්න</h3>
                     <form id="marksForm">
@@ -292,7 +268,6 @@
                     </form>
                 </div>
                 
-                <!-- Report Table Admin View -->
                 <div class="card" id="reportCard">
                     <div id="printHeader">
                         <h2>Mo/Dutugemunu Central College, Buttala</h2>
@@ -305,53 +280,13 @@
                         <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
                         
                         <div class="table-filters">
-                            <select id="tableTermSelect" onchange="updateTable()">
-                                <option value="all">සියලුම වාර</option>
-                                <option value="පළමු වාරය" selected>පළමු වාරය</option>
-                                <option value="දෙවන වාරය">දෙවන වාරය</option>
-                                <option value="තෙවන වාරය">තෙවන වාරය</option>
-                            </select>
-                            <select id="tableGradeSelect" onchange="updateTable()">
-                                <option value="6">6 ශ්‍රේණිය</option>
-                                <option value="7">7 ශ්‍රේණිය</option>
-                                <option value="8">8 ශ්‍රේණිය</option>
-                                <option value="9">9 ශ්‍රේණිය</option>
-                                <option value="10">10 ශ්‍රේණිය</option>
-                                <option value="11">11 ශ්‍රේණිය</option>
-                                <option value="12" selected>12 ශ්‍රේණිය</option>
-                                <option value="13">13 ශ්‍රේණිය</option>
-                            </select>
+                            <select id="tableTermSelect" onchange="updateTable()"><option value="all">සියලුම වාර</option><option value="පළමු වාරය" selected>පළමු වාරය</option><option value="දෙවන වාරය">දෙවන වාරය</option><option value="තෙවන වාරය">තෙවන වාරය</option></select>
+                            <select id="tableGradeSelect" onchange="updateTable()"><option value="6">6 ශ්‍රේණිය</option><option value="7">7 ශ්‍රේණිය</option><option value="8">8 ශ්‍රේණිය</option><option value="9">9 ශ්‍රේණිය</option><option value="10">10 ශ්‍රේණිය</option><option value="11">11 ශ්‍රේණිය</option><option value="12" selected>12 ශ්‍රේණිය</option><option value="13">13 ශ්‍රේණිය</option></select>
                             <select id="tableClassSelect" onchange="updateTable()" style="border: 2px solid #6a1b9a;">
-                                <option value="all">සියලු පන්ති</option>
-                                <option disabled>── ඒකාබද්ධ (A/L පමණි) ──</option>
-                                <option value="A_combined" style="font-weight:bold; color:blue;">A අංශය (A1, A2 ඒකාබද්ධව)</option>
-                                <option value="C_combined" style="font-weight:bold; color:blue;">C අංශය (C1, C2 ඒකාබද්ධව)</option>
-                                <option value="T_combined" style="font-weight:bold; color:blue;">T අංශය (T1, T2 ඒකාබද්ධව)</option>
-                                <option value="M_combined" style="font-weight:bold; color:blue;">M අංශය (M1, M2 ඒකාබද්ධව)</option>
-                                <option value="S_combined" style="font-weight:bold; color:blue;">S අංශය (S1, S2 ඒකාබද්ධව)</option>
-                                <option disabled>── උසස් පෙළ (තනි) ──</option>
-                                <option value="A1">A1 පමණක්</option><option value="A2">A2 පමණක්</option>
-                                <option value="C1">C1 පමණක්</option><option value="C2">C2 පමණක්</option>
-                                <option value="T1">T1 පමණක්</option><option value="T2">T2 පමණක්</option>
-                                <option value="M1">M1 පමණක්</option><option value="M2">M2 පමණක්</option>
-                                <option value="S1">S1 පමණක්</option><option value="S2">S2 පමණක්</option>
-                                <option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option>
-                                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                                <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                                <option value="all">සියලු පන්ති</option><option disabled>── ඒකාබද්ධ (A/L පමණි) ──</option><option value="A_combined" style="font-weight:bold; color:blue;">A අංශය (A1, A2 ඒකාබද්ධව)</option><option value="C_combined" style="font-weight:bold; color:blue;">C අංශය (C1, C2 ඒකාබද්ධව)</option><option value="T_combined" style="font-weight:bold; color:blue;">T අංශය (T1, T2 ඒකාබද්ධව)</option><option value="M_combined" style="font-weight:bold; color:blue;">M අංශය (M1, M2 ඒකාබද්ධව)</option><option value="S_combined" style="font-weight:bold; color:blue;">S අංශය (S1, S2 ඒකාබද්ධව)</option><option disabled>── උසස් පෙළ (තනි) ──</option><option value="A1">A1 පමණක්</option><option value="A2">A2 පමණක්</option><option value="C1">C1 පමණක්</option><option value="C2">C2 පමණක්</option><option value="T1">T1 පමණක්</option><option value="T2">T2 පමණක්</option><option value="M1">M1 පමණක්</option><option value="M2">M2 පමණක්</option><option value="S1">S1 පමණක්</option><option value="S2">S2 පමණක්</option><option disabled>── සාමාන්‍ය පන්ති (6-11) ──</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
                             </select>
-
-                            <select id="filterSubject" onchange="applySubjectFilter()">
-                                <option value="all">සියලුම විෂයයන් (All Subjects)</option>
-                            </select>
-                            <select id="filterCondition" onchange="updateTable(true)">
-                                <option value="all">සියලුම මට්ටම්</option>
-                                <option value="75_100">75 - 100 (A)</option>
-                                <option value="65_74">65 - 74 (B)</option>
-                                <option value="50_64">50 - 64 (C)</option>
-                                <option value="35_49">35 - 49 (S)</option>
-                                <option value="0_34">0 - 34 (W)</option>
-                            </select>
-                            
+                            <select id="filterSubject" onchange="applySubjectFilter()"><option value="all">සියලුම විෂයයන් (All Subjects)</option></select>
+                            <select id="filterCondition" onchange="updateTable(true)"><option value="all">සියලුම මට්ටම්</option><option value="75_100">75 - 100 (A)</option><option value="65_74">65 - 74 (B)</option><option value="50_64">50 - 64 (C)</option><option value="35_49">35 - 49 (S)</option><option value="0_34">0 - 34 (W)</option></select>
                             <button class="btn-clear" onclick="clearTableFilters()" style="flex: 1 1 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">🔄 Reset List View (Clear Filters)</button>
                         </div>
                     </div>
@@ -362,10 +297,7 @@
                     </div>
                     
                     <div class="table-responsive" id="tableResponsiveContainer">
-                        <table id="dataTable">
-                            <thead><tr id="tableHeadRow"></tr></thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
+                        <table id="dataTable"><thead><tr id="tableHeadRow"></tr></thead><tbody id="tableBody"></tbody></table>
                     </div>
                 </div>
 
@@ -391,24 +323,11 @@
                     <div id="searchResults"></div>
                 </div>
 
-                <!-- Chart -->
                 <div class="card no-print" id="chartCard">
                     <h3 class="section-title">සමාන්තර පන්ති විශ්ලේෂණය</h3>
                     <div class="flex-row" style="margin-bottom: 10px;">
-                        <div style="width: 100%;">
-                            <select id="chartTermSelect" onchange="updateChart()">
-                                <option value="පළමු වාරය" selected>පළමු වාරය</option>
-                                <option value="දෙවන වාරය">දෙවන වාරය</option>
-                                <option value="තෙවන වාරය">තෙවන වාරය</option>
-                            </select>
-                        </div>
-                        <div style="width: 100%;">
-                            <select id="chartGradeSelect" onchange="updateChart()">
-                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                                <option value="9">9</option><option value="10">10</option><option value="11" selected>11</option>
-                                <option value="12">12</option><option value="13">13</option>
-                            </select>
-                        </div>
+                        <div style="width: 100%;"><select id="chartTermSelect" onchange="updateChart()"><option value="පළමු වාරය" selected>පළමු වාරය</option><option value="දෙවන වාරය">දෙවන වාරය</option><option value="තෙවන වාරය">තෙවන වාරය</option></select></div>
+                        <div style="width: 100%;"><select id="chartGradeSelect" onchange="updateChart()"><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11" selected>11</option><option value="12">12</option><option value="13">13</option></select></div>
                     </div>
                     <div class="chart-container"><canvas id="marksChart"></canvas></div>
                 </div>
@@ -421,9 +340,7 @@
                 <div class="card" id="regStudentFormCard">
                     <h3 class="section-title">නව ශිෂ්‍ය තොරතුරු ඇතුළත් කරන්න</h3>
                     <form id="studentRegForm">
-                        <div class="flex-row">
-                            <input type="text" id="reg_admNo" placeholder="ඇතුළත්වීමේ අංකය (Admission No)" required>
-                        </div>
+                        <div class="flex-row"><input type="text" id="reg_admNo" placeholder="ඇතුළත්වීමේ අංකය (Admission No)" required></div>
                         <input type="text" id="reg_fullName" placeholder="සම්පූර්ණ නම (Full Name)" required style="text-align: left; padding-left: 15px;">
                         <input type="text" id="reg_initialName" placeholder="මුලකුරු සමග නම (Name with Initials)" required style="text-align: left; padding-left: 15px;">
                         <div class="flex-row">
@@ -441,28 +358,11 @@
                 <div class="card" id="regStudentTableCard">
                     <h3 class="section-title">ලියාපදිංචි සිසුන්ගේ නාමලේඛනය</h3>
                     <div class="table-filters">
-                        <select id="filterRegGrade" onchange="renderStudentsTable()">
-                            <option value="all">සියලුම ශ්‍රේණි</option>
-                            <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                            <option value="9">9</option><option value="10">10</option><option value="11">11</option>
-                            <option value="12">12</option><option value="13">13</option>
-                        </select>
-                        <select id="filterRegClass" onchange="renderStudentsTable()">
-                            <option value="all">සියලුම පන්ති</option>
-                            <option value="A1">A1</option><option value="A2">A2</option>
-                            <option value="C1">C1</option><option value="C2">C2</option>
-                            <option value="T1">T1</option><option value="T2">T2</option>
-                            <option value="M1">M1</option><option value="M2">M2</option>
-                            <option value="S1">S1</option><option value="S2">S2</option>
-                            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                            <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
-                        </select>
+                        <select id="filterRegGrade" onchange="renderStudentsTable()"><option value="all">සියලුම ශ්‍රේණි</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option></select>
+                        <select id="filterRegClass" onchange="renderStudentsTable()"><option value="all">සියලුම පන්ති</option><option value="A1">A1</option><option value="A2">A2</option><option value="C1">C1</option><option value="C2">C2</option><option value="T1">T1</option><option value="T2">T2</option><option value="M1">M1</option><option value="M2">M2</option><option value="S1">S1</option><option value="S2">S2</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option></select>
                     </div>
                     <div class="table-responsive">
-                        <table id="studentsRegTable">
-                            <thead><tr><th>අංකය</th><th>මුලකුරු සමග නම</th><th>පන්තිය</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead>
-                            <tbody id="studentsRegTableBody"></tbody>
-                        </table>
+                        <table id="studentsRegTable"><thead><tr><th>අංකය</th><th>මුලකුරු සමග නම</th><th>පන්තිය</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead><tbody id="studentsRegTableBody"></tbody></table>
                     </div>
                 </div>
             </div>
@@ -486,10 +386,7 @@
                 <div class="card" id="regTeacherTableCard">
                     <h3 class="section-title">ගුරු මණ්ඩලය</h3>
                     <div class="table-responsive">
-                        <table id="teachersRegTable">
-                            <thead><tr><th>ID</th><th>නම</th><th>විෂයයන්</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead>
-                            <tbody id="teachersRegTableBody"></tbody>
-                        </table>
+                        <table id="teachersRegTable"><thead><tr><th>ID</th><th>නම</th><th>විෂයයන්</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead><tbody id="teachersRegTableBody"></tbody></table>
                     </div>
                 </div>
             </div>
@@ -860,7 +757,6 @@
                     <h4 style="margin: 0 0 10px 0; color: #000; font-size: 16px;">👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>
                     <div style="margin-bottom: 12px; font-size: 13px; font-weight: bold; color: #333;">📅 ${record.term}</div>
                     
-                    <!-- Table wrapper with scroll for mobile -->
                     <div class="table-responsive-search">
                         <table class="search-table" style="width: 100%; min-width: 480px; border-collapse: collapse;">
                             <tr><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">විෂය (Subject)</th><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">ලකුණු (Marks)</th></tr>`;
@@ -898,14 +794,17 @@
         }
 
         function downloadStudentPDF(studentId) {
-            const element = document.getElementById('printArea');
-            if(!element || element.innerHTML.trim() === "") return;
+            const originalElement = document.getElementById('printArea');
+            if(!originalElement || originalElement.innerHTML.trim() === "") return;
             
-            // Apply the PDF Export CSS class to hide EVERYTHING else.
-            // This guarantees the 'printArea' is at the absolute top-left of the page.
-            document.body.classList.add('pdf-export-mode');
+            // සම්පූර්ණ offset ප්‍රශ්නය විසඳීම සඳහා නව Container එකක් හදා එය පිටුවේ ඉහළටම (0,0) ගෙන ඒම
+            const tempContainer = document.createElement('div');
+            tempContainer.id = 'tempPdfContainer';
+            tempContainer.innerHTML = originalElement.innerHTML;
+            document.body.appendChild(tempContainer);
             
-            // Force scroll to top so html2canvas captures from the absolute beginning
+            // අනිත් ඔක්කොම සඟවා (hide), scroll එක මුලටම (0) ගෙන ඒම
+            document.body.classList.add('pdf-exporting');
             window.scrollTo(0, 0);
             
             let termVal = document.getElementById("searchTermSelect").value;
@@ -924,10 +823,11 @@
             let originalText = btn ? btn.innerHTML : "📄 PDF Download";
             if(btn) btn.innerHTML = "⏳ Downloading...";
             
-            html2pdf().set(opt).from(element).save().then(() => {
+            // PDF එක හැදුවට පස්සේ ආපහු පරණ විදියටම පද්ධතිය සැකසීම
+            html2pdf().set(opt).from(tempContainer).save().then(() => {
                 if(btn) btn.innerHTML = originalText;
-                // Remove the layout override after generating
-                document.body.classList.remove('pdf-export-mode'); 
+                document.body.classList.remove('pdf-exporting');
+                document.body.removeChild(tempContainer);
             });
         }
 
