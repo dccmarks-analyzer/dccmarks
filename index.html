@@ -188,7 +188,7 @@
             </button>
             
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
-                Developer - Kelum Konara | Smart Soft
+                Developer - Kelum Koonara | Smart Soft
             </div>
         </div>
     </div>
@@ -401,7 +401,7 @@
                         <hr style="border: 0; border-top: 2px solid #000; margin-top: 5px;">
                     </div>
 
-                    <h3 class="section-title no-print">ප්‍රතිඵල විශ්ලේෂණ වාර්තාව </h3>
+                    <h3 class="section-title no-print">විභාග දෙපාර්තමේන්තු ආකෘතියේ ප්‍රතිඵල වාර්තාව</h3>
                     
                     <div class="table-filters no-print">
                         <select id="masterTermSelect"><option value="පළමු වාරය" selected>පළමු වාරය</option><option value="දෙවන වාරය">දෙවන වාරය</option><option value="තෙවන වාරය">තෙවන වාරය</option></select>
@@ -428,7 +428,7 @@
         </div>
 
         <div class="dev-footer no-print">
-            Developer - <span>Kelum Konara</span> | Smart Soft
+            Developer - <span>Kelum Koonara</span> | Smart Soft
         </div>
     </div>
 
@@ -875,6 +875,7 @@
             displaySubjects.forEach(sub => {
                 headHtml += `<th><div class="vertical-text">${sub}</div></th>`;
             });
+            headHtml += `<th style="font-weight:bold; width:30px;">A</th><th style="font-weight:bold; width:30px;">B</th><th style="font-weight:bold; width:30px;">C</th><th style="font-weight:bold; width:30px;">S</th><th style="font-weight:bold; width:40px;">W/F</th>`;
             tableHeadRow.innerHTML = headHtml;
 
             // Create Body
@@ -885,12 +886,23 @@
                     <td style="text-align:left; white-space:nowrap;">${student.name}</td>
                     <td>${student.fullClassName}</td>`;
                 
+                let counts = { 'A': 0, 'B': 0, 'C': 0, 'S': 0, 'W': 0, 'F': 0 };
+
                 displaySubjects.forEach(sub => {
                     let mark = student.marks[sub];
                     let gradeLetter = getGradeLetter(mark, student.grade);
+                    if (gradeLetter !== '-') { counts[gradeLetter] = (counts[gradeLetter] || 0) + 1; }
                     let color = '#000';
                     row += `<td style="font-weight:bold; color:${color}; font-size: 14px;">${gradeLetter}</td>`;
                 });
+                
+                let failCount = counts['W'] + counts['F'];
+                row += `<td style="font-weight:bold; color:#000; font-size: 14px;">${counts['A']}</td>`;
+                row += `<td style="font-weight:bold; color:#000; font-size: 14px;">${counts['B']}</td>`;
+                row += `<td style="font-weight:bold; color:#000; font-size: 14px;">${counts['C']}</td>`;
+                row += `<td style="font-weight:bold; color:#000; font-size: 14px;">${counts['S']}</td>`;
+                row += `<td style="font-weight:bold; color:#000; font-size: 14px;">${failCount}</td>`;
+                
                 row += `</tr>`;
                 tableBody.innerHTML += row;
             });
