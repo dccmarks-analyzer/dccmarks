@@ -27,18 +27,18 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- Login Interface --- */
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 50%, #311b92 100%); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 15px;}
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 50%, #311b92 100%); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 5px;}
         .login-box { background: rgba(255, 255, 255, 0.95); padding: 30px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; width: 100%; max-width: 400px;}
         .login-box h2 { margin: 0 0 10px; color: #333; font-size: 22px;}
         .login-box p { color: #666; margin-bottom: 25px; font-size: 14px;}
         .login-box input { width: 100%; padding: 12px 15px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; text-align: center;}
-        .btn-login { background: linear-gradient(to right, #ff416c, #ff4b2b); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px;}
+        .btn-login { background: linear-gradient(to right, #ff416c, #ff4b2b); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px;}
         .login-error { color: red; font-size: 13px; display: none; margin-top: 10px;}
 
         /* --- Main App Container --- */
         #mainApp { display: none; width: 100%; max-width: 100%; margin: 0 auto; padding: 10px; padding-bottom: 30px; }
         
-        .school-header { background: linear-gradient(135deg, #6a1b9a, #8e24aa); color: white; text-align: center; padding: 15px; border-radius: 10px; margin-bottom: 15px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .school-header { background: linear-gradient(135deg, #6a1b9a, #8e24aa); color: white; text-align: center; padding: 5px; border-radius: 10px; margin-bottom: 15px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
         .school-header h1 { margin: 0; font-size: clamp(18px, 4vw, 26px); font-weight: 700; }
         .school-header h3 { margin: 5px 0 0 0; font-size: clamp(13px, 3vw, 16px); color: #f3e5f5; }
 
@@ -52,14 +52,14 @@
         .dashboard { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
         
         /* --- Cards --- */
-        .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; border-top: 4px solid #007bff; overflow: hidden; margin-bottom: 15px;}
+        .card { background: #fff; padding: 5px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; border-top: 4px solid #007bff; overflow: hidden; margin-bottom: 15px;}
         .card:nth-child(2) { border-top-color: #28a745; }
         .card:nth-child(3) { border-top-color: #ff9800; }
         .card:nth-child(4) { border-top-color: #9c27b0; }
         h3.section-title { margin-top: 0; color: #333; padding-bottom: 10px; border-bottom: 1px solid #eee; font-size: 16px; text-align: center;}
 
         /* --- Inputs & Buttons --- */
-        input, select, button, textarea { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 14px; box-sizing: border-box;}
+        input, select, button, textarea { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #000; border-radius: 6px; font-family: inherit; font-size: 14px; box-sizing: border-box;}
         input:focus, select:focus, textarea:focus { border-color: #6a1b9a; outline: none; }
         input[type="text"], input[type="number"], select { text-align: center; text-align-last: center; }
         
@@ -69,7 +69,7 @@
         .subject-row select { background: #fff; border: 1px solid #ddd; padding: 8px; font-size: 13px;}
         .subject-row input { flex: 1; font-size: 14px; text-align: center; padding: 8px; margin: 0; border: 1px solid #ddd;}
 
-        .btn-submit { background: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; font-size: 15px; margin-top: 15px; padding: 14px; border: none; cursor: pointer;}
+        .btn-submit { background: linear-gradient(to right, #007bff, #0056b3); color: white; font-weight: bold; font-size: 15px; margin-top: 5px; padding: 14px; border: none; cursor: pointer;}
         .action-buttons { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; justify-content: center;}
         .action-buttons button { flex: 1 1 30%; min-width: 90px; padding: 12px 5px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer;}
         .btn-print { background: linear-gradient(to right, #28a745, #218838); color: white; border: none; }
@@ -89,20 +89,20 @@
         .serial-col { font-weight: bold; color: #888; }
         .term-badge { background: #e3f2fd; color: #1565c0; padding: 3px 6px; border-radius: 10px; font-size: 11px; font-weight: bold; white-space: nowrap;}
 
-        .chart-container { position: relative; width: 100%; height: 300px; margin-top: 15px;}
-        .dev-footer { text-align: center; padding: 15px; color: #666; font-size: 12px; font-weight: bold; }
+        .chart-container { position: relative; width: 100%; height: 300px; margin-top: 5px;}
+        .dev-footer { text-align: center; padding: 5px; color: #666; font-size: 12px; font-weight: bold; }
         .dev-footer span { color: #6a1b9a; }
 
-        #printHeader { display: none; text-align: center; margin-bottom: 20px; }
+        #printHeader { display: none; text-align: center; margin-bottom: 5px; }
         #printHeader h2 { margin: 0; color: #000; font-size: 20px; }
         #printHeader h4 { margin: 5px 0; color: #444; font-size: 14px; font-weight: normal;}
-        #printHeader hr { border: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;}
+        #printHeader hr { border: 1px solid #000; margin-top: 10px; margin-bottom: 10px;}
 
         /* --- Search Results Styles (Mobile Responsive) --- */
         .search-result-box { background:#fff; border-radius:8px; padding:15px; margin-top:15px; text-align:left; border: 1px solid #ddd;}
         .table-responsive-search { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border-radius: 6px;}
-        .search-table { width: 100%; min-width: 480px; border-collapse: collapse;}
-        .search-table th, .search-table td { border: 1px solid #ccc; padding: 10px; font-size: 13px; text-align: center;}
+        .search-table { width: 100%; width: 100%; border-collapse: collapse;}
+        .search-table th, .search-table td { border: 1px solid #000; padding: 10px; font-size: 13px; text-align: center;}
         
         .hint-text { font-size: 11px; color: #888; margin-top: -4px; margin-bottom: 10px; display: block; text-align: center;}
         .btn-edit { background: linear-gradient(to right, #17a2b8, #138496); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
@@ -113,42 +113,54 @@
             .flex-row { flex-direction: row; }
         }
 
-        /* --- PDF & Print Overrides --- */
+        /* --- PDF & Print Overrides (Strict B&W, Single Page Fit) --- */
         body.pdf-exporting > :not(#tempPdfContainer) { display: none !important; }
         body.pdf-exporting { background: #ffffff !important; padding: 0 !important; margin: 0 !important; overflow: hidden !important; height: auto !important; }
-        #tempPdfContainer { width: 794px !important; max-width: 794px !important; margin: 0 auto !important; padding: 20px !important; background: #ffffff !important; box-sizing: border-box !important; display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; z-index: 999999 !important; }
+        #tempPdfContainer { width: 794px !important; max-width: 794px !important; margin: 0 auto !important; padding: 10px !important; background: #ffffff !important; box-sizing: border-box !important; display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; z-index: 999999 !important; }
         #tempPdfContainer .table-responsive-search { overflow: visible !important; width: 100% !important; border: none !important;}
         #tempPdfContainer .search-table { min-width: 100% !important; width: 100% !important; }
-        #tempPdfContainer .search-result-box { border: none !important; padding: 0 !important; margin-top: 5px !important; box-shadow: none !important; }
-        #tempPdfContainer .search-table th, #tempPdfContainer .search-table td { font-size: 14px !important; color: #000 !important;}
-
+        #tempPdfContainer .search-result-box { border: none !important; padding: 0 !important; margin-top: 0 !important; box-shadow: none !important; }
+        
         @media print {
             .no-print, [data-html2canvas-ignore="true"] { display: none !important; }
-            body { background: white; margin: 0; padding: 0; }
+            @page { margin: 0.5cm; size: A4 portrait; }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; }
+            
+            /* Hide UI Elements */
             .school-header, .tab-nav, #formCard, #chartCard, .table-filters, #regStudentFormCard, #regTeacherFormCard { display: none !important; }
-            @page { margin: 1cm; size: A4 portrait; }
             .card { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; margin: 0 !important;}
             
+            /* Search Print Mode */
             body.print-search-mode #searchCard { display: block !important; }
             body.print-search-mode #searchCard .section-title, body.print-search-mode #searchCard .flex-row { display: none !important; } 
-            body.print-search-mode #printArea { display: block !important; width: 100% !important; padding: 0 !important; }
-            body.print-search-mode .table-responsive-search { overflow-x: visible !important; width: 100% !important; border: none !important; }
-            body.print-search-mode .search-table { min-width: 100% !important; width: 100% !important; }
-            body.print-search-mode .search-result-box { background: transparent !important; border: none !important; padding: 0 !important; page-break-inside: avoid; margin-bottom: 20px !important; }
             
-            .search-table th, .search-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 13px !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;}
-
+            /* Center and compact the print area */
+            #printArea { display: block !important; width: 100% !important; max-width: 750px !important; margin: 0 auto !important; padding: 0 !important; }
+            .table-responsive-search { overflow-x: visible !important; width: 100% !important; border: none !important; margin-top: 0 !important; }
+            .search-table { width: 100% !important; }
+            .search-result-box { background: transparent !important; border: none !important; padding: 0 !important; page-break-inside: avoid !important; margin-bottom: 5px !important; }
+            
+            /* Strict Black and White overrides for all print and PDF */
+            * { color: #000 !important; text-shadow: none !important; box-shadow: none !important; }
+            th, td { border: 1px solid #000 !important; color: #000 !important; font-size: 13px !important; background-color: #fff !important; padding: 4px 8px !important;}
+            th { font-weight: bold !important; }
+            .term-badge { background: transparent !important; color: #000 !important; padding: 0 !important; border: none !important; font-weight: bold !important; }
+            .rank-col { color: #000 !important; font-weight: bold !important; }
+            
             /* Master Report Print Mode */
             body.print-master-mode #masterReportCard { display: block !important; }
             body.print-master-mode .table-responsive { overflow: visible !important; }
-            body.print-master-mode th { background-color: #eee !important; color: #000 !important; border: 1px solid #000 !important; padding: 4px !important;}
-            body.print-master-mode td { border: 1px solid #000 !important; padding: 4px !important;}
             body.print-master-mode th .vertical-text { height: auto !important; writing-mode: horizontal-tb !important; transform: none !important; white-space: normal; text-align: center; }
             @page { size: A4 landscape; }
         }
-        
-        .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); padding: 5px; height: 140px; text-align: left; margin: auto;}
+
+        /* PDF Strict B&W */
+        body.pdf-exporting *, body.pdf-mode *, body.print-master-mode * { color: #000 !important; }
+        body.pdf-exporting th, body.pdf-mode th, body.print-master-mode th { background-color: #fff !important; color: #000 !important; border: 1px solid #000 !important; padding: 4px 8px !important; font-size: 13px !important;}
+        body.pdf-exporting td, body.pdf-mode td, body.print-master-mode td { border: 1px solid #000 !important; color: #000 !important; padding: 4px 8px !important; font-size: 13px !important;}
+        body.pdf-exporting .term-badge, body.pdf-mode .term-badge { background: transparent !important; color: #000 !important; padding: 0 !important; font-weight: bold !important; border: none !important;}
     </style>
+
 </head>
 <body>
 
@@ -235,7 +247,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div style="margin-top: 15px; padding: 10px; background: #e8eaf6; border-radius: 8px; border: 1px solid #c5cae9;">
+                        <div style="margin-top: 5px; padding: 10px; background: #e8eaf6; border-radius: 8px; border: 1px solid #c5cae9;">
                             <label style="font-size: 14px; font-weight: bold; color: #1a237e; display: block; margin-bottom: 5px; text-align: center;">ශිෂ්‍යයා තෝරන්න (Select Student):</label>
                             <select id="selectedStudentDrop" required onchange="populateStudentHiddenFields()">
                                 <option value="" disabled selected>පළමුව ශ්‍රේණිය හා පන්තිය තෝරන්න</option>
@@ -244,9 +256,9 @@
                             <input type="hidden" id="studentId" required>
                             <input type="hidden" id="studentName" required>
                         </div>
-                        <h4 style="margin-bottom: 5px; margin-top: 15px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
+                        <h4 style="margin-bottom: 5px; margin-top: 5px; color: #6a1b9a; text-align: center;">විෂයයන් සඳහා ලකුණු:</h4>
                         <div id="subjectsContainer"></div>
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
                             <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0;">ලකුණු පද්ධතියට එක් කරන්න</button>
                             <button type="button" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearMarksInputs()">Clear</button>
                         </div>
@@ -288,14 +300,14 @@
                     <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
                     <div class="flex-row no-print" style="align-items: center; margin-bottom: 10px;">
                         <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
-                        <select id="searchTermSelect" style="border: 1px solid #ccc; border-radius: 6px; padding: 12px; font-size: 14px;">
+                        <select id="searchTermSelect" style="border: 1px solid #000; border-radius: 6px; padding: 12px; font-size: 14px;">
                             <option value="all" selected>සියලුම වාර (All Terms)</option>
                             <option value="පළමු වාරය">පළමු වාරය</option>
                             <option value="දෙවන වාරය">දෙවන වාරය</option>
                             <option value="තෙවන වාරය">තෙවන වාරය</option>
                         </select>
                     </div>
-                    <div class="flex-row no-print" style="flex-direction: row; gap: 8px; width: 100%; margin-bottom: 20px;">
+                    <div class="flex-row no-print" style="flex-direction: row; gap: 8px; width: 100%; margin-bottom: 5px;">
                         <button type="button" class="btn-submit" style="flex: 2; margin-top: 0; padding: 12px;" onclick="searchStudentById()">සොයන්න (Search)</button>
                         <button type="button" class="btn-clear" style="flex: 1; margin-top: 0; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="clearSearchInputs()">Clear</button>
                     </div>
@@ -330,7 +342,7 @@
                         </div>
                         <input type="text" id="reg_address" placeholder="ලිපිනය (Address)" style="text-align: left; padding-left: 15px;" required>
                         <input type="tel" id="reg_phone" placeholder="භාරකරුගේ දුරකථන අංකය (Guardian Phone)" required>
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
                             <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0; background: linear-gradient(to right, #ff9800, #f57c00);">ශිෂ්‍යයා ලියාපදිංචි කරන්න</button>
                             <button type="reset" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
                         </div>
@@ -361,7 +373,7 @@
                         <input type="text" id="treg_name" placeholder="නම (Name)" required style="text-align: left; padding-left: 15px;">
                         <input type="text" id="treg_subject" placeholder="උගන්වන විෂය / විෂයයන් (Subjects)" required style="text-align: left; padding-left: 15px;">
                         <input type="tel" id="treg_phone" placeholder="දුරකථන අංකය (Phone Number)" required>
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
                             <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0; background: linear-gradient(to right, #9c27b0, #7b1fa2);">ගුරුවරයා ලියාපදිංචි කරන්න</button>
                             <button type="reset" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
                         </div>
@@ -382,11 +394,11 @@
             <div class="dashboard">
                 <div class="card" id="masterReportCard">
                     
-                    <div id="masterPrintHeader" style="display:none; text-align:center; margin-bottom: 20px;">
+                    <div id="masterPrintHeader" style="display:none; text-align:center; margin-bottom: 5px;">
                         <h2 style="margin: 0; font-size: 22px; color: #000; text-transform: uppercase;">Mo/Dutugemunu Central College, Buttala</h2>
                         <h4 style="margin: 5px 0; color: #333; font-size: 16px; font-weight: normal;">සම්පූර්ණ ප්‍රතිඵල විශ්ලේෂණ වාර්තාව (Master Report)</h4>
                         <h4 id="masterPrintSubHeader" style="margin: 5px 0 0 0; font-weight: bold; color: #000;"></h4>
-                        <hr style="border: 0; border-top: 2px solid #000; margin-top: 15px;">
+                        <hr style="border: 0; border-top: 2px solid #000; margin-top: 5px;">
                     </div>
 
                     <h3 class="section-title no-print">විභාග දෙපාර්තමේන්තු ආකෘතියේ ප්‍රතිඵල වාර්තාව</h3>
@@ -405,7 +417,7 @@
                         <button onclick="printMasterReport()" class="btn-print" style="flex: none; min-width: 200px;">🖨️ Print Master Report</button>
                     </div>
 
-                    <div class="table-responsive" id="masterTableContainer" style="margin-top: 15px;">
+                    <div class="table-responsive" id="masterTableContainer" style="margin-top: 5px;">
                         <table id="masterTable">
                             <thead><tr id="masterTableHeadRow"></tr></thead>
                             <tbody id="masterTableBody"></tbody>
@@ -543,7 +555,7 @@
 
         function renderTeachersTable() { /* keep */
             let tbody = document.getElementById("teachersRegTableBody"); tbody.innerHTML = "";
-            registeredTeachers.forEach(t => { tbody.innerHTML += `<tr><td style="font-weight:bold; color:#d32f2f;">${t.id}</td><td style="text-align:left;">${t.name}</td><td style="text-align:left;">${t.subject}</td><td>${t.phone}</td><td><button class="btn-edit" onclick="editTeacher('${t.id}')">Edit</button></td></tr>`; });
+            registeredTeachers.forEach(t => { tbody.innerHTML += `<tr><td style="font-weight:bold; color:#000;">${t.id}</td><td style="text-align:left;">${t.name}</td><td style="text-align:left;">${t.subject}</td><td>${t.phone}</td><td><button class="btn-edit" onclick="editTeacher('${t.id}')">Edit</button></td></tr>`; });
         }
 
         function loadStudentsForMarks() { /* keep */
@@ -716,14 +728,14 @@
             let currentRank = 1; let previousTotal = -1; let serialNoCounter = 1;
             completeStudents.forEach((student, index) => {
                 if (index > 0 && student.total < previousTotal) { currentRank = index + 1; } previousTotal = student.total;
-                let row = `<tr><td class="serial-col">${serialNoCounter++}</td><td style="text-align:left; white-space:nowrap;">${student.name}</td><td>${student.fullClassName}</td><td><span class="term-badge">${student.term}</span></td>`;
+                let row = `<tr><td class="serial-col">${serialNoCounter++}</td><td style="text-align:left; white-space:nowrap;">${student.name}</td><td>${student.fullClassName}</td><td><span style="color:#000; font-weight:bold;">${student.term}</span></td>`;
                 displaySubjects.forEach(sub => { let mark = student.marks[sub]; let displayMark = (mark !== undefined) ? mark : '-'; let isFiltered = (filterSub === sub); let style = isFiltered ? 'background-color: #fff8e1; font-weight: bold; color: #d84315;' : ''; row += `<td style="${style}">${displayMark}</td>`; });
                 row += `<td style="font-weight:bold;">${student.total}</td><td style="color:#000; font-weight:bold;">${student.average}</td>`;
                 if (!isAdvancedFilterActive) row += `<td class="rank-col">${currentRank} <span class="no-print">🔒</span></td>`; row += `</tr>`; tableBody.innerHTML += row; 
             });
 
             pendingStudents.forEach((student) => {
-                let row = `<tr><td class="serial-col">${serialNoCounter++}</td><td style="text-align:left; white-space:nowrap;">${student.name}</td><td>${student.fullClassName}</td><td><span class="term-badge">${student.term}</span></td>`;
+                let row = `<tr><td class="serial-col">${serialNoCounter++}</td><td style="text-align:left; white-space:nowrap;">${student.name}</td><td>${student.fullClassName}</td><td><span style="color:#000; font-weight:bold;">${student.term}</span></td>`;
                 displaySubjects.forEach(sub => { let mark = student.marks[sub]; let displayMark = (mark !== undefined) ? mark : '-'; let isFiltered = (filterSub === sub); let style = isFiltered ? 'background-color: #fff8e1; font-weight: bold; color: #d84315;' : ''; row += `<td style="${style}">${displayMark}</td>`; });
                 row += `<td style="font-weight:bold; color:#000;">${student.total}</td><td style="color:#000; font-weight:bold;">${student.average}</td>`;
                 if (!isAdvancedFilterActive) row += `<td class="rank-col" style="color:#000; font-size:12px;">Pending <span class="no-print">⏳</span></td>`; row += `</tr>`; tableBody.innerHTML += row; 
@@ -764,12 +776,12 @@
             foundRecords.sort((a, b) => (termOrder[a.term] || 99) - (termOrder[b.term] || 99));
 
             let html = `
-            <div id="printArea">
-                <div style="text-align: center; margin-bottom: 20px;">
+            <div id="printArea" style="max-width: 750px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 5px;">
                     <h2 style="margin: 0; font-size: 22px; color: #000; text-transform: uppercase;">Mo/Dutugemunu Central College, Buttala</h2>
                     <h4 style="margin: 5px 0 0 0; color: #333; font-size: 16px; font-weight: normal;">ශිෂ්‍ය ප්‍රතිඵල වාර්තාව - ${searchTerm === 'all' ? 'සියලුම වාර' : searchTerm}</h4>
                     <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">මුද්‍රිත දිනය: ${new Date().toLocaleDateString('si-LK')}</p>
-                    <hr style="border: 0; border-top: 2px solid #000; margin-top: 15px;">
+                    <hr style="border: 0; border-top: 2px solid #000; margin-top: 5px;">
                 </div>`;
 
             foundRecords.forEach(record => {
@@ -785,33 +797,33 @@
                     let baseLetter = record.classLetter.charAt(0);
                     let sameStreamCohort = studentsData.filter(s => s.term === record.term && s.grade === record.grade && s.classLetter.startsWith(baseLetter));
                     let streamRankDisplay = calculateRankIfComplete(sameStreamCohort, record.id, reqCount);
-                    streamRankHTML = `<tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc; color:#000;">${streamRankDisplay}</th><th style="border: 1px solid #ccc;"></th></tr>`;
+                    streamRankHTML = `<tr><th style="text-align:right; padding:5px; border: 1px solid #000; color:#000;">අංශයේ ස්ථානය (${baseLetter}1 හා ${baseLetter}2 ඒකාබද්ධව):</th><th style="font-size:15px; padding:5px; border: 1px solid #000; color:#000;">${streamRankDisplay}</th><th style="border: 1px solid #000;"></th></tr>`;
                 }
                 
                 html += `
-                <div class="search-result-box" style="background:#fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <div class="search-result-box" style="background:#fff; border: 1px solid #ddd; border-radius: 8px; padding: 5px; margin-bottom: 5px;">
                     <h4 style="margin: 0 0 10px 0; color: #000; font-size: 16px;">👤 ${record.name} - ${record.fullClassName} ${streamDisplay}</h4>
                     <div style="margin-bottom: 12px; font-size: 13px; font-weight: bold; color: #333;">📅 ${record.term}</div>
                     
                     <div class="table-responsive-search">
-                        <table class="search-table" style="width: 100%; min-width: 480px; border-collapse: collapse;">
-                            <tr><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">විෂය (Subject)</th><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">ලකුණු (Marks)</th><th style="background:#eee; color:#000; padding:10px; border: 1px solid #ccc;">සාමාර්ථය (Grade)</th></tr>`;
+                        <table class="search-table" style="width: 100%; width: 100%; border-collapse: collapse;">
+                            <tr><th style="background:#f1f1f1; color:#000; padding:5px; border: 1px solid #000;">විෂය (Subject)</th><th style="background:#f1f1f1; color:#000; padding:5px; border: 1px solid #000;">ලකුණු (Marks)</th><th style="background:#f1f1f1; color:#000; padding:5px; border: 1px solid #000;">සාමාර්ථය (Grade)</th></tr>`;
                 
                 // ADDED GRADE DISPLAY LOGIC
                 for (let [sub, mark] of Object.entries(record.marks)) { 
                     let gradeLetter = getGradeLetter(mark, record.grade);
-                    let gradeColor = '#000';
+                    
                     html += `<tr>
-                                <td style="text-align:left; padding:10px; border: 1px solid #ccc;">${sub}</td>
-                                <td style="font-weight:bold; padding:10px; border: 1px solid #ccc;">${mark}</td>
-                                <td style="font-weight:bold; color:${gradeColor}; padding:10px; border: 1px solid #ccc; font-size:15px;">${gradeLetter}</td>
+                                <td style="text-align:left; padding:5px; border: 1px solid #000;">${sub}</td>
+                                <td style="font-weight:bold; padding:5px; border: 1px solid #000;">${mark}</td>
+                                <td style="font-weight:bold; color:#000; padding:5px; border: 1px solid #000; font-size:15px;">${gradeLetter}</td>
                              </tr>`; 
                 }
                 
                 html += `
-                            <tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">එකතුව (Total):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc; color:#000;">${record.total}</th><th style="border: 1px solid #ccc;"></th></tr>
-                            <tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:10px; border: 1px solid #ccc; color:#000;">${record.average}</th><th style="border: 1px solid #ccc;"></th></tr>
-                            <tr><th style="text-align:right; padding:10px; border: 1px solid #ccc; color:#000;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:10px; border: 1px solid #ccc; color:#000;">${classRankDisplay}</th><th style="border: 1px solid #ccc;"></th></tr>
+                            <tr><th style="text-align:right; padding:5px; border: 1px solid #000; color:#000;">එකතුව (Total):</th><th style="font-size:14px; padding:5px; border: 1px solid #000; color:#000;">${record.total}</th><th style="border: 1px solid #000;"></th></tr>
+                            <tr><th style="text-align:right; padding:5px; border: 1px solid #000; color:#000;">සාමාන්‍යය (Average):</th><th style="font-size:14px; padding:5px; border: 1px solid #000; color:#000;">${record.average}</th><th style="border: 1px solid #000;"></th></tr>
+                            <tr><th style="text-align:right; padding:5px; border: 1px solid #000; color:#000;">පන්තියේ ස්ථානය (Class Rank):</th><th style="font-size:15px; padding:5px; border: 1px solid #000; color:#000;">${classRankDisplay}</th><th style="border: 1px solid #000;"></th></tr>
                             ${streamRankHTML}
                         </table>
                     </div>
@@ -919,7 +931,7 @@
             let fileName = `Result_${studentId}_${termName}.pdf`;
             
             const opt = { 
-                margin: [0.3, 0.3, 0.3, 0.3], 
+                margin: [0.1, 0.1, 0.1, 0.1], 
                 filename: fileName, 
                 image: { type: 'jpeg', quality: 1 }, 
                 html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0, windowWidth: 794, y: 0 }, 
