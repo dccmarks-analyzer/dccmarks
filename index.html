@@ -184,17 +184,18 @@
     <!-- Login -->
     <div id="loginScreen">
         <div class="login-box">
-            <h2>Welcome Back!</h2>
+            <h2>Login as Admin</h2>
             <p>Mo/Dutugemunu Central College<br>Marks Analyser System</p>
             <form id="loginForm">
                 <input type="text" id="username" placeholder="Username" required>
                 <input type="password" id="password" placeholder="Password" required>
                 <div id="loginError" class="login-error">Username හෝ Password වැරදියි!</div>
-                <button type="submit" class="btn-login">Login</button>
+                <button type="submit" class="btn-login">Admin Login</button>
             </form>
             
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
-            <p style="color: #444; margin-bottom: 10px; font-weight: bold; font-size: 14px;">සිසුන් සඳහා (For Students):</p>
+            <p style="color: #444; margin-bottom: 5px; font-weight: bold; font-size: 14px;">සිසුන් සඳහා (For Students):</p>
+            <p style="color: #666; font-size: 13px; margin-top: 0; margin-bottom: 15px;">ඔබේ ප්‍රතිඵල බලන්න මෙම බොත්තම ඔබන්න</p>
             <button type="button" onclick="showStudentPortal()" style="background: linear-gradient(to right, #17a2b8, #138496); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 🎓 ඔබේ ප්‍රතිඵලය ලබාගන්න
             </button>
@@ -311,6 +312,7 @@
                 </div>
 
                 <div class="card" id="searchCard">
+                    <button id="btnBackToLogin" class="btn-clear no-print" style="display: none; margin-bottom: 15px; width: auto; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;" onclick="backToLogin()">⬅ Back to Login</button>
                     <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
                     <div class="flex-row no-print" style="align-items: center; margin-bottom: 10px;">
                         <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
@@ -881,7 +883,7 @@
                 container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය II", bucket2, "b2")}<input type="number" id="m_b2" placeholder="ලකුණු" min="0" max="100"></div>`;
                 container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය III", bucket3, "b3")}<input type="number" id="m_b3" placeholder="ලකුණු" min="0" max="100"></div>`;
             } else if (grade === 12 || grade === 13) {
-                container.innerHTML = `<div style="margin-bottom: 15px;"><select id="streamSelect" onchange="loadALSubjects()" style="border-color: #ff9800; border-width: 2px;"><option value="" disabled selected>විෂය ධාරාව තෝරන්න (Select Stream)</option><option value="maths">ගණිත අංශය (Maths)</option><option value="science">විද්‍යා අංශය (Science)</option><option value="commerce">වාණිජ අංශය (Commerce)</option><option value="tech">තාක්ෂ අංශය (Technology)</option><option value="arts">කලා අංශය (Arts)</option></select></div><div id="alSubjectsContainer"></div>`;
+                container.innerHTML = `<div style="margin-bottom: 15px;"><select id="streamSelect" onchange="loadALSubjects()" style="border-color: #ff9800; border-width: 2px;"><option value="" disabled selected>විෂය ධාරාව තෝරන්න (Select Stream)</option><option value="maths">ගණිත අංශය (Maths)</option><option value="science">විද්‍යා අංශය (Science)</option><option value="commerce">වාණষ্ঠ අංශය (Commerce)</option><option value="tech">තාක්ෂ අංශය (Technology)</option><option value="arts">කලා අංශය (Arts)</option></select></div><div id="alSubjectsContainer"></div>`;
             }
         }
 
@@ -968,7 +970,6 @@
             printSubText += "පන්තිය: " + ((selectedClass === "all") ? "සියලුම" : classDisplayName);
             document.getElementById("printSubHeader").innerText = printSubText;
 
-            // --- ගුරු තොරතුරු පෙන්වීමේ කොටස ආරම්භය ---
             let teacherPanel = document.getElementById("teacherDetailsPanel");
             if (teacherPanel) {
                 if (selectedClass !== "all" && !selectedClass.endsWith("_combined")) {
@@ -994,7 +995,6 @@
                     teacherPanel.style.display = "none";
                 }
             }
-            // --- ගුරු තොරතුරු පෙන්වීමේ කොටස අවසානය ---
 
             let filteredData = studentsData.filter(s => s.term === selectedTerm && s.grade === selectedGrade);
             if (selectedClass !== "all") {
@@ -1288,7 +1288,6 @@
             if (myChart !== null) { myChart.destroy(); }
 
             if (filteredChartData.length === 0) {
-                // No data for selected criteria
                 myChart = new Chart(ctx, { type: 'bar', data: { labels: [], datasets: [] }, options: { responsive: true, maintainAspectRatio: false } });
                 return;
             }
@@ -1348,6 +1347,21 @@
             document.querySelector(".tab-nav").style.display = "none"; document.getElementById("formCard").style.display = "none"; document.getElementById("reportCard").style.display = "none"; document.getElementById("chartCard").style.display = "none";
             document.getElementById("searchCard").style.display = "block"; document.getElementById("tab-students").style.display = "none"; document.getElementById("tab-teachers").style.display = "none";
             document.getElementById("tab-master").style.display = "none";
+            document.getElementById("btnBackToLogin").style.display = "inline-block";
+        }
+
+        function backToLogin() {
+            document.getElementById("mainApp").style.display = "none";
+            document.getElementById("loginScreen").style.display = "flex";
+            document.getElementById("btnBackToLogin").style.display = "none";
+            clearSearchInputs();
+            
+            document.querySelector(".tab-nav").style.display = "flex";
+            document.getElementById("formCard").style.display = "block";
+            document.getElementById("reportCard").style.display = "block";
+            document.getElementById("chartCard").style.display = "block";
+            
+            openTab('marks');
         }
     </script>
 </body>
