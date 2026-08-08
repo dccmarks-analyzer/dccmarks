@@ -200,7 +200,7 @@
             </button>
             
             <div style="margin-top: 20px; font-size: 12px; color: #888;">
-                Developer - Kelum Konara | Smart Soft
+                Developer - Kelum Koonara | Smart Soft
             </div>
         </div>
     </div>
@@ -416,11 +416,27 @@
                         <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #90caf9; margin-bottom: 15px; text-align: left;">
                             <h4 style="margin: 0 0 10px 0; color: #1565c0; font-size: 15px;">📚 උගන්වන විෂය / විෂයයන් තෝරන්න (Subject Teacher)</h4>
                             
-                            <div id="treg_subject_list" style="max-height: 250px; overflow-y: auto; background: #fff; border: 1px solid #bbdefb; border-radius: 6px; margin-bottom: 10px;">
-                                <!-- JS මගින් විෂයයන් වගුවක් ලෙස මෙතැනට එකතු වේ -->
-                            </div>
+                            <label style="font-weight: bold; display: flex; align-items: center; gap: 10px; color: #333; cursor: pointer; margin-bottom: 10px;">
+                                <input type="checkbox" id="treg_isSubjectTeacher" style="width: 20px; height: 20px; cursor: pointer;">
+                                විෂයභාර ගුරුවරයෙක් ද?
+                            </label>
                             
-                            <input type="text" id="treg_teachingClasses" placeholder="මෙම විෂයයන් උගන්වන පන්ති (උදා: 6-A, 10-B, 11-A)" style="text-align: left; padding-left: 10px; border: 1px solid #90caf9;">
+                            <div id="treg_subject_content" style="display: none;">
+                                <!-- Dropdown සහ Add Button -->
+                                <div class="flex-row" style="margin-bottom: 10px; align-items: center; flex-direction: row;">
+                                    <select id="treg_subjectDropdown" style="flex: 3; border: 1px solid #90caf9; margin: 0;">
+                                        <!-- JS මගින් මෙයට විෂයයන් එකතු වේ -->
+                                    </select>
+                                    <button type="button" onclick="addTeacherSubject()" class="btn-submit" style="flex: 1; margin: 0; padding: 12px; background: #1565c0; font-size: 13px;">+ එකතු කරන්න</button>
+                                </div>
+                                
+                                <!-- තෝරාගත් විෂයයන් පෙන්වන කොටස (Tags/Chips) -->
+                                <div id="treg_selectedSubjectsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                                    <!-- JS මගින් තේරූ විෂයයන් මෙහි දිස්වේ -->
+                                </div>
+                                
+                                <input type="text" id="treg_teachingClasses" placeholder="මෙම විෂයයන් උගන්වන පන්ති (උදා: 6-A, 10-B, 11-A)" style="text-align: left; padding-left: 10px; border: 1px solid #90caf9;">
+                            </div>
                         </div>
 
                         <div style="display: flex; gap: 10px; margin-top: 5px;">
@@ -477,7 +493,7 @@
         </div>
 
         <div class="dev-footer no-print">
-            Developer - <span>Kelum Konara</span> | Smart Soft
+            Developer - <span>Kelum Koonara</span> | Smart Soft
         </div>
     </div>
 
@@ -488,6 +504,7 @@
         
         const isOnline = true;
         let studentsData = []; let registeredStudents = []; let registeredTeachers = []; let myChart = null; 
+        let selectedTeacherSubjectsList = []; // Array to hold subjects selected via dropdown
 
         // --- NEW HELPER FOR GRADES ---
         function getGradeLetter(mark, grade) {
@@ -531,8 +548,8 @@
             document.getElementById("gradeSelect").value = ""; document.getElementById("subjectsContainer").innerHTML = ""; 
             updateTable(); renderStudentsTable(); renderTeachersTable();
             
-            // Populate subject choices for teachers on load
-            populateSubjectCheckboxes();
+            // Populate subject dropdown for teachers on load
+            populateSubjectDropdown();
         };
 
         // --- Teacher Form Toggle Logic ---
@@ -540,53 +557,74 @@
             document.getElementById('treg_class_selects').style.display = e.target.checked ? 'block' : 'none';
         });
 
-        function populateSubjectCheckboxes() {
+        document.getElementById('treg_isSubjectTeacher').addEventListener('change', function(e) {
+            document.getElementById('treg_subject_content').style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // --- Teacher Subjects Management ---
+        function populateSubjectDropdown() {
             const coreSubs = [...new Set([...juniorSubjects, ...seniorCore])].sort();
             const olBuckets = [...new Set([...aestheticSubjects, ...bucket1, ...bucket2, ...bucket3])].sort();
             const alSubs = [...new Set([...alSubjectsList.maths, ...alSubjectsList.science, ...alSubjectsList.commerce, ...alSubjectsList.tech, ...alSubjectsList.arts])].sort();
 
-            let container = document.getElementById("treg_subject_list");
+            let dropdown = document.getElementById("treg_subjectDropdown");
+            let html = `<option value="" disabled selected>විෂය තෝරන්න (Select Subject)</option>`;
             
-            let html = `<table style="width: 100%; border-collapse: collapse; text-align: left;">
-                            <tbody>`;
-                
-            function createRows(title, subsArray, titleColor) {
-                let rowHtml = `<tr>
-                    <th colspan="2" style="background: ${titleColor}; color: #fff; padding: 8px 10px; border: 1px solid #ccc; font-size: 13px; position: sticky; top: 0; z-index: 1;">
-                        ${title}
-                    </th>
-                </tr>`;
-                
-                for (let i = 0; i < subsArray.length; i += 2) {
-                    rowHtml += `<tr>`;
-                    for(let j = 0; j < 2; j++) {
-                        if (subsArray[i+j]) {
-                            rowHtml += `<td style="padding: 8px 10px; border: 1px solid #eee; width: 50%;">
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-size: 13px; color: #333;">
-                                    <input type="checkbox" name="treg_subjects" value="${subsArray[i+j]}" style="width: 16px; height: 16px; margin: 0;"> 
-                                    ${subsArray[i+j]}
-                                </label>
-                            </td>`;
-                        } else {
-                            rowHtml += `<td style="padding: 8px 10px; border: 1px solid #eee; width: 50%; background: #fafafa;"></td>`;
-                        }
-                    }
-                    rowHtml += `</tr>`;
-                }
-                return rowHtml;
+            html += `<optgroup label="📘 පොදු / අනිවාර්ය විෂයයන් (6-11 ශ්‍රේණි)">`;
+            coreSubs.forEach(sub => html += `<option value="${sub}">${sub}</option>`);
+            html += `</optgroup>`;
+            
+            html += `<optgroup label="🎨 කාණ්ඩ විෂයයන් / සෞන්දර්ය (O/L)">`;
+            olBuckets.forEach(sub => html += `<option value="${sub}">${sub}</option>`);
+            html += `</optgroup>`;
+            
+            html += `<optgroup label="🎓 උසස් පෙළ විෂයයන් (A/L)">`;
+            alSubs.forEach(sub => html += `<option value="${sub}">${sub}</option>`);
+            html += `</optgroup>`;
+            
+            dropdown.innerHTML = html;
+        }
+
+        function addTeacherSubject() {
+            let dropdown = document.getElementById("treg_subjectDropdown");
+            let sub = dropdown.value;
+            if (!sub) {
+                alert("කරුණාකර ලැයිස්තුවෙන් විෂයක් තෝරන්න.");
+                return;
             }
+            if (selectedTeacherSubjectsList.includes(sub)) {
+                alert("මෙම විෂය දැනටමත් එකතු කර ඇත!");
+                return;
+            }
+            selectedTeacherSubjectsList.push(sub);
+            renderTeacherSubjects();
+            dropdown.value = ""; // Selection Reset
+        }
 
-            html += createRows("📘 පොදු / අනිවාර්ය විෂයයන් (6-11 ශ්‍රේණි)", coreSubs, "#1976d2");
-            html += createRows("🎨 කාණ්ඩ විෂයයන් / සෞන්දර්ය (O/L)", olBuckets, "#388e3c");
-            html += createRows("🎓 උසස් පෙළ විෂයයන් (A/L)", alSubs, "#f57c00");
+        function removeTeacherSubject(sub) {
+            selectedTeacherSubjectsList = selectedTeacherSubjectsList.filter(s => s !== sub);
+            renderTeacherSubjects();
+        }
 
-            html += `</tbody></table>`;
-            container.innerHTML = html;
+        function renderTeacherSubjects() {
+            let container = document.getElementById("treg_selectedSubjectsContainer");
+            container.innerHTML = "";
+            selectedTeacherSubjectsList.forEach(sub => {
+                container.innerHTML += `
+                    <div style="background: #e3f2fd; color: #1565c0; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; border: 1px solid #90caf9;">
+                        ${sub}
+                        <span style="cursor: pointer; color: red; font-size: 14px;" onclick="removeTeacherSubject('${sub}')">✖</span>
+                    </div>
+                `;
+            });
         }
 
         function clearTeacherForm() {
             document.getElementById("teacherRegForm").reset();
             document.getElementById('treg_class_selects').style.display = 'none';
+            document.getElementById('treg_subject_content').style.display = 'none';
+            selectedTeacherSubjectsList = [];
+            renderTeacherSubjects();
         }
 
         document.getElementById("teacherRegForm").addEventListener("submit", async function(e) {
@@ -599,13 +637,10 @@
             let cGrade = isCT ? document.getElementById("treg_classGrade").value : "";
             let cLetter = isCT ? document.getElementById("treg_classLetter").value : "";
             
-            // විෂයභාර තොරතුරු (දැන් සැඟවී නැත, කෙලින්ම ලබා ගනී)
-            let selectedSubs = [];
-            document.querySelectorAll('input[name="treg_subjects"]:checked').forEach(cb => selectedSubs.push(cb.value));
-            let tClasses = document.getElementById("treg_teachingClasses").value.trim();
-            
-            // විෂයයන් එකක් හෝ තෝරා ඇත්නම් ඔහු/ඇය විෂයභාර ගුරුවරයෙක් ලෙස සැලකේ
-            let isST = selectedSubs.length > 0;
+            // විෂයභාර තොරතුරු (List එකෙන් ලබා ගනී)
+            let isST = document.getElementById("treg_isSubjectTeacher").checked;
+            let selectedSubs = isST ? [...selectedTeacherSubjectsList] : [];
+            let tClasses = isST ? document.getElementById("treg_teachingClasses").value.trim() : "";
 
             let newTeacher = { 
                 id: document.getElementById("treg_id").value.trim(), 
@@ -661,10 +696,16 @@
                 }
 
                 // විෂයභාර තොරතුරු පිරවීම
-                document.getElementById("treg_teachingClasses").value = teacher.teachingClasses || "";
-                document.querySelectorAll('input[name="treg_subjects"]').forEach(cb => {
-                    cb.checked = teacher.subjects && teacher.subjects.includes(cb.value);
-                });
+                document.getElementById("treg_isSubjectTeacher").checked = !!teacher.isSubjectTeacher;
+                document.getElementById('treg_subject_content').style.display = teacher.isSubjectTeacher ? 'block' : 'none';
+                if(teacher.isSubjectTeacher) {
+                    document.getElementById("treg_teachingClasses").value = teacher.teachingClasses || "";
+                    selectedTeacherSubjectsList = teacher.subjects ? [...teacher.subjects] : [];
+                    renderTeacherSubjects();
+                } else {
+                    selectedTeacherSubjectsList = [];
+                    renderTeacherSubjects();
+                }
                 
                 window.scrollTo({ top: document.getElementById("regTeacherFormCard").offsetTop, behavior: 'smooth' });
             }
