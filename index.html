@@ -223,10 +223,8 @@
         
         <!-- TAB 1: ලකුණු කළමනාකරණය -->
         <div id="tab-marks" class="tab-content active">
-            <!-- (Existing code for Marks tab remains identical to the provided file up to the end of chartCard) -->
             <div class="dashboard">
                 <div class="card" id="formCard">
-                    <!-- ... Existing Form Card Content ... -->
                     <h3 class="section-title">විෂය ලකුණු ඇතුළත් කරන්න</h3>
                     <form id="marksForm">
                         <select id="termSelect" required style="border-width: 2px; border-color: #6a1b9a;">
@@ -280,13 +278,18 @@
                 </div>
                 
                 <div class="card" id="reportCard">
-                    <!-- ... Existing Report Card Content ... -->
                     <div id="printHeader">
                         <h2>Mo/Dutugemunu Central College, Buttala</h2>
                         <h4>ශිෂ්‍ය ලකුණු වාර්තාව</h4>
                         <h4 id="printSubHeader" style="font-weight: bold; color: #000;"></h4>
                         <hr>
                     </div>
+
+                    <div id="teacherDetailsPanel" style="display: none; background: #e3f2fd; border: 1px solid #90caf9; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; color: #0d47a1; text-align: left;">
+                        <strong style="color: #000;">👨‍🏫 පන්තිභාර ගුරු:</strong> <span id="lblClassTeacher">-</span><br>
+                        <strong style="color: #000; margin-top: 5px; display: inline-block;">📚 විෂයභාර ගුරුවරුන්:</strong> <span id="lblSubjectTeachers">-</span>
+                    </div>
+
                     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 10px;">
                         <h3 class="section-title" style="border: none; padding: 0; width: 100%;">ලකුණු පුවරුව (Rank Board)</h3>
                         <div class="table-filters">
@@ -310,7 +313,6 @@
                 </div>
 
                 <div class="card" id="searchCard">
-                    <!-- ... Existing Search Card Content ... -->
                     <h3 class="section-title">ශිෂ්‍ය ප්‍රතිඵල සෙවීම (Search Marks)</h3>
                     <div class="flex-row no-print" style="align-items: center; margin-bottom: 10px;">
                         <input type="text" id="searchIdInput" placeholder="ශිෂ්‍ය අංකය ඇතුළත් කරන්න (උදා: 1234)">
@@ -329,7 +331,6 @@
                 </div>
 
                 <div class="card no-print" id="chartCard">
-                    <!-- ... Existing Chart Card Content ... -->
                     <h3 class="section-title">සමාන්තර පන්ති විශ්ලේෂණය</h3>
                     <div class="flex-row" style="margin-bottom: 10px;">
                         <div style="width: 100%;"><select id="chartTermSelect" onchange="updateChart()"><option value="පළමු වාරය" selected>පළමු වාරය</option><option value="දෙවන වාරය">දෙවන වාරය</option><option value="තෙවන වාරය">තෙවන වාරය</option></select></div>
@@ -340,11 +341,10 @@
             </div>
         </div>
 
-        <!-- TAB 2: ශිෂ්‍ය ලියාපදිංචිය (Keep Existing) -->
+        <!-- TAB 2: ශිෂ්‍ය ලියාපදිංචිය -->
         <div id="tab-students" class="tab-content no-print">
             <div class="dashboard">
                 <div class="card" id="regStudentFormCard">
-                    <!-- Keep existing fields ... -->
                     <h3 class="section-title">නව ශිෂ්‍ය තොරතුරු ඇතුළත් කරන්න</h3>
                     <form id="studentRegForm">
                         <div class="flex-row"><input type="text" id="reg_admNo" placeholder="ඇතුළත්වීමේ අංකය (Admission No)" required></div>
@@ -363,7 +363,6 @@
                     </form>
                 </div>
                 <div class="card" id="regStudentTableCard">
-                    <!-- Keep existing ... -->
                     <h3 class="section-title">ලියාපදිංචි සිසුන්ගේ නාමලේඛනය</h3>
                     <div class="table-filters">
                         <select id="filterRegGrade" onchange="renderStudentsTable()"><option value="all">සියලුම ශ්‍රේණි</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option></select>
@@ -376,25 +375,66 @@
             </div>
         </div>
 
-        <!-- TAB 3: ගුරු ලියාපදිංචිය (Keep Existing) -->
+        <!-- TAB 3: ගුරු ලියාපදිංචිය -->
         <div id="tab-teachers" class="tab-content no-print">
             <div class="dashboard">
                 <div class="card" id="regTeacherFormCard">
-                    <!-- Keep existing ... -->
                     <h3 class="section-title">නව ගුරු තොරතුරු ඇතුළත් කරන්න</h3>
                     <form id="teacherRegForm">
                         <input type="text" id="treg_id" placeholder="ගුරු හැඳුනුම් අංකය (Teacher ID)" required>
                         <input type="text" id="treg_name" placeholder="නම (Name)" required style="text-align: left; padding-left: 15px;">
-                        <input type="text" id="treg_subject" placeholder="උගන්වන විෂය / විෂයයන් (Subjects)" required style="text-align: left; padding-left: 15px;">
                         <input type="tel" id="treg_phone" placeholder="දුරකථන අංකය (Phone Number)" required>
+
+                        <!-- පන්තිභාර ගුරු අංශය -->
+                        <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #ddd; text-align: left;">
+                            <label style="font-weight: bold; display: flex; align-items: center; gap: 10px; color: #333; cursor: pointer;">
+                                <input type="checkbox" id="treg_isClassTeacher" style="width: auto; transform: scale(1.2);">
+                                පන්තිභාර ගුරු (Class Teacher)
+                            </label>
+                            <div id="treg_class_selects" style="display: none; margin-top: 10px;">
+                                <div class="flex-row">
+                                    <select id="treg_classGrade">
+                                        <option value="" disabled selected>ශ්‍රේණිය</option>
+                                        <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                        <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                                        <option value="12">12</option><option value="13">13</option>
+                                    </select>
+                                    <select id="treg_classLetter">
+                                        <option value="" disabled selected>පන්තිය</option>
+                                        <option value="A1">A1</option><option value="A2">A2</option><option value="C1">C1</option><option value="C2">C2</option>
+                                        <option value="T1">T1</option><option value="T2">T2</option><option value="M1">M1</option><option value="M2">M2</option>
+                                        <option value="S1">S1</option><option value="S2">S2</option>
+                                        <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                                        <option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- විෂයභාර ගුරු අංශය -->
+                        <div id="treg_subject_section" style="display: none; margin-top: 10px; background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #ddd; text-align: left;">
+                            <label style="font-weight: bold; display: flex; align-items: center; gap: 10px; color: #333; cursor: pointer; margin-bottom: 10px;">
+                                <input type="checkbox" id="treg_isSubjectTeacher" style="width: auto; transform: scale(1.2);">
+                                විෂයභාර ගුරු (Subject Teacher)
+                            </label>
+                            <div id="treg_subject_content" style="display: none;">
+                                <label style="font-size: 13px; color: #444; font-weight: bold; display: block; margin-bottom: 8px;">උගන්වන විෂයයන් තෝරන්න :</label>
+                                
+                                <div id="treg_subject_list" style="max-height: 250px; overflow-y: auto; background: #fff; border: 1px solid #ccc; border-radius: 6px;">
+                                    <!-- JS මගින් විෂයයන් වගුවක් ලෙස මෙතැනට එකතු වේ -->
+                                </div>
+                                
+                                <input type="text" id="treg_teachingClasses" placeholder="උගන්වන පන්ති (උදා: 6-A, 10-B, 11-A)" style="margin-top: 10px; text-align: left; padding-left: 10px;">
+                            </div>
+                        </div>
+
                         <div style="display: flex; gap: 10px; margin-top: 5px;">
                             <button type="submit" class="btn-submit" style="flex: 2; margin-top: 0; background: linear-gradient(to right, #9c27b0, #7b1fa2);">ගුරුවරයා ලියාපදිංචි කරන්න</button>
-                            <button type="reset" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
+                            <button type="button" onclick="clearTeacherForm()" class="btn-clear" style="flex: 1; margin-top: 0; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
                         </div>
                     </form>
                 </div>
                 <div class="card" id="regTeacherTableCard">
-                    <!-- Keep existing ... -->
                     <h3 class="section-title">ගුරු මණ්ඩලය</h3>
                     <div class="table-responsive">
                         <table id="teachersRegTable"><thead><tr><th>ID</th><th>නම</th><th>විෂයයන්</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead><tbody id="teachersRegTableBody"></tbody></table>
@@ -466,6 +506,16 @@
             return failGrade;
         }
 
+        const juniorSubjects = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "සෞඛ්‍යය", "තොරතුරු හා සන්නිවේදන තාක්ෂණය", "PTS"];
+        const aestheticSubjects = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"];
+        const seniorCore = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය"];
+        const bucket1 = ["ගිණුම්කරණය හා ව්‍යාපාර අධ්‍යයනය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "දෙමළ"];
+        const bucket2 = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය", "සාහිත්‍ය රසාස්වාදය"];
+        const bucket3 = ["තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT)", "සෞඛ්‍යය", "කෘෂි හා ආහාර තාක්ෂණය", "ගෘහ ආර්ථික විද්‍යාව", "නිර්මාණකරණ තාක්ෂණවේදය"];
+        const alSubjectsList = { maths: ["සංයුක්ත ගණිතය (Com. Maths)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "තොරතුරු තාක්ෂණය (ICT)"], science: ["ජීව විද්‍යාව (Biology)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "කෘෂිකර්මය (Agriculture)"], commerce: ["ගිණුම්කරණය (Accounting)", "ව්‍යාපාර අධ්‍යයනය (Business Std)", "ආර්ථික විද්‍යාව (Economics)", "තොරතුරු තාක්ෂණය (ICT)"], tech: ["තාක්ෂණය සඳහා විද්‍යාව (SFT)", "ඉංජිනේරු තාක්ෂණවේදය (ET)", "ජෛව පද්ධති තාක්ෂණවේදය (BST)", "තොරතුරු තාක්ෂණය (ICT)", "කෘෂිකර්මය (Agriculture)"], arts: ["සිංහල", "බෞද්ධ ශිෂ්ටාචාරය", "ඉතිහාසය", "භූගෝල විද්‍යාව", "දේශපාලන විද්‍යාව", "තර්ක ශාස්ත්‍රය", "තොරතුරු තාක්ෂණය (ICT)", "චිත්‍ර", "නැටුම්", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"] };
+        const classLetters = ["A", "B", "C", "D", "E", "F", "G", "A1", "A2", "C1", "C2", "T1", "T2", "M1", "M2", "S1", "S2"];
+        const chartColors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#ea4335', '#34a853', '#009688', '#607d8b'];
+
         window.onload = async function() {
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
@@ -485,7 +535,151 @@
             document.getElementById("gradeSelect").value = "12"; loadSubjects();
             document.getElementById("gradeSelect").value = ""; document.getElementById("subjectsContainer").innerHTML = ""; 
             updateTable(); renderStudentsTable(); renderTeachersTable();
+            
+            // Populate subject choices for teachers on load
+            populateSubjectCheckboxes();
         };
+
+        // --- Teacher Form Toggle Logic ---
+        document.getElementById('treg_isClassTeacher').addEventListener('change', function(e) {
+            document.getElementById('treg_class_selects').style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('treg_isSubjectTeacher').addEventListener('change', function(e) {
+            document.getElementById('treg_subject_content').style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        function populateSubjectCheckboxes() {
+            const coreSubs = [...new Set([...juniorSubjects, ...seniorCore])].sort();
+            const olBuckets = [...new Set([...aestheticSubjects, ...bucket1, ...bucket2, ...bucket3])].sort();
+            const alSubs = [...new Set([...alSubjectsList.maths, ...alSubjectsList.science, ...alSubjectsList.commerce, ...alSubjectsList.tech, ...alSubjectsList.arts])].sort();
+
+            let container = document.getElementById("treg_subject_list");
+            
+            let html = `<table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <tbody>`;
+                
+            function createRows(title, subsArray, titleColor) {
+                let rowHtml = `<tr>
+                    <th colspan="2" style="background: ${titleColor}; color: #fff; padding: 8px 10px; border: 1px solid #ccc; font-size: 13px; position: sticky; top: 0; z-index: 1;">
+                        ${title}
+                    </th>
+                </tr>`;
+                
+                for (let i = 0; i < subsArray.length; i += 2) {
+                    rowHtml += `<tr>`;
+                    for(let j = 0; j < 2; j++) {
+                        if (subsArray[i+j]) {
+                            rowHtml += `<td style="padding: 8px 10px; border: 1px solid #eee; width: 50%;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-size: 13px; color: #333;">
+                                    <input type="checkbox" name="treg_subjects" value="${subsArray[i+j]}" style="width: 16px; height: 16px; margin: 0;"> 
+                                    ${subsArray[i+j]}
+                                </label>
+                            </td>`;
+                        } else {
+                            rowHtml += `<td style="padding: 8px 10px; border: 1px solid #eee; width: 50%; background: #fafafa;"></td>`;
+                        }
+                    }
+                    rowHtml += `</tr>`;
+                }
+                return rowHtml;
+            }
+
+            html += createRows("📘 පොදු / අනිවාර්ය විෂයයන් (6-11 ශ්‍රේණි)", coreSubs, "#1976d2");
+            html += createRows("🎨 කාණ්ඩ විෂයයන් / සෞන්දර්ය (O/L)", olBuckets, "#388e3c");
+            html += createRows("🎓 උසස් පෙළ විෂයයන් (A/L)", alSubs, "#f57c00");
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        function clearTeacherForm() {
+            document.getElementById("teacherRegForm").reset();
+            document.getElementById('treg_class_selects').style.display = 'none';
+            document.getElementById('treg_subject_content').style.display = 'none';
+        }
+
+        document.getElementById("teacherRegForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            let phone = document.getElementById("treg_phone").value.trim();
+            if (!/^\d{10}$/.test(phone)) { alert("කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න."); return; }
+            
+            let isCT = document.getElementById("treg_isClassTeacher").checked;
+            let cGrade = isCT ? document.getElementById("treg_classGrade").value : "";
+            let cLetter = isCT ? document.getElementById("treg_classLetter").value : "";
+            
+            let isST = document.getElementById("treg_isSubjectTeacher").checked;
+            let selectedSubs = [];
+            if(isST) {
+                document.querySelectorAll('input[name="treg_subjects"]:checked').forEach(cb => selectedSubs.push(cb.value));
+            }
+            let tClasses = isST ? document.getElementById("treg_teachingClasses").value.trim() : "";
+
+            let newTeacher = { 
+                id: document.getElementById("treg_id").value.trim(), 
+                name: document.getElementById("treg_name").value.trim(), 
+                phone: phone,
+                isClassTeacher: isCT,
+                classGrade: cGrade,
+                classLetter: cLetter,
+                isSubjectTeacher: isST,
+                subjects: selectedSubs,
+                teachingClasses: tClasses
+            };
+
+            let existingIdx = registeredTeachers.findIndex(t => t.id === newTeacher.id);
+            if(existingIdx !== -1) registeredTeachers[existingIdx] = newTeacher; else registeredTeachers.push(newTeacher);
+            
+            localStorage.setItem("dccRegTeachers", JSON.stringify(registeredTeachers));
+            if(isOnline) await fetch(FIREBASE_TEACHERS_INFO_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(registeredTeachers) });
+            
+            clearTeacherForm(); 
+            renderTeachersTable(); 
+            alert("ගුරු තොරතුරු සාර්ථකව ලියාපදිංචි කරන ලදී!");
+        });
+
+        function renderTeachersTable() {
+            let tbody = document.getElementById("teachersRegTableBody"); tbody.innerHTML = "";
+            registeredTeachers.forEach(t => { 
+                let roleStr = "";
+                if(t.isClassTeacher) roleStr += `<span class="term-badge" style="background:#28a745; color:white; margin-bottom:3px; display:inline-block;">පන්තිභාර: ${t.classGrade}-${t.classLetter}</span><br>`;
+                if(t.isSubjectTeacher) {
+                    let subs = t.subjects ? t.subjects.join(', ') : (t.subject || "-");
+                    roleStr += `<span style="font-size:11px; color:#666;">විෂයයන්: ${subs}</span><br><span style="font-size:11px; color:#007bff; font-weight:bold;">උගන්වන පන්ති: ${t.teachingClasses || "-"}</span>`;
+                }
+                if(!t.isClassTeacher && !t.isSubjectTeacher && t.subject) roleStr = t.subject;
+
+                tbody.innerHTML += `<tr><td style="font-weight:bold; color:#000;">${t.id}</td><td style="text-align:left;">${t.name}</td><td style="text-align:left;">${roleStr}</td><td>${t.phone}</td><td><button class="btn-edit" onclick="editTeacher('${t.id}')">Edit</button></td></tr>`; 
+            });
+        }
+        
+        function editTeacher(tid) { 
+            let teacher = registeredTeachers.find(t => t.id === tid);
+            if(teacher) {
+                document.getElementById("treg_id").value = teacher.id; 
+                document.getElementById("treg_name").value = teacher.name; 
+                document.getElementById("treg_phone").value = teacher.phone;
+                
+                document.getElementById("treg_isClassTeacher").checked = !!teacher.isClassTeacher;
+                document.getElementById('treg_class_selects').style.display = teacher.isClassTeacher ? 'block' : 'none';
+                if(teacher.isClassTeacher) {
+                    document.getElementById("treg_classGrade").value = teacher.classGrade;
+                    document.getElementById("treg_classLetter").value = teacher.classLetter;
+                }
+
+                document.getElementById("treg_isSubjectTeacher").checked = !!teacher.isSubjectTeacher;
+                document.getElementById('treg_subject_content').style.display = teacher.isSubjectTeacher ? 'block' : 'none';
+                if(teacher.isSubjectTeacher) {
+                    document.getElementById("treg_teachingClasses").value = teacher.teachingClasses || "";
+                    document.querySelectorAll('input[name="treg_subjects"]').forEach(cb => {
+                        cb.checked = teacher.subjects && teacher.subjects.includes(cb.value);
+                    });
+                }
+                
+                window.scrollTo({ top: document.getElementById("regTeacherFormCard").offsetTop, behavior: 'smooth' });
+            }
+        }
+        // --- End Teacher Form Logic ---
 
         function loadFromLocalStorage() {
             let savedMarks = localStorage.getItem("dccMarksData"); if (savedMarks) studentsData = JSON.parse(savedMarks);
@@ -533,8 +727,7 @@
             } else { document.getElementById("loginError").style.display = "block"; }
         });
 
-        // (Skipped rest of exact boilerplate forms here, keeping identical functions from previous)
-        document.getElementById("studentRegForm").addEventListener("submit", async function(e) { /* keep */
+        document.getElementById("studentRegForm").addEventListener("submit", async function(e) { 
             e.preventDefault();
             let phone = document.getElementById("reg_phone").value.trim();
             if (!/^\d{10}$/.test(phone)) { alert("කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න."); return; }
@@ -546,7 +739,7 @@
             document.getElementById("studentRegForm").reset(); renderStudentsTable(); loadStudentsForMarks(); alert("ශිෂ්‍ය තොරතුරු සාර්ථකව ලියාපදිංචි කරන ලදී!");
         });
 
-        function renderStudentsTable() { /* keep */
+        function renderStudentsTable() { 
             let filterGrade = document.getElementById("filterRegGrade").value; let filterClass = document.getElementById("filterRegClass").value;
             let tbody = document.getElementById("studentsRegTableBody"); tbody.innerHTML = "";
             let filtered = registeredStudents;
@@ -555,24 +748,7 @@
             filtered.forEach(s => { tbody.innerHTML += `<tr><td style="font-weight:bold; color:#6a1b9a;">${s.admissionNo}</td><td style="text-align:left;">${s.nameInitials}</td><td>${s.grade}-${s.classLetter}</td><td>${s.phone}</td><td><button class="btn-edit" onclick="editStudent('${s.admissionNo}')">Edit</button></td></tr>`; });
         }
 
-        document.getElementById("teacherRegForm").addEventListener("submit", async function(e) { /* keep */
-            e.preventDefault();
-            let phone = document.getElementById("treg_phone").value.trim();
-            if (!/^\d{10}$/.test(phone)) { alert("කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න."); return; }
-            let newTeacher = { id: document.getElementById("treg_id").value.trim(), name: document.getElementById("treg_name").value.trim(), subject: document.getElementById("treg_subject").value.trim(), phone: phone };
-            let existingIdx = registeredTeachers.findIndex(t => t.id === newTeacher.id);
-            if(existingIdx !== -1) registeredTeachers[existingIdx] = newTeacher; else registeredTeachers.push(newTeacher);
-            localStorage.setItem("dccRegTeachers", JSON.stringify(registeredTeachers));
-            if(isOnline) await fetch(FIREBASE_TEACHERS_INFO_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(registeredTeachers) });
-            document.getElementById("teacherRegForm").reset(); renderTeachersTable(); alert("ගුරු තොරතුරු සාර්ථකව ලියාපදිංචි කරන ලදී!");
-        });
-
-        function renderTeachersTable() { /* keep */
-            let tbody = document.getElementById("teachersRegTableBody"); tbody.innerHTML = "";
-            registeredTeachers.forEach(t => { tbody.innerHTML += `<tr><td style="font-weight:bold; color:#000;">${t.id}</td><td style="text-align:left;">${t.name}</td><td style="text-align:left;">${t.subject}</td><td>${t.phone}</td><td><button class="btn-edit" onclick="editTeacher('${t.id}')">Edit</button></td></tr>`; });
-        }
-
-        function loadStudentsForMarks() { /* keep */
+        function loadStudentsForMarks() { 
             let grade = document.getElementById("gradeSelect").value; let classLetter = document.getElementById("classSelect").value;
             let drop = document.getElementById("selectedStudentDrop");
             drop.innerHTML = '<option value="" disabled selected>පළමුව ශ්‍රේණිය හා පන්තිය තෝරන්න</option>'; document.getElementById("studentId").value = ""; document.getElementById("studentName").value = "";
@@ -585,22 +761,12 @@
             }
         }
 
-        function populateStudentHiddenFields() { /* keep */
+        function populateStudentHiddenFields() { 
             let selectedAdmNo = document.getElementById("selectedStudentDrop").value; let student = registeredStudents.find(s => s.admissionNo === selectedAdmNo);
             if(student) { document.getElementById("studentId").value = student.admissionNo; document.getElementById("studentName").value = student.nameInitials; }
         }
 
-        const juniorSubjects = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "සෞඛ්‍යය", "තොරතුරු හා සන්නිවේදන තාක්ෂණය", "PTS"];
-        const aestheticSubjects = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"];
-        const seniorCore = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය"];
-        const bucket1 = ["ගිණුම්කරණය හා ව්‍යාපාර අධ්‍යයනය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "දෙමළ"];
-        const bucket2 = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය", "සාහිත්‍ය රසාස්වාදය"];
-        const bucket3 = ["තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT)", "සෞඛ්‍යය", "කෘෂි හා ආහාර තාක්ෂණය", "ගෘහ ආර්ථික විද්‍යාව", "නිර්මාණකරණ තාක්ෂණවේදය"];
-        const alSubjectsList = { maths: ["සංයුක්ත ගණිතය (Com. Maths)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "තොරතුරු තාක්ෂණය (ICT)"], science: ["ජීව විද්‍යාව (Biology)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "කෘෂිකර්මය (Agriculture)"], commerce: ["ගිණුම්කරණය (Accounting)", "ව්‍යාපාර අධ්‍යයනය (Business Std)", "ආර්ථික විද්‍යාව (Economics)", "තොරතුරු තාක්ෂණය (ICT)"], tech: ["තාක්ෂණය සඳහා විද්‍යාව (SFT)", "ඉංජිනේරු තාක්ෂණවේදය (ET)", "ජෛව පද්ධති තාක්ෂණවේදය (BST)", "තොරතුරු තාක්ෂණය (ICT)", "කෘෂිකර්මය (Agriculture)"], arts: ["සිංහල", "බෞද්ධ ශිෂ්ටාචාරය", "ඉතිහාසය", "භූගෝල විද්‍යාව", "දේශපාලන විද්‍යාව", "තර්ක ශාස්ත්‍රය", "තොරතුරු තාක්ෂණය (ICT)", "චිත්‍ර", "නැටුම්", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"] };
-        const classLetters = ["A", "B", "C", "D", "E", "F", "G", "A1", "A2", "C1", "C2", "T1", "T2", "M1", "M2", "S1", "S2"];
-        const chartColors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#ea4335', '#34a853', '#009688', '#607d8b'];
-
-        function loadSubjects() { /* keep */
+        function loadSubjects() { 
             let grade = parseInt(document.getElementById("gradeSelect").value); let container = document.getElementById("subjectsContainer"); container.innerHTML = "";
             if (isNaN(grade)) return;
             if (grade <= 9) {
@@ -617,7 +783,7 @@
             }
         }
 
-        function loadALSubjects() { /* keep */
+        function loadALSubjects() { 
             let stream = document.getElementById("streamSelect").value; let alContainer = document.getElementById("alSubjectsContainer"); alContainer.innerHTML = "";
             let options = alSubjectsList[stream] || [];
             for(let i=1; i<=3; i++) {
@@ -628,7 +794,7 @@
             alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="number" class="mark-input" data-subject="GIT" placeholder="ලකුණු" min="0" max="100"></div>`;
         }
 
-        document.getElementById("marksForm").addEventListener("submit", async function(event) { /* keep */
+        document.getElementById("marksForm").addEventListener("submit", async function(event) { 
             event.preventDefault();
             let id = document.getElementById("studentId").value; let name = document.getElementById("studentName").value; let dropValue = document.getElementById("selectedStudentDrop").value;
             if(!id || !name || dropValue === "") { alert("කරුණාකර පළමුව ලැයිස්තුවෙන් ශිෂ්‍යයාව තෝරන්න!"); return; }
@@ -673,14 +839,14 @@
                 try {
                     await fetch(FIREBASE_MARKS_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(studentsData) });
                     alert("නියමයි! ලකුණු සාර්ථකව සේව් වුණා.");
-                } catch (e) { alert("Network Error: කරුණාකර Internet Connection එක පරීක්ෂා জ্ঞකරන්න"); }
+                } catch (e) { alert("Network Error: කරුණාකර Internet Connection එක පරීක්ෂා කරන්න"); }
                 document.getElementById("loadingOverlay").style.display = "none";
             }
             document.getElementById("tableTermSelect").value = term; document.getElementById("tableGradeSelect").value = grade.toString();
             clearMarksInputs(); updateTable(); updateChart(); 
         });
 
-        function clearAllData() { /* keep */
+        function clearAllData() { 
             if (confirm("ඔබට විශ්වාසද සියලුම ලකුණු දත්ත පද්ධතියෙන් මකා දැමිය යුතු බව? (ලියාපදිංචි සිසුන් මකා නොදැමේ) මෙම ක්‍රියාව ආපසු හැරවිය නොහැක!")) {
                 studentsData = []; localStorage.removeItem("dccMarksData");
                 if(isOnline) fetch(FIREBASE_MARKS_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify([]) });
@@ -690,14 +856,39 @@
 
         function applySubjectFilter() { updateTable(true); }
 
-        function updateTable(isSubjectFilterTrigger = false) { /* keep */
+        function updateTable(isSubjectFilterTrigger = false) { 
             let tableHeadRow = document.getElementById("tableHeadRow"); let tableBody = document.getElementById("tableBody");
             let selectedTerm = document.getElementById("tableTermSelect").value; let selectedGrade = document.getElementById("tableGradeSelect").value; let selectedClass = document.getElementById("tableClassSelect").value;
             let printSubText = "වාරය: " + selectedTerm + " | ශ්‍රේණිය: " + selectedGrade + " | ";
             let classDisplayName = selectedClass;
+            
             if (selectedClass.endsWith("_combined")) { let base = selectedClass.charAt(0); classDisplayName = `${base} අංශය ඒකාබද්ධව`; }
             printSubText += "පන්තිය: " + ((selectedClass === "all") ? "සියලුම" : classDisplayName);
             document.getElementById("printSubHeader").innerText = printSubText;
+
+            // --- ගුරු තොරතුරු පෙන්වීමේ කොටස ආරම්භය ---
+            let teacherPanel = document.getElementById("teacherDetailsPanel");
+            if (teacherPanel) {
+                if (selectedClass !== "all" && !selectedClass.endsWith("_combined")) {
+                    teacherPanel.style.display = "block";
+                    
+                    let ct = registeredTeachers.find(t => t.isClassTeacher && t.classGrade === selectedGrade && t.classLetter === selectedClass);
+                    document.getElementById("lblClassTeacher").innerText = ct ? ct.name : "තවම ඇතුළත් කර නැත";
+
+                    let targetClassStr = selectedGrade + "-" + selectedClass;
+                    let stList = registeredTeachers.filter(t => t.isSubjectTeacher && t.teachingClasses && (t.teachingClasses.includes(targetClassStr) || t.teachingClasses.includes(targetClassStr.replace("-",""))));
+                    
+                    if (stList.length > 0) {
+                        let stText = stList.map(t => `<span style="color:#e65100;">${t.name}</span> <span style="font-size:12px; color:#555;">(${t.subjects.join(', ')})</span>`).join(" | ");
+                        document.getElementById("lblSubjectTeachers").innerHTML = stText;
+                    } else {
+                        document.getElementById("lblSubjectTeachers").innerText = "තවම ඇතුළත් කර නැත";
+                    }
+                } else {
+                    teacherPanel.style.display = "none";
+                }
+            }
+            // --- ගුරු තොරතුරු පෙන්වීමේ කොටස අවසානය ---
 
             let filteredData = studentsData.filter(s => s.term === selectedTerm && s.grade === selectedGrade);
             if (selectedClass !== "all") {
@@ -756,7 +947,7 @@
             });
         }
 
-        function calculateRankIfComplete(cohort, recordId, reqCount) { /* keep */
+        function calculateRankIfComplete(cohort, recordId, reqCount) { 
             let completeCohort = cohort.filter(s => Object.keys(s.marks).length >= reqCount);
             completeCohort.sort((a, b) => b.total - a.total);
             let rank = 1; let prevTotal = -1;
@@ -768,9 +959,6 @@
             return "Pending <span class='no-print'>⏳</span>";
         }
 
-        // =========================================================
-        // UPDATED Search Logic with Grades 
-        // =========================================================
         function searchStudentById() {
             let searchId = document.getElementById("searchIdInput").value.trim();
             let searchTerm = document.getElementById("searchTermSelect").value;
@@ -823,7 +1011,6 @@
                         <table class="search-table" style="width: 100%; width: 100%; border-collapse: collapse;">
                             <tr><th style="background:#fff; color:#000; padding:5px; border: 1px solid #000; width: 50%;">විෂය (Subject)</th><th style="background:#fff; color:#000; padding:5px; border: 1px solid #000; width: 25%;">ලකුණු (Marks)</th><th style="background:#fff; color:#000; padding:5px; border: 1px solid #000; width: 25%;">සාමාර්ථය (Grade)</th></tr>`;
                 
-                // ADDED GRADE DISPLAY LOGIC
                 for (let [sub, mark] of Object.entries(record.marks)) { 
                     let gradeLetter = getGradeLetter(mark, record.grade);
                     
@@ -861,7 +1048,6 @@
             setTimeout(() => { document.body.classList.remove('print-search-mode'); }, 1000);
         }
 
-        // --- NEW MASTER REPORT LOGIC ---
         function generateMasterReport() {
             let term = document.getElementById("masterTermSelect").value;
             let grade = document.getElementById("masterGradeSelect").value;
@@ -881,10 +1067,8 @@
             filteredData.forEach(s => Object.keys(s.marks).forEach(sub => uniqueSubjects.add(sub)));
             let displaySubjects = Array.from(uniqueSubjects);
 
-            // Sort by Class then Name
             filteredData.sort((a, b) => a.fullClassName.localeCompare(b.fullClassName) || a.name.localeCompare(b.name));
 
-            // Create Header
             let headHtml = `<th style="width: 80px;">ඇතුළත්වීමේ අංකය</th><th style="text-align:left; min-width: 200px;">නම</th><th style="width: 60px;">පන්තිය</th>`;
             displaySubjects.forEach(sub => {
                 headHtml += `<th><div class="vertical-text">${sub}</div></th>`;
@@ -892,7 +1076,6 @@
             headHtml += `<th style="font-weight:bold; width:30px;">A</th><th style="font-weight:bold; width:30px;">B</th><th style="font-weight:bold; width:30px;">C</th><th style="font-weight:bold; width:30px;">S</th><th style="font-weight:bold; width:40px;">W/F</th>`;
             tableHeadRow.innerHTML = headHtml;
 
-            // Create Body
             tableBody.innerHTML = "";
             filteredData.forEach(student => {
                 let row = `<tr>
@@ -934,9 +1117,6 @@
             setTimeout(() => { document.body.classList.remove('print-master-mode'); }, 1000);
         }
 
-        // =========================================================
-        // FULLY FIXED PDF GENERATION (NO SCROLL OFFSET)
-        // =========================================================
         function downloadStudentPDF(studentId) {
             const originalElement = document.getElementById('printArea');
             if(!originalElement || originalElement.innerHTML.trim() === "") return;
@@ -980,7 +1160,7 @@
         }
 
         function downloadPDF() {
-            if(studentsData.length === 0) { alert("PDF කිරීමට පෙර දත්ත ඇතුළත් জ্ঞකරන්න!"); return; }
+            if(studentsData.length === 0) { alert("PDF කිරීමට පෙර දත්ත ඇතුළත් කරන්න!"); return; }
             const element = document.getElementById('reportCard'); const tableContainer = document.getElementById('tableResponsiveContainer');
             document.getElementById('printHeader').style.display = 'block'; document.getElementById('actionButtons').style.display = 'none'; document.querySelectorAll('.table-filters').forEach(el => el.style.display = 'none'); 
             tableContainer.style.overflow = 'visible'; tableContainer.style.display = 'table'; tableContainer.style.width = '100%';
@@ -993,7 +1173,7 @@
             });
         }
 
-        function updateChart() { /* keep */
+        function updateChart() { 
             let filteredChartData = studentsData.filter(s => s.term === document.getElementById("chartTermSelect").value && s.grade === document.getElementById("chartGradeSelect").value);
             let uniqueSubjects = new Set();
             filteredChartData.forEach(s => Object.keys(s.marks).forEach(sub => uniqueSubjects.add(sub)));
@@ -1009,7 +1189,7 @@
             myChart = new Chart(ctx, { type: 'bar', data: { labels: classLetters.map(letter => document.getElementById("chartGradeSelect").value + "-" + letter), datasets: chartDatasets }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
         }
 
-        function editStudent(admNo) { /* keep */
+        function editStudent(admNo) { 
             let student = registeredStudents.find(s => s.admissionNo === admNo);
             if(student) {
                 document.getElementById("reg_admNo").value = student.admissionNo; document.getElementById("reg_fullName").value = student.fullName; document.getElementById("reg_initialName").value = student.nameInitials;
@@ -1018,15 +1198,7 @@
             }
         }
 
-        function editTeacher(tid) { /* keep */
-            let teacher = registeredTeachers.find(t => t.id === tid);
-            if(teacher) {
-                document.getElementById("treg_id").value = teacher.id; document.getElementById("treg_name").value = teacher.name; document.getElementById("treg_subject").value = teacher.subject; document.getElementById("treg_phone").value = teacher.phone;
-                window.scrollTo({ top: document.getElementById("regTeacherFormCard").offsetTop, behavior: 'smooth' });
-            }
-        }
-
-        function showStudentPortal() { /* keep */
+        function showStudentPortal() { 
             document.getElementById("loginScreen").style.display = "none"; document.getElementById("mainApp").style.display = "block";
             document.querySelector(".tab-nav").style.display = "none"; document.getElementById("formCard").style.display = "none"; document.getElementById("reportCard").style.display = "none"; document.getElementById("chartCard").style.display = "none";
             document.getElementById("searchCard").style.display = "block"; document.getElementById("tab-students").style.display = "none"; document.getElementById("tab-teachers").style.display = "none";
