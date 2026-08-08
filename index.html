@@ -414,7 +414,7 @@
 
                         <!-- 2. විෂයභාර ගුරු තොරතුරු (වෙනමම ලැයිස්තුවක් ලෙස) -->
                         <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #90caf9; margin-bottom: 15px; text-align: left;">
-                            <h4 style="margin: 0 0 10px 0; color: #1565c0; font-size: 15px;">📚 උගන්වන විෂය / විෂයයන් තෝරන්න (Subject Teacher)</h4>
+                            <h4 style="margin: 0 0 10px 0; color: #1565c0; font-size: 15px;">📚 උගන්වන විෂය / පන්ති තෝරන්න (Subject Teacher)</h4>
                             
                             <label style="font-weight: bold; display: flex; align-items: center; gap: 10px; color: #333; cursor: pointer; margin-bottom: 10px;">
                                 <input type="checkbox" id="treg_isSubjectTeacher" style="width: 20px; height: 20px; cursor: pointer;">
@@ -422,7 +422,9 @@
                             </label>
                             
                             <div id="treg_subject_content" style="display: none;">
-                                <!-- Dropdown සහ Add Button -->
+                                
+                                <!-- විෂය තෝරන්න -->
+                                <label style="font-size: 13px; color: #444; font-weight: bold; display: block; margin-bottom: 5px;">විෂය තෝරන්න:</label>
                                 <div class="flex-row" style="margin-bottom: 10px; align-items: center; flex-direction: row;">
                                     <select id="treg_subjectDropdown" style="flex: 3; border: 1px solid #90caf9; margin: 0;">
                                         <!-- JS මගින් මෙයට විෂයයන් එකතු වේ -->
@@ -430,12 +432,21 @@
                                     <button type="button" onclick="addTeacherSubject()" class="btn-submit" style="flex: 1; margin: 0; padding: 12px; background: #1565c0; font-size: 13px;">+ එකතු කරන්න</button>
                                 </div>
                                 
-                                <!-- තෝරාගත් විෂයයන් පෙන්වන කොටස (Tags/Chips) -->
-                                <div id="treg_selectedSubjectsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
-                                    <!-- JS මගින් තේරූ විෂයයන් මෙහි දිස්වේ -->
+                                <!-- තෝරාගත් විෂයයන් පෙන්වන කොටස -->
+                                <div id="treg_selectedSubjectsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;"></div>
+                                
+                                <!-- පන්ති තෝරන්න (නව කොටස) -->
+                                <label style="font-size: 13px; color: #444; font-weight: bold; display: block; margin-bottom: 5px; margin-top: 15px;">මෙම විෂයයන් උගන්වන පන්ති තෝරන්න:</label>
+                                <div class="flex-row" style="margin-bottom: 10px; align-items: center; flex-direction: row;">
+                                    <select id="treg_classDropdown" style="flex: 3; border: 1px solid #80cbc4; margin: 0;">
+                                        <!-- JS මගින් මෙයට පන්ති එකතු වේ -->
+                                    </select>
+                                    <button type="button" onclick="addTeacherClass()" class="btn-submit" style="flex: 1; margin: 0; padding: 12px; background: #00796b; font-size: 13px;">+ එකතු කරන්න</button>
                                 </div>
                                 
-                                <input type="text" id="treg_teachingClasses" placeholder="මෙම විෂයයන් උගන්වන පන්ති (උදා: 6-A, 10-B, 11-A)" style="text-align: left; padding-left: 10px; border: 1px solid #90caf9;">
+                                <!-- තෝරාගත් පන්ති පෙන්වන කොටස -->
+                                <div id="treg_selectedClassesContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;"></div>
+
                             </div>
                         </div>
 
@@ -448,13 +459,13 @@
                 <div class="card" id="regTeacherTableCard">
                     <h3 class="section-title">ගුරු මණ්ඩලය</h3>
                     <div class="table-responsive">
-                        <table id="teachersRegTable"><thead><tr><th>ID</th><th>නම</th><th>විෂයයන්</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead><tbody id="teachersRegTableBody"></tbody></table>
+                        <table id="teachersRegTable"><thead><tr><th>ID</th><th>නම</th><th>විෂයයන් / පන්ති</th><th>දුරකථන අංකය</th><th>Action</th></tr></thead><tbody id="teachersRegTableBody"></tbody></table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 4: MASTER REPORT (NEW) -->
+        <!-- TAB 4: MASTER REPORT -->
         <div id="tab-master" class="tab-content no-print">
             <div class="dashboard">
                 <div class="card" id="masterReportCard">
@@ -504,7 +515,8 @@
         
         const isOnline = true;
         let studentsData = []; let registeredStudents = []; let registeredTeachers = []; let myChart = null; 
-        let selectedTeacherSubjectsList = []; // Array to hold subjects selected via dropdown
+        let selectedTeacherSubjectsList = []; 
+        let selectedTeacherClassesList = []; // Array to hold classes selected via dropdown
 
         // --- NEW HELPER FOR GRADES ---
         function getGradeLetter(mark, grade) {
@@ -548,8 +560,9 @@
             document.getElementById("gradeSelect").value = ""; document.getElementById("subjectsContainer").innerHTML = ""; 
             updateTable(); renderStudentsTable(); renderTeachersTable();
             
-            // Populate subject dropdown for teachers on load
+            // Populate dropdowns for teachers on load
             populateSubjectDropdown();
+            populateClassDropdown();
         };
 
         // --- Teacher Form Toggle Logic ---
@@ -561,7 +574,7 @@
             document.getElementById('treg_subject_content').style.display = e.target.checked ? 'block' : 'none';
         });
 
-        // --- Teacher Subjects Management ---
+        // --- Teacher Subjects & Classes Management ---
         function populateSubjectDropdown() {
             const coreSubs = [...new Set([...juniorSubjects, ...seniorCore])].sort();
             const olBuckets = [...new Set([...aestheticSubjects, ...bucket1, ...bucket2, ...bucket3])].sort();
@@ -585,20 +598,33 @@
             dropdown.innerHTML = html;
         }
 
+        function populateClassDropdown() {
+            let dropdown = document.getElementById("treg_classDropdown");
+            let html = `<option value="" disabled selected>පන්තිය තෝරන්න (Select Class)</option>`;
+            const ordinaryClasses = ["A", "B", "C", "D", "E", "F", "G"];
+            const advancedClasses = ["A1", "A2", "C1", "C2", "T1", "T2", "M1", "M2", "S1", "S2"];
+            
+            for(let g=6; g<=11; g++) {
+                html += `<optgroup label="${g} ශ්‍රේණිය">`;
+                ordinaryClasses.forEach(c => html += `<option value="${g}-${c}">${g}-${c}</option>`);
+                html += `</optgroup>`;
+            }
+            for(let g=12; g<=13; g++) {
+                html += `<optgroup label="${g} ශ්‍රේණිය">`;
+                advancedClasses.forEach(c => html += `<option value="${g}-${c}">${g}-${c}</option>`);
+                html += `</optgroup>`;
+            }
+            dropdown.innerHTML = html;
+        }
+
         function addTeacherSubject() {
             let dropdown = document.getElementById("treg_subjectDropdown");
             let sub = dropdown.value;
-            if (!sub) {
-                alert("කරුණාකර ලැයිස්තුවෙන් විෂයක් තෝරන්න.");
-                return;
-            }
-            if (selectedTeacherSubjectsList.includes(sub)) {
-                alert("මෙම විෂය දැනටමත් එකතු කර ඇත!");
-                return;
-            }
+            if (!sub) { alert("කරුණාකර ලැයිස්තුවෙන් විෂයක් තෝරන්න."); return; }
+            if (selectedTeacherSubjectsList.includes(sub)) { alert("මෙම විෂය දැනටමත් එකතු කර ඇත!"); return; }
             selectedTeacherSubjectsList.push(sub);
             renderTeacherSubjects();
-            dropdown.value = ""; // Selection Reset
+            dropdown.value = ""; 
         }
 
         function removeTeacherSubject(sub) {
@@ -619,12 +645,42 @@
             });
         }
 
+        function addTeacherClass() {
+            let dropdown = document.getElementById("treg_classDropdown");
+            let cls = dropdown.value;
+            if (!cls) { alert("කරුණාකර ලැයිස්තුවෙන් පන්තියක් තෝරන්න."); return; }
+            if (selectedTeacherClassesList.includes(cls)) { alert("මෙම පන්තිය දැනටමත් එකතු කර ඇත!"); return; }
+            selectedTeacherClassesList.push(cls);
+            renderTeacherClasses();
+            dropdown.value = ""; 
+        }
+
+        function removeTeacherClass(cls) {
+            selectedTeacherClassesList = selectedTeacherClassesList.filter(c => c !== cls);
+            renderTeacherClasses();
+        }
+
+        function renderTeacherClasses() {
+            let container = document.getElementById("treg_selectedClassesContainer");
+            container.innerHTML = "";
+            selectedTeacherClassesList.forEach(cls => {
+                container.innerHTML += `
+                    <div style="background: #e0f2f1; color: #00695c; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; border: 1px solid #b2dfdb;">
+                        ${cls}
+                        <span style="cursor: pointer; color: red; font-size: 14px;" onclick="removeTeacherClass('${cls}')">✖</span>
+                    </div>
+                `;
+            });
+        }
+
         function clearTeacherForm() {
             document.getElementById("teacherRegForm").reset();
             document.getElementById('treg_class_selects').style.display = 'none';
             document.getElementById('treg_subject_content').style.display = 'none';
             selectedTeacherSubjectsList = [];
+            selectedTeacherClassesList = [];
             renderTeacherSubjects();
+            renderTeacherClasses();
         }
 
         document.getElementById("teacherRegForm").addEventListener("submit", async function(e) {
@@ -637,10 +693,10 @@
             let cGrade = isCT ? document.getElementById("treg_classGrade").value : "";
             let cLetter = isCT ? document.getElementById("treg_classLetter").value : "";
             
-            // විෂයභාර තොරතුරු (List එකෙන් ලබා ගනී)
+            // විෂයභාර තොරතුරු (List වලින් ලබා ගනී)
             let isST = document.getElementById("treg_isSubjectTeacher").checked;
             let selectedSubs = isST ? [...selectedTeacherSubjectsList] : [];
-            let tClasses = isST ? document.getElementById("treg_teachingClasses").value.trim() : "";
+            let tClasses = isST ? selectedTeacherClassesList.join(", ") : ""; // වෙන්කර පෙන්වීමට comma-separated string ලෙස ගබඩා කෙරේ
 
             let newTeacher = { 
                 id: document.getElementById("treg_id").value.trim(), 
@@ -699,12 +755,15 @@
                 document.getElementById("treg_isSubjectTeacher").checked = !!teacher.isSubjectTeacher;
                 document.getElementById('treg_subject_content').style.display = teacher.isSubjectTeacher ? 'block' : 'none';
                 if(teacher.isSubjectTeacher) {
-                    document.getElementById("treg_teachingClasses").value = teacher.teachingClasses || "";
                     selectedTeacherSubjectsList = teacher.subjects ? [...teacher.subjects] : [];
+                    selectedTeacherClassesList = teacher.teachingClasses ? teacher.teachingClasses.split(",").map(s=>s.trim()).filter(s=>s!=="") : [];
                     renderTeacherSubjects();
+                    renderTeacherClasses();
                 } else {
                     selectedTeacherSubjectsList = [];
+                    selectedTeacherClassesList = [];
                     renderTeacherSubjects();
+                    renderTeacherClasses();
                 }
                 
                 window.scrollTo({ top: document.getElementById("regTeacherFormCard").offsetTop, behavior: 'smooth' });
@@ -907,7 +966,11 @@
                     document.getElementById("lblClassTeacher").innerText = ct ? ct.name : "තවම ඇතුළත් කර නැත";
 
                     let targetClassStr = selectedGrade + "-" + selectedClass;
-                    let stList = registeredTeachers.filter(t => t.isSubjectTeacher && t.teachingClasses && (t.teachingClasses.includes(targetClassStr) || t.teachingClasses.includes(targetClassStr.replace("-",""))));
+                    let stList = registeredTeachers.filter(t => {
+                        if (!t.isSubjectTeacher || !t.teachingClasses) return false;
+                        let classesArr = Array.isArray(t.teachingClasses) ? t.teachingClasses : t.teachingClasses.split(',').map(s=>s.trim());
+                        return classesArr.includes(targetClassStr) || classesArr.includes(targetClassStr.replace("-",""));
+                    });
                     
                     if (stList.length > 0) {
                         let stText = stList.map(t => `<span style="color:#e65100;">${t.name}</span> <span style="font-size:12px; color:#555;">(${t.subjects.join(', ')})</span>`).join(" | ");
