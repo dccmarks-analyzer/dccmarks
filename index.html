@@ -540,22 +540,47 @@
             return failGrade;
         }
 
-        const juniorSubjects = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "සෞඛ්‍යය", "තොරතුරු හා සන්නිවේදන තාක්ෂණය", "PTS", "දෙමළ"];
+        const juniorSubjects = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "සෞඛ්‍යය", "ICT", "PTS", "දෙමළ"];
         const aestheticSubjects = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"];
         const seniorCore = ["සිංහල", "ආගම", "ගණිතය", "විද්‍යාව", "ඉංග්‍රීසි", "ඉතිහාසය"];
         const bucket1 = ["ගිණුම්කරණය හා ව්‍යාපාර අධ්‍යයනය", "භූගෝල විද්‍යාව", "පුරවැසි අධ්‍යාපනය", "දෙමළ"];
         const bucket2 = ["චිත්‍ර", "නැටුම්", "පෙරදිග සංගීතය", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය", "සාහිත්‍ය රසාස්වාදය"];
-        const bucket3 = ["තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT)", "සෞඛ්‍යය", "කෘෂි හා ආහාර තාක්ෂණය", "ගෘහ ආර්ථික විද්‍යාව", "නිර්මාණකරණ තාක්ෂණවේදය"];
-        const alSubjectsList = { maths: ["සංයුක්ත ගණිතය (Com. Maths)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "තොරතුරු තාක්ෂණය (ICT)"], science: ["ජීව විද්‍යාව (Biology)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "කෘෂිකර්මය (Agriculture)"], commerce: ["ගිණුම්කරණය (Accounting)", "ව්‍යාපාර අධ්‍යයනය (Business Std)", "ආර්ථික විද්‍යාව (Economics)", "තොරතුරු තාක්ෂණය (ICT)"], tech: ["තාක්ෂණය සඳහා විද්‍යාව (SFT)", "ඉංජිනේරු තාක්ෂණවේදය (ET)", "ජෛව පද්ධති තාක්ෂණවේදය (BST)", "තොරතුරු තාක්ෂණය (ICT)", "කෘෂිකර්මය (Agriculture)"], arts: ["සිංහල", "බෞද්ධ ශිෂ්ටාචාරය", "ඉතිහාසය", "භූගෝල විද්‍යාව", "දේශපාලන විද්‍යාව", "තර්ක ශාස්ත්‍රය", "තොරතුරු තාක්ෂණය (ICT)", "චිත්‍ර", "නැටුම්", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"] };
+        const bucket3 = ["ICT", "සෞඛ්‍යය", "කෘෂි හා ආහාර තාක්ෂණය", "ගෘහ ආර්ථික විද්‍යාව", "නිර්මාණකරණ තාක්ෂණවේදය"];
+        const alSubjectsList = { maths: ["සංයුක්ත ගණිතය (Com. Maths)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "ICT"], science: ["ජීව විද්‍යාව (Biology)", "භෞතික විද්‍යාව (Physics)", "රසායන විද්‍යාව (Chemistry)", "කෘෂිකර්මය (Agriculture)"], commerce: ["ගිණුම්කරණය (Accounting)", "ව්‍යාපාර අධ්‍යයනය (Business Std)", "ආර්ථික විද්‍යාව (Economics)", "ICT"], tech: ["තාක්ෂණය සඳහා විද්‍යාව (SFT)", "ඉංජිනේරු තාක්ෂණවේදය (ET)", "ජෛව පද්ධති තාක්ෂණවේදය (BST)", "ICT", "කෘෂිකර්මය (Agriculture)"], arts: ["සිංහල", "බෞද්ධ ශිෂ්ටාචාරය", "ඉතිහාසය", "භූගෝල විද්‍යාව", "දේශපාලන විද්‍යාව", "තර්ක ශාස්ත්‍රය", "ICT", "චිත්‍ර", "නැටුම්", "නාට්‍ය හා රංග කලාව", "ඉංග්‍රීසි සාහිත්‍යය"] };
         
         const chartColors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#ea4335', '#34a853', '#009688', '#607d8b'];
+
+        // ස්වයංක්‍රීය Data Migration - පැරණි "තොරතුරු හා සන්නිවේදන තාක්ෂණය" නම "ICT" බවට පත් කිරීම
+        function migrateOldICTNames(dataArray) {
+            let isModified = false;
+            const oldNames = ["තොරතුරු හා සන්නිවේදන තාක්ෂණය", "තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT)", "තොරතුරු තාක්ෂණය (ICT)"];
+            
+            dataArray.forEach(student => {
+                oldNames.forEach(oldName => {
+                    if (student.marks && student.marks[oldName] !== undefined) {
+                        student.marks["ICT"] = student.marks[oldName];
+                        delete student.marks[oldName];
+                        isModified = true;
+                    }
+                });
+            });
+            return isModified;
+        }
 
         window.onload = async function() {
             if (isOnline) {
                 document.getElementById("loadingOverlay").style.display = "flex";
                 try {
                     let resMarks = await fetch(FIREBASE_MARKS_URL); let dataMarks = await resMarks.json();
-                    if(dataMarks) studentsData = Array.isArray(dataMarks) ? dataMarks : Object.values(dataMarks);
+                    if(dataMarks) {
+                        studentsData = Array.isArray(dataMarks) ? dataMarks : Object.values(dataMarks);
+                        
+                        // Migrate Database to new ICT Name automatically
+                        if(migrateOldICTNames(studentsData)) {
+                            localStorage.setItem("dccMarksData", JSON.stringify(studentsData));
+                            await fetch(FIREBASE_MARKS_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(studentsData) });
+                        }
+                    }
                     
                     let resStudents = await fetch(FIREBASE_STUDENTS_INFO_URL); let dataStudents = await resStudents.json();
                     if(dataStudents) registeredStudents = Array.isArray(dataStudents) ? dataStudents : Object.values(dataStudents);
@@ -803,7 +828,10 @@
         });
 
         function loadFromLocalStorage() {
-            let savedMarks = localStorage.getItem("dccMarksData"); if (savedMarks) studentsData = JSON.parse(savedMarks);
+            let savedMarks = localStorage.getItem("dccMarksData"); if (savedMarks) {
+                studentsData = JSON.parse(savedMarks);
+                migrateOldICTNames(studentsData); // Migration for local data
+            }
             let savedStudents = localStorage.getItem("dccRegStudents"); if (savedStudents) registeredStudents = JSON.parse(savedStudents);
             let savedTeachers = localStorage.getItem("dccRegTeachers"); if (savedTeachers) registeredTeachers = JSON.parse(savedTeachers);
         }
