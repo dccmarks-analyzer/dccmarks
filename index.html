@@ -525,13 +525,18 @@
         let selectedTeacherClassesList = []; 
 
         function getGradeLetter(mark, grade) {
-            if (mark === undefined || mark === null || mark === '' || isNaN(mark) || mark === '-') return '-';
+            if (mark === "AB" || mark === "ab") return "AB"; // AB සඳහා
+            if (mark === undefined || mark === null || mark === '' || mark === '-') return '-';
+            
+            let numMark = parseFloat(mark);
+            if (isNaN(numMark)) return '-';
+            
             let g = parseInt(grade);
             let failGrade = (g >= 12) ? 'F' : 'W'; 
-            if (mark >= 75) return 'A';
-            if (mark >= 65) return 'B';
-            if (mark >= 50) return 'C';
-            if (mark >= 35) return 'S';
+            if (numMark >= 75) return 'A';
+            if (numMark >= 65) return 'B';
+            if (numMark >= 50) return 'C';
+            if (numMark >= 35) return 'S';
             return failGrade;
         }
 
@@ -874,16 +879,16 @@
             let grade = parseInt(document.getElementById("gradeSelect").value); let container = document.getElementById("subjectsContainer"); container.innerHTML = "";
             if (isNaN(grade)) return;
             if (grade <= 9) {
-                juniorSubjects.forEach(subject => { container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`; });
-                let aesSelect = `<select id="aesSubject"><option value="" disabled selected>සෞන්දර්ය විෂය</option>`; aestheticSubjects.forEach(opt => aesSelect += `<option value="${opt}">${opt}</option>`); aesSelect += `</select>`; container.innerHTML += `<div class="subject-row">${aesSelect}<input type="number" id="m_aes" placeholder="ලකුණු" min="0" max="100"></div>`;
+                juniorSubjects.forEach(subject => { container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="text" class="mark-input" data-subject="${subject}" placeholder="0-100 හෝ AB"></div>`; });
+                let aesSelect = `<select id="aesSubject"><option value="" disabled selected>සෞන්දර්ය විෂය</option>`; aestheticSubjects.forEach(opt => aesSelect += `<option value="${opt}">${opt}</option>`); aesSelect += `</select>`; container.innerHTML += `<div class="subject-row">${aesSelect}<input type="text" id="m_aes" placeholder="ලකුණු හෝ AB"></div>`;
             } else if (grade === 10 || grade === 11) {
-                seniorCore.forEach(subject => { container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="number" class="mark-input" data-subject="${subject}" placeholder="0-100" min="0" max="100"></div>`; });
+                seniorCore.forEach(subject => { container.innerHTML += `<div class="subject-row"><label>${subject}</label><input type="text" class="mark-input" data-subject="${subject}" placeholder="0-100 හෝ AB"></div>`; });
                 const createBucket = (bucketName, options, bucketId) => { let selectHtml = `<select id="${bucketId}"><option value="" disabled selected>${bucketName}</option>`; options.forEach(opt => selectHtml += `<option value="${opt}">${opt}</option>`); selectHtml += `</select>`; return selectHtml; };
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය I", bucket1, "b1")}<input type="number" id="m_b1" placeholder="ලකුණු" min="0" max="100"></div>`;
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය II", bucket2, "b2")}<input type="number" id="m_b2" placeholder="ලකුණු" min="0" max="100"></div>`;
-                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය III", bucket3, "b3")}<input type="number" id="m_b3" placeholder="ලකුණු" min="0" max="100"></div>`;
+                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය I", bucket1, "b1")}<input type="text" id="m_b1" placeholder="ලකුණු හෝ AB"></div>`;
+                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය II", bucket2, "b2")}<input type="text" id="m_b2" placeholder="ලකුණු හෝ AB"></div>`;
+                container.innerHTML += `<div class="subject-row">${createBucket("කාණ්ඩය III", bucket3, "b3")}<input type="text" id="m_b3" placeholder="ලකුණු හෝ AB"></div>`;
             } else if (grade === 12 || grade === 13) {
-                container.innerHTML = `<div style="margin-bottom: 15px;"><select id="streamSelect" onchange="loadALSubjects()" style="border-color: #ff9800; border-width: 2px;"><option value="" disabled selected>විෂය ධාරාව තෝරන්න (Select Stream)</option><option value="maths">ගණිත අංශය (Maths)</option><option value="science">විද්‍යා අංශය (Science)</option><option value="commerce">වාණষ্ঠ අංශය (Commerce)</option><option value="tech">තාක්ෂ අංශය (Technology)</option><option value="arts">කලා අංශය (Arts)</option></select></div><div id="alSubjectsContainer"></div>`;
+                container.innerHTML = `<div style="margin-bottom: 15px;"><select id="streamSelect" onchange="loadALSubjects()" style="border-color: #ff9800; border-width: 2px;"><option value="" disabled selected>විෂය ධාරාව තෝරන්න (Select Stream)</option><option value="maths">ගණිත අංශය (Maths)</option><option value="science">විද්‍යා අංශය (Science)</option><option value="commerce">වාණිජ අංශය (Commerce)</option><option value="tech">තාක්ෂණ අංශය (Technology)</option><option value="arts">කලා අංශය (Arts)</option></select></div><div id="alSubjectsContainer"></div>`;
             }
         }
 
@@ -892,10 +897,10 @@
             let options = alSubjectsList[stream] || [];
             for(let i=1; i<=3; i++) {
                 let selectHtml = `<select id="al_sub${i}"><option value="" disabled selected>ප්‍රධාන විෂය ${i}</option>`; options.forEach(opt => selectHtml += `<option value="${opt}">${opt}</option>`); selectHtml += `</select>`;
-                alContainer.innerHTML += `<div class="subject-row">${selectHtml}<input type="number" id="m_al${i}" placeholder="ලකුණු" min="0" max="100"></div>`;
+                alContainer.innerHTML += `<div class="subject-row">${selectHtml}<input type="text" id="m_al${i}" placeholder="ලකුණු හෝ AB"></div>`;
             }
-            alContainer.innerHTML += `<div class="subject-row"><label>සාමාන්‍ය ඉංග්‍රීසි (Gen. English)</label><input type="number" class="mark-input" data-subject="සාමාන්‍ය ඉංග්‍රීසි" placeholder="ලකුණු" min="0" max="100"></div>`;
-            alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="number" class="mark-input" data-subject="GIT" placeholder="ලකුණු" min="0" max="100"></div>`;
+            alContainer.innerHTML += `<div class="subject-row"><label>සාමාන්‍ය ඉංග්‍රීසි (Gen. English)</label><input type="text" class="mark-input" data-subject="සාමාන්‍ය ඉංග්‍රීසි" placeholder="ලකුණු හෝ AB"></div>`;
+            alContainer.innerHTML += `<div class="subject-row"><label>GIT</label><input type="text" class="mark-input" data-subject="GIT" placeholder="ලකුණු හෝ AB"></div>`;
         }
 
         document.getElementById("marksForm").addEventListener("submit", async function(event) { 
@@ -903,39 +908,58 @@
             let id = document.getElementById("studentId").value; let name = document.getElementById("studentName").value; let dropValue = document.getElementById("selectedStudentDrop").value;
             if(!id || !name || dropValue === "") { alert("කරුණාකර පළමුව ලැයිස්තුවෙන් ශිෂ්‍යයාව තෝරන්න!"); return; }
             let term = document.getElementById("termSelect").value; let grade = parseInt(document.getElementById("gradeSelect").value); let classLetter = document.getElementById("classSelect").value;
-            let total = 0; let studentMarks = {}; let subjectCount = 0; let streamName = "";
+            let total = 0; let studentMarks = {}; let streamName = "";
+
+            const processInput = (subject, val) => {
+                val = val.trim().toUpperCase();
+                if (subject && val !== "") {
+                    let mark = (val === "AB") ? "AB" : parseFloat(val);
+                    if (val === "AB" || !isNaN(mark)) {
+                        studentMarks[subject] = mark;
+                        if (mark !== "AB") total += mark;
+                    }
+                }
+            };
 
             document.querySelectorAll(".mark-input").forEach(input => {
-                let subject = input.getAttribute("data-subject"); let mark = parseFloat(input.value);
-                if (!isNaN(mark)) { studentMarks[subject] = mark; total += mark; subjectCount++; }
+                processInput(input.getAttribute("data-subject"), input.value);
             });
+            
             if (grade <= 9) {
-                let aesSub = document.getElementById('aesSubject') ? document.getElementById('aesSubject').value : ""; let aesMark = document.getElementById('m_aes') ? parseFloat(document.getElementById('m_aes').value) : NaN;
-                if(aesSub && !isNaN(aesMark)) { studentMarks[aesSub] = aesMark; total += aesMark; subjectCount++; }
+                let aesSub = document.getElementById('aesSubject') ? document.getElementById('aesSubject').value : ""; 
+                let aesVal = document.getElementById('m_aes') ? document.getElementById('m_aes').value : "";
+                processInput(aesSub, aesVal);
             } else if (grade === 10 || grade === 11) {
                 for (let i = 1; i <= 3; i++) {
-                    let bucketSubject = document.getElementById(`b${i}`) ? document.getElementById(`b${i}`).value : ""; let mark = document.getElementById(`m_b${i}`) ? parseFloat(document.getElementById(`m_b${i}`).value) : NaN;
-                    if (bucketSubject && !isNaN(mark)) { studentMarks[bucketSubject] = mark; total += mark; subjectCount++; }
+                    let bucketSubject = document.getElementById(`b${i}`) ? document.getElementById(`b${i}`).value : ""; 
+                    let bVal = document.getElementById(`m_b${i}`) ? document.getElementById(`m_b${i}`).value : "";
+                    processInput(bucketSubject, bVal);
                 }
             } else if (grade === 12 || grade === 13) {
                 if(document.getElementById("streamSelect") && document.getElementById("streamSelect").selectedIndex > 0) { streamName = document.getElementById("streamSelect").options[document.getElementById("streamSelect").selectedIndex].text; }
                 for (let i = 1; i <= 3; i++) {
-                    let alSubject = document.getElementById(`al_sub${i}`) ? document.getElementById(`al_sub${i}`).value : ""; let mark = document.getElementById(`m_al${i}`) ? parseFloat(document.getElementById(`m_al${i}`).value) : NaN;
-                    if (alSubject && !isNaN(mark)) { studentMarks[alSubject] = mark; total += mark; subjectCount++; }
+                    let alSubject = document.getElementById(`al_sub${i}`) ? document.getElementById(`al_sub${i}`).value : ""; 
+                    let alVal = document.getElementById(`m_al${i}`) ? document.getElementById(`m_al${i}`).value : "";
+                    processInput(alSubject, alVal);
                 }
             }
-            let average = subjectCount > 0 ? parseFloat((total / subjectCount).toFixed(2)) : 0;
+            
+            // Average එක සැමවිටම අනිවාර්ය විෂයයන් ගණනින් බෙදීම 
+            let reqCount = getReqSubCount(grade);
+            let average = parseFloat((total / reqCount).toFixed(2));
+            
             let studentRecord = { id: id, name: name, term: term, grade: grade.toString(), classLetter: classLetter, fullClassName: grade + "-" + classLetter, marks: studentMarks, total: total, average: average, stream: streamName };
             let existingIndex = studentsData.findIndex(s => s.id === id && s.term === term);
             
             if (existingIndex !== -1) {
                 let existingStudent = studentsData[existingIndex]; let mergedMarks = { ...existingStudent.marks, ...studentMarks };
-                let newTotal = 0; let newSubjectCount = 0;
-                for (let sub in mergedMarks) { newTotal += mergedMarks[sub]; newSubjectCount++; }
-                let newAverage = newSubjectCount > 0 ? parseFloat((newTotal / newSubjectCount).toFixed(2)) : 0;
+                let newTotal = 0;
+                for (let sub in mergedMarks) { if (mergedMarks[sub] !== "AB") newTotal += mergedMarks[sub]; }
+                let newAverage = parseFloat((newTotal / reqCount).toFixed(2));
                 studentRecord.marks = mergedMarks; studentRecord.total = newTotal; studentRecord.average = newAverage; studentRecord.serialNo = existingStudent.serialNo;
                 studentsData[existingIndex] = studentRecord;
             } else { studentRecord.serialNo = studentsData.length + 1; studentsData.push(studentRecord); }
+            
             localStorage.setItem("dccMarksData", JSON.stringify(studentsData));
 
             if (isOnline) {
@@ -1194,8 +1218,14 @@
                 displaySubjects.forEach(sub => {
                     let mark = student.marks[sub];
                     let gradeLetter = getGradeLetter(mark, student.grade);
-                    if (gradeLetter !== '-') { counts[gradeLetter] = (counts[gradeLetter] || 0) + 1; }
-                    let color = '#000';
+                    if (gradeLetter !== '-') { 
+                        let countLetter = gradeLetter;
+                        if(gradeLetter === 'AB') {
+                            countLetter = (parseInt(student.grade) >= 12) ? 'F' : 'W';
+                        }
+                        counts[countLetter] = (counts[countLetter] || 0) + 1; 
+                    }
+                    let color = (gradeLetter === 'AB') ? 'red' : '#000';
                     row += `<td style="font-weight:bold; color:${color}; font-size: 14px;">${gradeLetter}</td>`;
                 });
                 
@@ -1307,8 +1337,8 @@
                     let classStudents = filteredChartData.filter(s => s.classLetter === letter); 
                     let count = 0; let sum = 0;
                     classStudents.forEach(s => { 
-                        if (s.marks[subject] !== undefined && !isNaN(s.marks[subject])) { 
-                            sum += s.marks[subject]; count++; 
+                        if (s.marks[subject] !== undefined && s.marks[subject] !== "AB" && !isNaN(parseFloat(s.marks[subject]))) { 
+                            sum += parseFloat(s.marks[subject]); count++; 
                         } 
                     }); 
                     return count === 0 ? 0 : parseFloat((sum / count).toFixed(2));
